@@ -4,51 +4,35 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
-
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject playerPrefab;
-    public GameObject canvasPrefab;
+    public GameObject gridPrefab;
+
+    private bool isSent;
 
     PhotonView view;
 
+    private void Awake()
+    {
+    }
+
     void Start()
     {
+        GameObject board = Instantiate(gridPrefab, new Vector2(1,1), Quaternion.identity);
+        board.transform.parent = GameObject.Find("Grid").transform;
+
         if (NetworkPlayer.LocalPlayerInstance == null)
         {
-            Debug.LogFormat("GAME MANAGER START");
+            //Debug.LogFormat("GAME MANAGER START");
             Vector3 pos = new Vector3(0, 0, -1);
             GameObject playerGO = PhotonNetwork.Instantiate(playerPrefab.name, pos, Quaternion.identity);
-            //GameObject canvasGo = PhotonNetwork.Instantiate(canvasPrefab.name, Vector3.zero, Quaternion.identity);
-            /*GameObject canvasGo = Instantiate(canvasPrefab, Vector3.zero, Quaternion.identity);
-
-           // canvasGo.name += "_" + canvasGo.GetComponent<PhotonView>().Owner.NickName;
-
-            Transform ButtonContainer = canvasGo.transform.GetChild(0).gameObject.transform;
-
-            //Player creation
-
-            NetworkPlayer.LocalPlayerInstance = playerGO;
-            PlayerMouvement playerscript = playerGO.GetComponent<PlayerMouvement>();
-
-            //Canvas button Creation
-            Button canvaButtonCheckNear = ButtonContainer.GetChild(0).GetComponent<Button>();
-            canvaButtonCheckNear.onClick.AddListener(playerscript.CheckIsNearChest);
-
-            Button canvaButtonCheckChest = ButtonContainer.GetChild(1).GetComponent<Button>();
-            canvaButtonCheckChest.onClick.AddListener(playerscript.CheckIsChest);
-
-            Button canvaButtonCheckPass = ButtonContainer.GetChild(2).GetComponent<Button>();
-            canvaButtonCheckPass.onClick.AddListener(playerscript.PassTurn);
-
-            //Player Canvas
-            TMP_Text infoText = canvasGo.transform.GetChild(1).GetComponent<TMP_Text>();
-            playerscript.InfoText = infoText;
-            playerscript.Canva = canvasGo;*/
-
             NetworkPlayer.LocalPlayerInstance = playerGO;
 
         }
     }
+
 }

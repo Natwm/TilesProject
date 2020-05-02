@@ -39,6 +39,7 @@ MonoBehaviour:
   - OnPlayerClick
   - PointerStateDown
   - PointerStateUp
+  - receiveSeed
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

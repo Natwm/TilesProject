@@ -2,29 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 
 public class GridGen : MonoBehaviour
 {
-    [Space]
+    [Space] 
     [Header("Param")]
     public Vector2Int gridSize;
     public GameObject gridObject;
-    BoxCollider2D gridObjectCollider2D;
-    public cellData[] allCell;
+    BoxCollider gridObjectCollider;
+    public CellData[] allCell;
     Vector3 realPos = Vector3.zero;
     public int chestNumber;
-    
+    public int m_seed;
+    public PhotonView view;
+
     [Space]
     [Header("Debug")]
     public cellTypeInitialisation.cellType typeToSearch;
-    List<cellData> temporaryListOfCells;
+    List<CellData> temporaryListOfCells;
     Color cellBaseCol;
 
+    private void Awake()
+    {
+        //Debug.Log(GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed);
+        Random.seed = GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed;
+    }
     // Start is called before the first frame update
     void Start()
     {
-        allCell = new cellData[gridSize.x*gridSize.y];
-        gridObjectCollider2D = gridObject.transform.GetChild(0).gameObject.GetComponent<BoxCollider2D>();
+        allCell = new CellData[gridSize.x*gridSize.y];
+        gridObjectCollider = gridObject.transform.GetChild(0).gameObject.GetComponent<BoxCollider>();
         CreateGrid();
         cellBaseCol = gridObject.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().sharedMaterial.color;
     }
@@ -34,7 +44,7 @@ public class GridGen : MonoBehaviour
     {
         Vector2Int gridPos = new Vector2Int(1,1);
         GameObject objToSpawn;
-        float shiftSize = gridObjectCollider2D.size.x;
+        float shiftSize = gridObjectCollider.size.x;
         int incrémentIndex = 0;
         //incrément Y
         for (int i = 0; i < gridSize.y; i++)
@@ -42,12 +52,12 @@ public class GridGen : MonoBehaviour
             //incrément X
             for (int n = 0; n < gridSize.x; n++)
             {
-                objToSpawn = GameObject.Instantiate(gridObject,realPos,new Quaternion (0f,0f,180f,0f));
+                objToSpawn = Instantiate(gridObject, realPos,new Quaternion (0f,0f,180f,0f));
                 objToSpawn.transform.parent = gameObject.transform;
                 objToSpawn.name = gridPos.ToString();
                 Vector3Int tempPos = new Vector3Int(gridPos.x, gridPos.y,0);
-                cellData tempCellData = objToSpawn.transform.GetChild(0).gameObject.GetComponent<cellData>();
-                tempCellData.gridPos = tempPos;
+                CellData tempCellData = objToSpawn.transform.GetChild(0).gameObject.GetComponent<CellData>();
+    
                 allCell[incrémentIndex] = tempCellData;
                 //Incrément des variables X
                 gridPos.x++;
@@ -71,8 +81,8 @@ public class GridGen : MonoBehaviour
         {
 
             Vector3Int chestPos = new Vector3Int(Random.Range(2,gridSize.x), Random.Range(2, gridSize.x),0);
-            Debug.Log(chestPos);
-            foreach (cellData item in allCell)
+            //Debug.Log(chestPos);
+            foreach (CellData item in allCell)
             {
                 if (chestPos == item.gridPos)
                 {
@@ -81,10 +91,10 @@ public class GridGen : MonoBehaviour
             }
         }
     }
-    public List<cellData> GetAllCellFromType(cellTypeInitialisation.cellType typeToCheck)
+    public List<CellData> GetAllCellFromType(cellTypeInitialisation.cellType typeToCheck)
     {
-        List<cellData> listOfAllObjects = new List<cellData>();
-        foreach (cellData item in allCell)
+        List<CellData> listOfAllObjects = new List<CellData>();
+        foreach (CellData item in allCell)
         {
             if (item.cellType == typeToCheck)
             {
@@ -97,9 +107,9 @@ public class GridGen : MonoBehaviour
     public void HighlightTypeOfCell(cellTypeInitialisation.cellType type)
     {
         ResetTiles();
-        temporaryListOfCells = new List<cellData>();
+        temporaryListOfCells = new List<CellData>();
         temporaryListOfCells = GetAllCellFromType(type);
-        foreach (cellData item in temporaryListOfCells)
+        foreach (CellData item in temporaryListOfCells)
         {
             item.objMesh.material.color = new Color(0,255f,0, 0.50f);
         }
@@ -117,7 +127,7 @@ public class GridGen : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.T))
         {
-            foreach (cellData item in allCell)
+            foreach (CellData item in allCell)
             {
                 if (item.isTreasure)
                 {
@@ -132,10 +142,21 @@ public class GridGen : MonoBehaviour
         
         if (temporaryListOfCells != null)
         {
-            foreach (cellData item in temporaryListOfCells)
+            foreach (CellData item in temporaryListOfCells)
             {
                 item.objMesh.material.color = item.baseCol;
             }
         }
+    }
+
+    int SendSeed(int mySeed)
+    {
+        return 1;
+    }
+
+    [PunRPC]
+    void receiveSeed(int seed)
+    {
+        m_seed = seed;
     }
 }

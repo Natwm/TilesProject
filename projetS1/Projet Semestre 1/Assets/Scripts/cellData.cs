@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class cellData : MonoBehaviour
+public class CellData : MonoBehaviour
 {
     cellTypeInitialisation masterCell;
     public cellTypeInitialisation.cellType cellType = cellTypeInitialisation.cellType.blank;
@@ -18,20 +18,25 @@ public class cellData : MonoBehaviour
     {
         masterCell = FindObjectOfType<cellTypeInitialisation>();
         masterCell.GetRandomCellType(this);
+        //Debug.Log("a");
+        if (objMesh == null)
+            objMesh = gameObject.GetComponent<MeshRenderer>();
 
-        objMesh = gameObject.GetComponent<MeshRenderer>();
         if (masterCell.debug)
         {
             objMesh.material.SetTexture("_MainTex", assignedSprite.texture);
-            baseCol = objMesh.material.color; 
+            baseCol = objMesh.material.color;
         }
 
         objMesh.material.color = Color.black;
 
     }
 
-    public void ShowTile() {
+    public bool ShowTile()
+    {
+        //Debug.Log(objMesh.name);
         objMesh.material.color = Color.white;
-        objMesh.material.SetTexture("_MainTex", assignedSprite.texture);
+        /* objMesh.material.SetTexture("_MainTex", assignedSprite.texture);*/
+        return true;
     }
 }

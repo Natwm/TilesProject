@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -9,6 +10,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 {
     public TMP_Text roomInfos;
     public TMP_InputField nicknameField;
+    public GameObject seedField;
     public Button connectButton;
 
     Launcher networkManager;
@@ -55,6 +57,12 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         //FindObjectOfType<PlayerCursor>().UpdateName(networkManager.nickname);
     }
 
+    public void OnSeedUpdate(string newSeed)
+    {
+        Debug.LogFormat("seed updated to {0}", newSeed);
+        networkManager.GameSeed = Int32.Parse(newSeed);
+    }
+
     public void OnConnectButton()
     {
         networkManager.SetPlayerName(nicknameField.text);
@@ -65,6 +73,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     {
         // hide connect button and input field
         connectButton.gameObject.SetActive(false);
-        GameObject.Find("Nickname").SetActive(false);
+        nicknameField.transform.parent.gameObject.SetActive(false);
+        seedField.SetActive(false);
     }
 }

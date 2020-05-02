@@ -19,7 +19,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     [Space]
     [Header("Player's Settings")]
-    [SerializeField] private int FOV;
+    [SerializeField] private float FOV;
     [SerializeField] private bool id;
     PhotonView view;
     public bool m_canPlay = true;
@@ -41,15 +41,16 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     // Start is called before the first frame update
     void Start()
     {
+        SendSeed();
         view = GetComponent<PhotonView>();
 
         //id = view.OwnerActorNr;
-        Debug.LogFormat("initializing player {0} | with id {1} - Is local player ? {2}   - is master  ? {3}", view.Owner.NickName, 0, view.IsMine, view.Owner.NickName == PhotonNetwork.MasterClient.NickName);
-        Debug.LogWarning(" owner " + view.Owner);
-        Debug.LogWarning("OwnerActorNr " + view.OwnerActorNr);
+        //Debug.LogFormat("initializing player {0} | with id {1} - Is local player ? {2}   - is master  ? {3}", view.Owner.NickName, 0, view.IsMine, view.Owner.NickName == PhotonNetwork.MasterClient.NickName);
+        //Debug.LogWarning(" owner " + view.Owner);
+        //Debug.LogWarning("OwnerActorNr " + view.OwnerActorNr);
         gameObject.name += "_" + view.Owner.NickName;
         gameObject.transform.parent = FindObjectOfType<Grid>().gameObject.transform;
-        Debug.Log("this.transform.parent.name : " + this.transform.parent.name + " || FindObjectOfType<Grid>().gameObject.transform : " + gameObject.transform.parent.GetComponent<Grid>());
+       // Debug.Log("this.transform.parent.name : " + this.transform.parent.name + " || FindObjectOfType<Grid>().gameObject.transform : " + gameObject.transform.parent.GetComponent<Grid>());
 
         if (view.Owner.NickName == PhotonNetwork.MasterClient.NickName)
         {
@@ -59,10 +60,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             m_canPlay = false;
 
         grid = transform.parent.GetComponent<Grid>();
-        UseFov();
-
+        
         SetUI();
         UpdateInterface();
+
     }
     #endregion
 
@@ -87,6 +88,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     // Update is called once per frame
     void Update()
     {
+        Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward * 50);
         if (m_canPlay && !m_ActionPhase)
         {
             //MOUVEMENT BY CLICK
@@ -94,7 +96,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             {
                 ApplyDesiredMovement();
                 UseFov();
-                //TurnBased.UpdateGameState();
             }
         }
     }
@@ -104,27 +105,36 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     #region Click Mouvement
     Vector3 CalculeMouvement()
     {
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, Mathf.Infinity);
+        Vector3 targetpos = new Vector3(-1, -1, -1);
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = -1;
 
-        GameObject selectedPosition = hit.collider.gameObject;
-        Vector3 targetpos = new Vector3(grid.LocalToCell(selectedPosition.transform.position).x, grid.LocalToCell(selectedPosition.transform.position).y, -1);
+        Debug.DrawRay(mousePosition, Vector3.forward);
+        RaycastHit hit;
+        if(Physics.Raycast(mousePosition, Vector3.forward,out hit, 50f))
+        {
+            GameObject selectedPosition = hit.collider.gameObject;
 
+            targetpos = new Vector3(grid.LocalToCell(selectedPosition.transform.position).x, grid.LocalToCell(selectedPosition.transform.position).y, -1);
+        }
         return targetpos;
     }
 
     void ApplyDesiredMovement()
     {
         Vector3 targetPosition = CalculeMouvement();
-        transform.position = targetPosition;
+        if(targetPosition != new Vector3(-1, -1 ))
+        {
+            transform.position = targetPosition;
+            SendMouvementDone();
+        }
         
-        SendMouvementDone();
     }
 
     bool ApplyDesiredMovementForward()
     {
         Vector3 targetPosition = CalculeMouvement();
-        Debug.Log(CanApplyMouvement(targetPosition));
+        
 
         if (CanApplyMouvement(targetPosition))
         {
@@ -133,7 +143,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             //The player 2 Can play, so change the game State
             return true;
         }
-        //The player 1 do a invalid action, do not change the game state
+        //The player 1 do a invalid action, do not change the game state*/
         return false;
     }
 
@@ -195,6 +205,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             if (item.gameObject.GetComponent<TilesBehaviours>() != null)
             {
                 m_Neighbours.Add(item.gameObject.GetComponent<TilesBehaviours>());
+                //Erreur est ici
                 item.gameObject.GetComponent<TilesBehaviours>().callColor();
             }
         }
@@ -202,19 +213,16 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void UpdateInterface()
     {
-        //if (GetComponent<PhotonView>().IsMine)
-       // {
+        if (GetComponent<PhotonView>().IsMine)
+        {
             GameObject ButtonContainer = m_Canvas.transform.GetChild(0).gameObject;
-            Debug.Log(ButtonContainer.name);
+            //Debug.Log(ButtonContainer.name);
             if (!m_ActionPhase)
             {
-                Debug.Log("Affiche pas l'interface");
                 ButtonContainer.SetActive(false);
             }
             else
             {
-                Debug.Log("Affiche l'interface");
-                Debug.Log(ButtonContainer.name);
                 ButtonContainer.SetActive(true);
             }
 
@@ -224,11 +232,25 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 infoText.text = "Faites une action";
             else
                 infoText.text = "Ce n'est pas votre tour";
-     //   }
+        }
         
     }
 
     #region Event + methode
+
+    void SendSeed()
+    {
+        byte evCode = 5; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { Random.seed }; // Array contains the target position and the IDs of the selected units
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.Others;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
     void SendMouvementDone()
     {
         m_canPlay = false;
@@ -364,14 +386,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         switch (eventCode)
         {
-            /*case 2:
-                Debug.LogFormat("client {0} received event {1}", view.Owner.NickName, photonEvent.Code);
+            case 5:
                 object[] data = (object[])photonEvent.CustomData;
-                int val = (int)data[0];
-
-                if ((string)data[1] == "tour")
-                    ChangeTurn();
-                break;*/
+                Random.seed = (int)data[0];
+                break;
 
             case 3:
                 ChangeTurn();

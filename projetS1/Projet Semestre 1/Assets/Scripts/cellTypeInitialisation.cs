@@ -15,9 +15,8 @@ public class cellTypeInitialisation : MonoBehaviour
         allCellSprites = Resources.LoadAll<Sprite>(Chemin);
     }
 
-    public void GetRandomCellType(cellData currentCell)
+    public void GetRandomCellType(CellData currentCell)
     {
-        
         int randomIndex = UnityEngine.Random.Range(0,allCellSprites.Length);
         Sprite randomSpriteFromList = allCellSprites[randomIndex];
         cellType tempType = (cellType)System.Enum.Parse(typeof(cellType), randomSpriteFromList.name);

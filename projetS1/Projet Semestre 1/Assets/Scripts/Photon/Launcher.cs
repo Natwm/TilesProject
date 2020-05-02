@@ -6,16 +6,18 @@ using Photon.Realtime;
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
-
-
     string gameVersion = "1";
     public string nickname = "SOMEONE";
-    [SerializeField]bool isAutoConnect;
+    [SerializeField] bool isAutoConnect;
+    [SerializeField] private int gameSeed = 1;
+
 
     [Space]
     [Header("Room's settings")]
     [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
     [SerializeField] private byte maxPlayersPerRoom = 4;
+
+    public int GameSeed { get => gameSeed; set => gameSeed = value; }
 
     // Start is called before the first frame update
     void Awake()

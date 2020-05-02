@@ -26,11 +26,12 @@ public class TilesBehaviours : MonoBehaviour
         if (IsChest)
         {
             Debug.Log("win");
-            transform.GetChild(0).GetComponent<Renderer>().material.color = Color.yellow;
+            GetComponent<Renderer>().material.color = Color.yellow;
         }
         else
         {
-            transform.GetChild(0).GetComponent<cellData>().ShowTile();
+            Debug.LogWarning("showtile");
+            GetComponent<CellData>().ShowTile();
         }
     }
 }

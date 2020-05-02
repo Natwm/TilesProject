@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 1442801294606490445}
   - component: {fileID: 3958986962097039639}
   - component: {fileID: 2336333290281943500}
-  - component: {fileID: 8885444381289272377}
-  - component: {fileID: 3496914730780920854}
+  - component: {fileID: 7076095587250644962}
+  - component: {fileID: 2207509042608842996}
+  - component: {fileID: 4571164321121663024}
   m_Layer: 0
   m_Name: Token
   m_TagString: Untagged
@@ -79,7 +80,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &8885444381289272377
+--- !u!65 &7076095587250644962
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2373410178516456774}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2207509042608842996
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,34 +109,21 @@ MonoBehaviour:
   assignedSprite: {fileID: 0}
   isTreasure: 0
   gridPos: {x: 0, y: 0, z: 0}
-  objMesh: {fileID: 0}
+  objMesh: {fileID: 2336333290281943500}
   baseCol: {r: 0, g: 0, b: 0, a: 0}
---- !u!61 &3496914730780920854
-BoxCollider2D:
+--- !u!114 &4571164321121663024
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2373410178516456774}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ed5bdf393044f24a8405b382f59d45d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isChest: 0
 --- !u!1 &8689200998252338104
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,8 +133,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7917224745347413123}
-  - component: {fileID: 7835486823877254610}
-  - component: {fileID: 3528443454614113947}
   m_Layer: 0
   m_Name: GridCell
   m_TagString: Untagged
@@ -156,29 +155,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7835486823877254610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8689200998252338104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ed5bdf393044f24a8405b382f59d45d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isChest: 0
---- !u!65 &3528443454614113947
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8689200998252338104}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0.5, y: 0.5, z: 0}
