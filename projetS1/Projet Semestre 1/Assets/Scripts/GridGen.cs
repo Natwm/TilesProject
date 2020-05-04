@@ -13,7 +13,8 @@ public class GridGen : MonoBehaviour
     public cellData[] allCell;
     Vector3 realPos = Vector3.zero;
     public int chestNumber;
-    
+    public GestionCartes cardScript;
+
     [Space]
     [Header("Debug")]
     public cellTypeInitialisation.cellType typeToSearch;
@@ -64,23 +65,28 @@ public class GridGen : MonoBehaviour
         SpawnChest(chestNumber);
     }
 
+    //Va chercher x cases aléatoire pour leur assigner le chest. 
+    //IMPORTANT : Pour l'instant, la logique de génération de cartes peut fonctionner avec plusieurs chests mais j'ai pas encore testé.
     public void SpawnChest(int numberOfChest)
     {
-
+        cardScript.chestTiles = new List<cellData>();
         for (int i = 0; i < numberOfChest; i++)
         {
 
             Vector3Int chestPos = new Vector3Int(Random.Range(2,gridSize.x), Random.Range(2, gridSize.x),0);
-            Debug.Log(chestPos);
+            
             foreach (cellData item in allCell)
             {
                 if (chestPos == item.gridPos)
                 {
                     item.isTreasure = true;
+                    cardScript.chestTiles.Add(item);
                 }
             }
         }
     }
+
+    // Retourne une liste de toute les cases d'un type
     public List<cellData> GetAllCellFromType(cellTypeInitialisation.cellType typeToCheck)
     {
         List<cellData> listOfAllObjects = new List<cellData>();
@@ -94,6 +100,7 @@ public class GridGen : MonoBehaviour
         return listOfAllObjects;
     }
 
+    //Fonction de débug. Passe la couleur de toute les cases d'un type en jaune
     public void HighlightTypeOfCell(cellTypeInitialisation.cellType type)
     {
         ResetTiles();
@@ -105,28 +112,7 @@ public class GridGen : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.R))
-        {
-            SceneManager.LoadScene("Simon");
-        }
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            HighlightTypeOfCell(typeToSearch);
-        }
-        if (Input.GetKeyUp(KeyCode.T))
-        {
-            foreach (cellData item in allCell)
-            {
-                if (item.isTreasure)
-                {
-                    item.objMesh.material.color = new Color(255f, 255f, 0, 0.50f);
-                }
-            }
-        }
-    }
-
+    //Permet de repasser les cases dans leur couleur initiale
     void ResetTiles()
     {
         

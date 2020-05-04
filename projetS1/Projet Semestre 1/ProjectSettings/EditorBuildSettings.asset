@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LauncherScene.unity
     guid: 464d9e77a040fc54bbc4d2e8aa98072c
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/room.unity
     guid: 03356c2ba683be74ca4eaba926c90ea2
+  - enabled: 1
+    path: Assets/Scenes/Simon.unity
+    guid: bd29662736bf0584a99231c00ab01f2d
   m_configObjects: {}

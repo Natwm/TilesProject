@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1442801294606490445}
   - component: {fileID: 3958986962097039639}
   - component: {fileID: 2336333290281943500}
-  - component: {fileID: 8885444381289272377}
   - component: {fileID: 3496914730780920854}
+  - component: {fileID: 4932872310782613755}
   m_Layer: 0
   m_Name: Token
   m_TagString: Untagged
@@ -79,24 +79,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &8885444381289272377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2373410178516456774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 020f20be6a4a6a54f89de04b770e42e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cellType: 0
-  assignedSprite: {fileID: 0}
-  isTreasure: 0
-  gridPos: {x: 0, y: 0, z: 0}
-  objMesh: {fileID: 0}
-  baseCol: {r: 0, g: 0, b: 0, a: 0}
 --- !u!61 &3496914730780920854
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -123,6 +105,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &4932872310782613755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2373410178516456774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 020f20be6a4a6a54f89de04b770e42e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellType: 0
+  assignedSprite: {fileID: 0}
+  isTreasure: 0
+  gridPos: {x: 0, y: 0, z: 0}
+  objMesh: {fileID: 0}
+  baseCol: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8689200998252338104
 GameObject:
   m_ObjectHideFlags: 0

@@ -405,6 +405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1953003073}
   - component: {fileID: 1953003072}
+  - component: {fileID: 1953003074}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -426,8 +427,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 6143988518016405950, guid: 3da65b17862f125468a71c013516db7f,
     type: 3}
-  canvasPrefab: {fileID: 2799050051615494708, guid: 3141d18610819d9488935bc3d16fb61f,
-    type: 3}
 --- !u!4 &1953003073
 Transform:
   m_ObjectHideFlags: 0
@@ -442,6 +441,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1953003074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953003071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85025ee1da4466849aebf1925c813e75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MasterSeed: 0
+  commonSeed: 0
+  isMaster: 0
+  playerView: {fileID: 0}
 --- !u!1 &1991319978
 GameObject:
   m_ObjectHideFlags: 0
