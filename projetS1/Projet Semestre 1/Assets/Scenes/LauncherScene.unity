@@ -1167,13 +1167,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 988390083}
-    characterCount: 13
+    characterCount: 0
     spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
+    spaceCount: 0
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -1260,7 +1260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomInfos: {fileID: 318366332}
   nicknameField: {fileID: 111550476}
-  seedField: {fileID: 927733265}
+  seedField: {fileID: 2001294469}
   connectButton: {fileID: 856753486}
 --- !u!1 &1094168977
 GameObject:

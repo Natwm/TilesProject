@@ -30,8 +30,12 @@ public class TilesBehaviours : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("showtile");
             GetComponent<CellData>().ShowTile();
         }
+    }
+
+    public void EraseTiles()
+    {
+        GetComponent<CellData>().HideTile();
     }
 }

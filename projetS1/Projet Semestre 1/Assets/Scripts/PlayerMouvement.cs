@@ -11,18 +11,25 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 {
     #region Param
     [Header("Debug")]
+    [Tooltip("Affiche les différents raycast dans l'inspector")]
     public bool drawDebug;
     public bool isOffline;
     public Vector3 offset;
-    private Grid grid;
-    List<TilesBehaviours> m_Neighbours = new List<TilesBehaviours>();
+    
+    
 
     [Space]
     [Header("Player's Settings")]
+    [Tooltip("Correspond a l'arc de cercle autours du joueur")]
     [SerializeField] private float FOV;
-    [SerializeField] private bool id;
     PhotonView view;
+    private Grid grid;
+    List<GameObject> m_Neighbours = new List<GameObject>();
+
+    [Tooltip("Indique si le joueur peut jouer")]
     public bool m_canPlay = true;
+
+    [Tooltip("Indique si le joueur peut effectuer une action")]
     public bool m_ActionPhase = false;
 
     [Space]
@@ -41,7 +48,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     // Start is called before the first frame update
     void Start()
     {
-        SendSeed();
+        //SendSeed();
         view = GetComponent<PhotonView>();
 
         //id = view.OwnerActorNr;
@@ -67,22 +74,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     }
     #endregion
 
-    void SetUI()
-    {
-        m_Canvas = GameObject.Find("ActionCanvas");
-
-        Transform ButtonContainer = m_Canvas.transform.GetChild(0).gameObject.transform;
-        Button canvaButtonCheckNear = ButtonContainer.GetChild(0).GetComponent<Button>();
-        canvaButtonCheckNear.onClick.AddListener(this.CheckIsNearChest);
-
-        Button canvaButtonCheckChest = ButtonContainer.GetChild(1).GetComponent<Button>();
-        canvaButtonCheckChest.onClick.AddListener(this.CheckIsChest);
-
-        Button canvaButtonCheckPass = ButtonContainer.GetChild(2).GetComponent<Button>();
-        canvaButtonCheckPass.onClick.AddListener(this.PassTurn);
-
-        infoText = m_Canvas.transform.GetChild(1).gameObject.GetComponent<TMP_Text>();
-    }
+    
 
     #region LateUpdate || Update || FixedUpdate
     // Update is called once per frame
@@ -204,37 +196,14 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         {
             if (item.gameObject.GetComponent<TilesBehaviours>() != null)
             {
-                m_Neighbours.Add(item.gameObject.GetComponent<TilesBehaviours>());
+                m_Neighbours.Add(item.gameObject);
                 //Erreur est ici
                 item.gameObject.GetComponent<TilesBehaviours>().callColor();
             }
         }
     }
 
-    void UpdateInterface()
-    {
-        if (GetComponent<PhotonView>().IsMine)
-        {
-            GameObject ButtonContainer = m_Canvas.transform.GetChild(0).gameObject;
-            //Debug.Log(ButtonContainer.name);
-            if (!m_ActionPhase)
-            {
-                ButtonContainer.SetActive(false);
-            }
-            else
-            {
-                ButtonContainer.SetActive(true);
-            }
-
-            if (m_canPlay)
-                infoText.text = "C'est votre tours !";
-            else if (!m_canPlay && m_ActionPhase)
-                infoText.text = "Faites une action";
-            else
-                infoText.text = "Ce n'est pas votre tour";
-        }
-        
-    }
+    
 
     #region Event + methode
 
@@ -275,9 +244,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_canPlay = false;
 
         UpdateInterface();
-
         byte evCode = 3; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] { true }; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] { transform.GetChild(0).position, FOV , "Je sais pas encore" }; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
@@ -304,9 +272,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         
         bool result = false;
         Debug.Log(m_Neighbours.Count);
-        foreach (TilesBehaviours item in m_Neighbours)
+        foreach (GameObject item in m_Neighbours)
         {
-            if (item.IsChest)
+            if (item.GetComponent<TilesBehaviours>().IsChest)
             {
                 //call l'affichage d'un message 
                 result = true;
@@ -317,8 +285,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         Debug.Log("result" + result);
         StartCoroutine(ShowInformation(result, false));
-
-        SendActionDone();
+        if (view.IsMine)
+        {
+            SendActionDone();
+        }
+        
         //message affichage
     }
 
@@ -336,14 +307,20 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Debug.Log(hit.collider.gameObject.name);
     
         StartCoroutine(ShowInformation(result, true));
-        SendActionDone();
+        if (view.IsMine)
+        {
+            SendActionDone();
+        }
     }
 
     public void PassTurn()
     {
         
         Debug.Log("Je passe");
-        SendActionDone(); 
+        if (view.IsMine)
+        {
+            SendActionDone();
+        }
     }
     #endregion
 
@@ -375,10 +352,69 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         yield return new WaitForSeconds(tempsAffichagemessage);
         infoText.text = "";
     }
+
+    void SetUI()
+    {
+        m_Canvas = GameObject.Find("ActionCanvas");
+
+        Transform ButtonContainer = m_Canvas.transform.GetChild(0).gameObject.transform;
+        Button canvaButtonCheckNear = ButtonContainer.GetChild(0).GetComponent<Button>();
+        canvaButtonCheckNear.onClick.AddListener(this.CheckIsNearChest);
+
+        Button canvaButtonCheckChest = ButtonContainer.GetChild(1).GetComponent<Button>();
+        canvaButtonCheckChest.onClick.AddListener(this.CheckIsChest);
+
+        Button canvaButtonCheckPass = ButtonContainer.GetChild(2).GetComponent<Button>();
+        canvaButtonCheckPass.onClick.AddListener(this.PassTurn);
+
+        infoText = m_Canvas.transform.GetChild(1).gameObject.GetComponent<TMP_Text>();
+    }
+
+    void UpdateInterface()
+    {
+        if (GetComponent<PhotonView>().IsMine)
+        {
+            GameObject ButtonContainer = m_Canvas.transform.GetChild(0).gameObject;
+            //Debug.Log(ButtonContainer.name);
+            if (!m_ActionPhase)
+            {
+                ButtonContainer.SetActive(false);
+            }
+            else
+            {
+                ButtonContainer.SetActive(true);
+            }
+
+            if (m_canPlay)
+                infoText.text = "C'est votre tours !";
+            else if (!m_canPlay && m_ActionPhase)
+                infoText.text = "Faites une action";
+            else
+                infoText.text = "Ce n'est pas votre tour";
+        }
+
+    }
+
+    void UpdateBoard(Vector3 position, float radius, string tag)
+    {
+        Debug.LogWarning("Modification du plateau ");
+        Debug.Log("Le radius " +radius);
+        Debug.Log("la position " + position);
+        Collider[] effacer = Physics.OverlapSphere(position, radius);
+
+        foreach  (Collider item in effacer)
+        {
+            if(item.gameObject.GetComponent<TilesBehaviours>() != null)
+            {
+                Debug.Log(item.gameObject);
+                item.gameObject.GetComponent<TilesBehaviours>().EraseTiles();
+            }
+        }
+    }
+
     #endregion
 
     #region Interface
-
 
     public void OnEvent(EventData photonEvent)
     {
@@ -386,13 +422,14 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         switch (eventCode)
         {
-            case 5:
-                object[] data = (object[])photonEvent.CustomData;
-                Random.seed = (int)data[0];
-                break;
-
             case 3:
                 ChangeTurn();
+                object[] data = (object[])photonEvent.CustomData;
+                Vector3 pos = (Vector3)data[0];
+                float radius = (float)data[1];
+                string tag = (string)data[2];
+                Debug.LogWarning(pos);
+                UpdateBoard(pos, radius, tag);
                 break;
 
 

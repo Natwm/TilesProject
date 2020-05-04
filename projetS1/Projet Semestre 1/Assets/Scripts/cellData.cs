@@ -34,9 +34,16 @@ public class CellData : MonoBehaviour
 
     public bool ShowTile()
     {
-        //Debug.Log(objMesh.name);
         objMesh.material.color = Color.white;
-        /* objMesh.material.SetTexture("_MainTex", assignedSprite.texture);*/
+        return true;
+    }
+
+    public bool HideTile()
+    {
+        if(objMesh.material.color == Color.white)
+        {
+            objMesh.material.color = Color.black;
+        }
         return true;
     }
 }

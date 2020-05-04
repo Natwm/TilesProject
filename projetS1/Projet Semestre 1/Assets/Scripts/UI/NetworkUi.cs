@@ -10,7 +10,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 {
     public TMP_Text roomInfos;
     public TMP_InputField nicknameField;
-    public GameObject seedField;
+    public TMP_InputField seedField;
     public Button connectButton;
 
     Launcher networkManager;
@@ -65,7 +65,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public void OnConnectButton()
     {
-        networkManager.SetPlayerName(nicknameField.text);
+        OnNicknameUpdated(nicknameField.text);
+        OnSeedUpdate(seedField.text);
         networkManager.Connect();
     }
 
@@ -74,6 +75,6 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         // hide connect button and input field
         connectButton.gameObject.SetActive(false);
         nicknameField.transform.parent.gameObject.SetActive(false);
-        seedField.SetActive(false);
+        seedField.transform.parent.gameObject.SetActive(false);
     }
 }
