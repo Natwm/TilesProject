@@ -20,8 +20,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     [Space]
     [Header("Player's Settings")]
+
+    [Tooltip("-1 means uninitialized")]
+    public int PlayerID = -1;
+
     [Tooltip("Correspond a l'arc de cercle autours du joueur")]
     [SerializeField] private float FOV;
+
     PhotonView view;
     private Grid grid;
     List<GameObject> m_Neighbours = new List<GameObject>();
@@ -51,17 +56,22 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         //SendSeed();
         view = GetComponent<PhotonView>();
 
+        if (view.IsMine)
+        {
+            NetworkPlayer.LocalPlayerInstance = this.gameObject;
+        }
+
         //id = view.OwnerActorNr;
         //Debug.LogFormat("initializing player {0} | with id {1} - Is local player ? {2}   - is master  ? {3}", view.Owner.NickName, 0, view.IsMine, view.Owner.NickName == PhotonNetwork.MasterClient.NickName);
         //Debug.LogWarning(" owner " + view.Owner);
         //Debug.LogWarning("OwnerActorNr " + view.OwnerActorNr);
         gameObject.name += "_" + view.Owner.NickName;
         gameObject.transform.parent = FindObjectOfType<Grid>().gameObject.transform;
-       // Debug.Log("this.transform.parent.name : " + this.transform.parent.name + " || FindObjectOfType<Grid>().gameObject.transform : " + gameObject.transform.parent.GetComponent<Grid>());
-
-        if (view.Owner.NickName == PhotonNetwork.MasterClient.NickName)
+        // Debug.Log("this.transform.parent.name : " + this.transform.parent.name + " || FindObjectOfType<Grid>().gameObject.transform : " + gameObject.transform.parent.GetComponent<Grid>());
+        if (PhotonNetwork.IsMasterClient)
         {
             m_canPlay = true;
+            SendPlayerID(view.Owner.NickName, PhotonNetwork.CurrentRoom.PlayerCount - 1);
         }
         else
             m_canPlay = false;
@@ -203,7 +213,20 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
     }
 
-    
+    void SetId(string PlayerName, int playerID)
+    {
+        // get all player instances and set the correct ID
+        PlayerMouvement[] players = FindObjectsOfType<PlayerMouvement>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            Player owner = players[i].gameObject.GetComponent<PhotonView>().Owner;
+            if (owner.NickName == PlayerName)
+            {
+                players[i].PlayerID = playerID;
+                break;
+            }
+        }
+    }
 
     #region Event + methode
 
@@ -255,6 +278,19 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
+    void SendPlayerID(string PlayerName, int ID)
+    {
+        Debug.LogFormat("master client sending event to players : {0} will be player {1}", PlayerName, ID);
+        byte evCode = 1; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { PlayerName, ID }; // Array contains the target position and the IDs of the selected units
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.All;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
 
     void ChangeTurn()
     {
@@ -419,12 +455,20 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     public void OnEvent(EventData photonEvent)
     {
         byte eventCode = photonEvent.Code;
-
+        object[] data;
         switch (eventCode)
         {
+            case 1:
+                //Debug.LogFormat("client {0} received event {1}", view.Owner.NickName, photonEvent.Code);
+                data= (object[])photonEvent.CustomData;
+                string playerName = (string)data[0];
+                int playerID = (int)data[1];
+                SetId(playerName, playerID);
+                break;
+
             case 3:
                 ChangeTurn();
-                object[] data = (object[])photonEvent.CustomData;
+                data= (object[])photonEvent.CustomData;
                 Vector3 pos = (Vector3)data[0];
                 float radius = (float)data[1];
                 string tag = (string)data[2];

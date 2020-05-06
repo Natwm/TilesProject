@@ -140,6 +140,7 @@ MonoBehaviour:
   drawDebug: 0
   isOffline: 0
   offset: {x: 0.5, y: 0.5, z: 0}
+  PlayerID: -1
   FOV: 1.2
   m_canPlay: 1
   m_ActionPhase: 0
