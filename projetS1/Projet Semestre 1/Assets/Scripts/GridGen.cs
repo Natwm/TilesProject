@@ -57,7 +57,7 @@ public class GridGen : MonoBehaviour
                 objToSpawn.name = gridPos.ToString();
                 Vector3Int tempPos = new Vector3Int(gridPos.x, gridPos.y,0);
                 CellData tempCellData = objToSpawn.transform.GetChild(0).gameObject.GetComponent<CellData>();
-    
+                tempCellData.gridPos = tempPos;
                 allCell[incrémentIndex] = tempCellData;
                 //Incrément des variables X
                 gridPos.x++;
@@ -81,7 +81,6 @@ public class GridGen : MonoBehaviour
         {
 
             Vector3Int chestPos = new Vector3Int(Random.Range(2,gridSize.x), Random.Range(2, gridSize.x),0);
-            //Debug.Log(chestPos);
             foreach (CellData item in allCell)
             {
                 if (chestPos == item.gridPos)
@@ -129,6 +128,7 @@ public class GridGen : MonoBehaviour
         {
             foreach (CellData item in allCell)
             {
+                Debug.Log(item.isTreasure);
                 if (item.isTreasure)
                 {
                     item.objMesh.material.color = new Color(255f, 255f, 0, 0.50f);

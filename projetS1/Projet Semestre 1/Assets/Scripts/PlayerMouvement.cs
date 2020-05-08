@@ -61,13 +61,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             NetworkPlayer.LocalPlayerInstance = this.gameObject;
         }
 
-        //id = view.OwnerActorNr;
-        //Debug.LogFormat("initializing player {0} | with id {1} - Is local player ? {2}   - is master  ? {3}", view.Owner.NickName, 0, view.IsMine, view.Owner.NickName == PhotonNetwork.MasterClient.NickName);
-        //Debug.LogWarning(" owner " + view.Owner);
-        //Debug.LogWarning("OwnerActorNr " + view.OwnerActorNr);
+        
         gameObject.name += "_" + view.Owner.NickName;
         gameObject.transform.parent = FindObjectOfType<Grid>().gameObject.transform;
-        // Debug.Log("this.transform.parent.name : " + this.transform.parent.name + " || FindObjectOfType<Grid>().gameObject.transform : " + gameObject.transform.parent.GetComponent<Grid>());
+
         if (PhotonNetwork.IsMasterClient)
         {
             m_canPlay = true;

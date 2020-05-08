@@ -50,7 +50,7 @@ MonoBehaviour:
   gridObject: {fileID: 8689200998252338104, guid: efd220f2d1a9616479072e1944311479,
     type: 3}
   allCell: []
-  chestNumber: 1
+  chestNumber: 2
   m_seed: 0
   view: {fileID: 0}
   typeToSearch: 0
