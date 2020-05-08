@@ -50,9 +50,12 @@ MonoBehaviour:
   gridObject: {fileID: 8689200998252338104, guid: efd220f2d1a9616479072e1944311479,
     type: 3}
   allCell: []
-  chestNumber: 2
+  chestNumber: 1
   m_seed: 0
   view: {fileID: 0}
+  cardScript: {fileID: 0}
+  originCorner: {x: 0, y: 0, z: 0}
+  farCorner: {x: 0, y: 0, z: 0}
   typeToSearch: 0
 --- !u!114 &114962413500653292
 MonoBehaviour:
