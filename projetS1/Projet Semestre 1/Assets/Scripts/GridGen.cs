@@ -14,6 +14,9 @@ public class GridGen : MonoBehaviour
     Vector3 realPos = Vector3.zero;
     public int chestNumber;
     public GestionCartes cardScript;
+    public Vector3 originCorner;
+    public Vector3 farCorner;
+    
 
     [Space]
     [Header("Debug")]
@@ -38,11 +41,23 @@ public class GridGen : MonoBehaviour
         float shiftSize = gridObjectCollider2D.size.x;
         int incrémentIndex = 0;
         //incrément Y
+        
+        
         for (int i = 0; i < gridSize.y; i++)
         {
             //incrément X
             for (int n = 0; n < gridSize.x; n++)
             {
+                if (i == 0 && n == 0)
+                {
+                    originCorner = realPos;
+                    originCorner.x -= shiftSize;
+                    originCorner.y -= shiftSize;
+                }
+                if (i == gridSize.y -1 && n == gridSize.x -1)
+                {
+                    farCorner = realPos;
+                }
                 objToSpawn = GameObject.Instantiate(gridObject,realPos,new Quaternion (0f,0f,180f,0f));
                 objToSpawn.transform.parent = gameObject.transform;
                 objToSpawn.name = gridPos.ToString();
