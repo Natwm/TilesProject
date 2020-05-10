@@ -119,6 +119,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3453831354389151346, guid: 8bcb657fa75a74f4bbce8375b63c2922,
+        type: 3}
+      propertyPath: m_Name
+      value: GridHolder
+      objectReference: {fileID: 0}
     - target: {fileID: 3453831354389151344, guid: 8bcb657fa75a74f4bbce8375b63c2922,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -174,10 +179,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3453831354389151346, guid: 8bcb657fa75a74f4bbce8375b63c2922,
+    - target: {fileID: 114962413500653292, guid: 8bcb657fa75a74f4bbce8375b63c2922,
         type: 3}
-      propertyPath: m_Name
-      value: GridHolder
+      propertyPath: Chemin
+      value: sprite/types
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896257827351156403, guid: 8bcb657fa75a74f4bbce8375b63c2922,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bcb657fa75a74f4bbce8375b63c2922, type: 3}

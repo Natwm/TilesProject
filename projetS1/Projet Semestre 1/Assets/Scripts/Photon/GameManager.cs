@@ -12,18 +12,17 @@ public class GameManager : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject gridPrefab;
 
-    private bool isSent;
+    private NetworkUi canvas;
 
-    PhotonView view;
-
-    private void Awake()
-    {
-    }
+    bool cardIsCreate;
 
     void Start()
     {
         GameObject board = Instantiate(gridPrefab, new Vector2(1,1), Quaternion.identity);
         board.transform.parent = GameObject.Find("Grid").transform;
+
+        if(canvas == null)
+            canvas = GameObject.Find("Launcher").GetComponent<NetworkUi>();
 
         if (NetworkPlayer.LocalPlayerInstance == null)
         {
@@ -31,7 +30,15 @@ public class GameManager : MonoBehaviour
             Vector3 pos = new Vector3(0, 0, -1);
             GameObject playerGO = PhotonNetwork.Instantiate(playerPrefab.name, pos, Quaternion.identity);
             NetworkPlayer.LocalPlayerInstance = playerGO;
+        }
+    }
 
+    private void Update()
+    {
+        GridGen board = GameObject.Find("GridHolder(Clone)").GetComponent<GridGen>();
+        if (board != null && canvas.textInfos.isActiveAndEnabled && !cardIsCreate)
+        {
+            cardIsCreate = board.gameObject.GetComponent<GestionCartes>().GenerateCards();
         }
     }
 

@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 3453831354389151344}
   - component: {fileID: 3453831354389151347}
   - component: {fileID: 114962413500653292}
-  - component: {fileID: 114431021316082352}
-  - component: {fileID: 114475271439259890}
+  - component: {fileID: 1896257827351156403}
   m_Layer: 0
   m_Name: GridHolder
   m_TagString: Untagged
@@ -43,7 +42,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3453831354389151346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66c07975b4fb754cb2ceb2b4dbf363c, type: 3}
+  m_Script: {fileID: 11500000, guid: f1ccc852261054c4f8bb0c36d8f78d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: {x: 10, y: 10}
@@ -52,8 +51,6 @@ MonoBehaviour:
   allCell: []
   chestNumber: 1
   m_seed: 0
-  view: {fileID: 0}
-  cardScript: {fileID: 0}
   originCorner: {x: 0, y: 0, z: 0}
   farCorner: {x: 0, y: 0, z: 0}
   typeToSearch: 0
@@ -71,7 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Chemin: Sprites
   debug: 1
---- !u!114 &114431021316082352
+--- !u!114 &1896257827351156403
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -80,31 +77,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3453831354389151346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Script: {fileID: 11500000, guid: 54f85d8d06fa32b4198df96499e6488d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  ObservedComponents:
-  - {fileID: 114475271439259890}
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &114475271439259890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3453831354389151346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
+  chestTiles: []
+  allCards: []
+  nearChest: []
+  chest: {fileID: 0}
+  allCardsDisplay: []

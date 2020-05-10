@@ -32,7 +32,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     List<GameObject> m_Neighbours = new List<GameObject>();
 
     [Tooltip("Indique si le joueur peut jouer")]
-    public bool m_canPlay = true;
+    public bool m_canPlay = false;
 
     [Tooltip("Indique si le joueur peut effectuer une action")]
     public bool m_ActionPhase = false;
@@ -40,7 +40,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Space]
     [Header("Canvas")]
     private TMP_Text infoText;
-    public GameObject m_Canvas;
+    private NetworkUi m_Canvas;
     public float tempsAffichagemessage = 2f;
 
     
@@ -53,8 +53,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     // Start is called before the first frame update
     void Start()
     {
-        //SendSeed();
         view = GetComponent<PhotonView>();
+        m_Canvas = GameObject.Find("Launcher").GetComponent<NetworkUi>();
 
         if (view.IsMine)
         {
@@ -67,17 +67,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         if (PhotonNetwork.IsMasterClient)
         {
-            m_canPlay = true;
             SendPlayerID(view.Owner.NickName, PhotonNetwork.CurrentRoom.PlayerCount - 1);
         }
-        else
-            m_canPlay = false;
+
 
         grid = transform.parent.GetComponent<Grid>();
-        
-        SetUI();
-        UpdateInterface();
-
+        Debug.Log(m_Canvas);
+        m_Canvas.SetGameUI(this,PhotonNetwork.IsMasterClient);
     }
     #endregion
 
@@ -196,6 +192,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     #endregion
 
+    #region METHODE
     void UseFov()
     {
         m_Neighbours.Clear();
@@ -210,22 +207,31 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
     }
 
-    void SetId(string PlayerName, int playerID)
+
+    void ChangeTurn()
     {
-        // get all player instances and set the correct ID
-        PlayerMouvement[] players = FindObjectsOfType<PlayerMouvement>();
-        for (int i = 0; i < players.Length; i++)
-        {
-            Player owner = players[i].gameObject.GetComponent<PhotonView>().Owner;
-            if (owner.NickName == PlayerName)
-            {
-                players[i].PlayerID = playerID;
-                break;
-            }
-        }
+        m_canPlay = true;
+        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay);
     }
 
-    #region Event + methode
+    void LaunchGame()
+    {
+        m_Canvas.StartGameUI();
+        if(m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay))
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                m_canPlay = true;
+                m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay);
+                Debug.Log(m_canPlay);
+            }
+        } 
+        
+    }
+
+    #endregion
+
+    #region Event 
 
     void SendSeed()
     {
@@ -245,7 +251,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_canPlay = false;
         m_ActionPhase = true;
 
-        UpdateInterface();
+        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay);
 
         byte evCode = 2; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { 1, "tour" }; // Array contains the target position and the IDs of the selected units
@@ -263,7 +269,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_ActionPhase = false;
         m_canPlay = false;
 
-        UpdateInterface();
+        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay);
         byte evCode = 3; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { transform.GetChild(0).position, FOV , "Je sais pas encore" }; // Array contains the target position and the IDs of the selected units
 
@@ -289,20 +295,26 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
-    void ChangeTurn()
+    public void SendStart()
     {
-        /*if(m_ActionPhase)
-            m_ActionPhase = !m_ActionPhase;*/
+        Debug.Log("master client sending that the game Start");
+        byte evCode = 2; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] {}; // Array contains the target position and the IDs of the selected units
 
-        m_canPlay = true;
-        UpdateInterface();
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.All;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
+
+
     #endregion
 
     #region Button
     public void CheckIsNearChest()
     {
-        
         bool result = false;
         Debug.Log(m_Neighbours.Count);
         foreach (GameObject item in m_Neighbours)
@@ -317,7 +329,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
 
         Debug.Log("result" + result);
-        StartCoroutine(ShowInformation(result, false));
+        StartCoroutine(m_Canvas.ShowInformation(result, false));
+
         if (view.IsMine)
         {
             SendActionDone();
@@ -328,7 +341,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     public void CheckIsChest()
     {
-        
         RaycastHit hit;
         Physics.Raycast(transform.position + offset, Vector3.forward * 2, out hit, Mathf.Infinity);
 
@@ -339,7 +351,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         bool result = hit.collider.gameObject.GetComponent<TilesBehaviours>().IsChest;
         Debug.Log(hit.collider.gameObject.name);
     
-        StartCoroutine(ShowInformation(result, true));
+        StartCoroutine(m_Canvas.ShowInformation(result, true));
+
         if (view.IsMine)
         {
             SendActionDone();
@@ -355,78 +368,19 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             SendActionDone();
         }
     }
+
+    public void GameStart()
+    {
+        Debug.Log("Start Game");
+
+        if (view.IsMine)
+        {
+            SendStart();
+        }
+    }
     #endregion
 
     #region Affichage
-    IEnumerator ShowInformation(bool isfind, bool isForChest)
-    {
-        Debug.LogWarning("message " + isfind + " second " + isForChest);
-        if (isfind && isForChest)
-        {
-            Debug.Log("Vous avez trouvé(e) le trésor");
-            infoText.text = "Vous avez trouvé(e) le trésor";
-        }
-        else if (!isfind && isForChest)
-        {
-            Debug.Log("Vous n'avez pas trouvé(e) le trésor");
-            infoText.text = "Vous n'avez pas trouvé(e) le trésor";
-        }
-        else if (isfind && !isForChest)
-        {
-            Debug.Log("Le trésor est autour de vous !");
-            infoText.text = "Le trésor est autour de vous !";
-        }
-        else
-        {
-            Debug.Log("Le trésor n'est pas autour de vous !");
-            infoText.text = "Le trésor n'est pas autour de vous !";
-        }
-
-        yield return new WaitForSeconds(tempsAffichagemessage);
-        infoText.text = "";
-    }
-
-    void SetUI()
-    {
-        m_Canvas = GameObject.Find("ActionCanvas");
-
-        Transform ButtonContainer = m_Canvas.transform.GetChild(0).gameObject.transform;
-        Button canvaButtonCheckNear = ButtonContainer.GetChild(0).GetComponent<Button>();
-        canvaButtonCheckNear.onClick.AddListener(this.CheckIsNearChest);
-
-        Button canvaButtonCheckChest = ButtonContainer.GetChild(1).GetComponent<Button>();
-        canvaButtonCheckChest.onClick.AddListener(this.CheckIsChest);
-
-        Button canvaButtonCheckPass = ButtonContainer.GetChild(2).GetComponent<Button>();
-        canvaButtonCheckPass.onClick.AddListener(this.PassTurn);
-
-        infoText = m_Canvas.transform.GetChild(1).gameObject.GetComponent<TMP_Text>();
-    }
-
-    void UpdateInterface()
-    {
-        if (GetComponent<PhotonView>().IsMine)
-        {
-            GameObject ButtonContainer = m_Canvas.transform.GetChild(0).gameObject;
-            //Debug.Log(ButtonContainer.name);
-            if (!m_ActionPhase)
-            {
-                ButtonContainer.SetActive(false);
-            }
-            else
-            {
-                ButtonContainer.SetActive(true);
-            }
-
-            if (m_canPlay)
-                infoText.text = "C'est votre tours !";
-            else if (!m_canPlay && m_ActionPhase)
-                infoText.text = "Faites une action";
-            else
-                infoText.text = "Ce n'est pas votre tour";
-        }
-
-    }
 
     void UpdateBoard(Vector3 position, float radius, string tag)
     {
@@ -463,6 +417,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 SetId(playerName, playerID);
                 break;
 
+            case 2:
+                data = (object[])photonEvent.CustomData;
+                LaunchGame();
+                break;
+
             case 3:
                 ChangeTurn();
                 data= (object[])photonEvent.CustomData;
@@ -495,7 +454,23 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     #region GETTER && SETTER
     public TMP_Text InfoText { get => infoText; set => infoText = value; }
-    public GameObject Canva { get => m_Canvas; set => m_Canvas = value; }
+    public NetworkUi Canva { get => m_Canvas; set => m_Canvas = value; }
+
+
+    void SetId(string PlayerName, int playerID)
+    {
+        // get all player instances and set the correct ID
+        PlayerMouvement[] players = FindObjectsOfType<PlayerMouvement>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            Player owner = players[i].gameObject.GetComponent<PhotonView>().Owner;
+            if (owner.NickName == PlayerName)
+            {
+                players[i].PlayerID = playerID;
+                break;
+            }
+        }
+    }
     #endregion
 
     #region GIZMO 
