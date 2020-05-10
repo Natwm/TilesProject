@@ -6,6 +6,7 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
+using System.Collections.Generic;
 
 public class NetworkUi : MonoBehaviourPunCallbacks
 {
@@ -13,6 +14,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     [SerializeField]float m_TempsAffichageMessage = 3f;
 
     [Header("Launch Canvas")]
+    public GameObject startPanel;
     public TMP_Text roomInfos;
     public TMP_InputField nicknameField;
     public TMP_InputField seedField;
@@ -20,15 +22,19 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     [Space]
     [Header("Waiting Canvas")]
+    public GameObject waitingPanel;
     public Button LaunchButton;
     public Image BlackSceen;
 
     [Space]
     [Header("Game Canvas")]
+    public GameObject gamePanel;
     public TMP_Text textInfos;
+    public TMP_Text handInfos;
     public Button nearButton;
     public Button chestButton;
     public Button passButton;
+    public GameObject cardHolder;
 
     Launcher networkManager;
     // Start is called before the first frame update
@@ -54,24 +60,14 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     {
         Initializedbutton(player);
         LaunchButton.gameObject.SetActive(isMaster);
-        BlackSceen.gameObject.SetActive(true);
+        //BlackSceen.gameObject.SetActive(true);
+        waitingPanel.SetActive(true);
     }
 
     public void StartGameUI()
     {
-        roomInfos.gameObject.SetActive(false);
-
-        LaunchButton.gameObject.SetActive(false);
-        BlackSceen.gameObject.SetActive(false);
-
-        textInfos.gameObject.SetActive(true);
-
-        nearButton.gameObject.SetActive(true);
-        
-        chestButton.gameObject.SetActive(true);
-
-        passButton.gameObject.SetActive(true);
-        
+        waitingPanel.SetActive(false);
+        gamePanel.SetActive(true);
     }
 
     void Initializedbutton (PlayerMouvement player) {
@@ -84,8 +80,14 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         passButton.onClick.AddListener(player.PassTurn);
     }
 
-    public bool UpdateInterface(bool actionPhase, bool canPlay)
+    public bool UpdateInterface(bool actionPhase, bool canPlay, List<Carte> hand)
     {
+        foreach (Carte item in hand)
+        {
+            handInfos.text += "\n";
+            handInfos.text += item.cardType;
+        }
+
         if (!actionPhase)
         {
             nearButton.gameObject.SetActive(false);
@@ -177,13 +179,9 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public override void OnConnected()
     {
         // hide connect button and input field
-        connectButton.gameObject.SetActive(false);
+       /* connectButton.gameObject.SetActive(false);
         nicknameField.transform.parent.gameObject.SetActive(false);
-        seedField.transform.parent.gameObject.SetActive(false);
-
-        /* textInfos.gameObject.SetActive(true);
-         nearButton.gameObject.SetActive(true);
-         chestButton.gameObject.SetActive(true);
-         passButton.gameObject.SetActive(true);*/
+        seedField.transform.parent.gameObject.SetActive(false);*/
+        startPanel.SetActive(false);
     }
 }

@@ -59,7 +59,6 @@ public class GridGen : MonoBehaviour
             //incrément X
             for (int n = 0; n < gridSize.x; n++)
             {
-                //objToSpawn = Instantiate(gridObject, realPos,new Quaternion (0f,0f,180f,0f));
 
                 if (i == 0 && n == 0)
                 {
@@ -71,7 +70,7 @@ public class GridGen : MonoBehaviour
                 {
                     farCorner = realPos;
                 }
-                objToSpawn = GameObject.Instantiate(gridObject, realPos, new Quaternion(0f, 0f, 180f, 0f));
+                objToSpawn = GameObject.Instantiate(gridObject, realPos, new Quaternion(0f, 0f, 0f, 0f));
                 objToSpawn.transform.parent = gameObject.transform;
                 objToSpawn.name = gridPos.ToString();
                 Vector3Int tempPos = new Vector3Int(gridPos.x, gridPos.y, 0);

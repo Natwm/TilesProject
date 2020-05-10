@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
 
     private NetworkUi canvas;
 
+    [SerializeField] int nbCardToDraw = 2;
+
     bool cardIsCreate;
 
     void Start()
@@ -39,6 +41,23 @@ public class GameManager : MonoBehaviour
         if (board != null && canvas.textInfos.isActiveAndEnabled && !cardIsCreate)
         {
             cardIsCreate = board.gameObject.GetComponent<GestionCartes>().GenerateCards();
+            DrawCard(board.gameObject.GetComponent<GestionCartes>().allCards);
+        }
+    }
+
+    private void DrawCard(List<Carte> deck)
+    {
+        PlayerMouvement[] players = FindObjectsOfType<PlayerMouvement>();
+        for (int x = 0; x < players.Length; x++)
+        {
+            for (int y = 0; y < nbCardToDraw; y++)
+            {
+                int idCardTodraw = Random.Range(0, deck.Count);
+                Carte my1 = deck[idCardTodraw];
+                deck.RemoveAt(idCardTodraw);
+                players[x].hand.Add(my1);
+                Debug.Log(idCardTodraw + " " + players[x].name);
+            }
         }
     }
 

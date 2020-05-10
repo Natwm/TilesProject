@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7076095587250644962}
   - component: {fileID: 2207509042608842996}
   - component: {fileID: 4571164321121663024}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Token
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,6 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0, z: 0}
   objMesh: {fileID: 2336333290281943500}
   baseCol: {r: 0, g: 0, b: 0, a: 0}
-  Chemin: Sprites
 --- !u!114 &4571164321121663024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,7 +133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7917224745347413123}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GridCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}

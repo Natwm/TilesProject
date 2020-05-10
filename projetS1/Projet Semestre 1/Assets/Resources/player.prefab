@@ -142,8 +142,12 @@ MonoBehaviour:
   offset: {x: 0.5, y: 0.5, z: 0}
   PlayerID: -1
   FOV: 1.2
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   m_canPlay: 0
   m_ActionPhase: 0
+  hand: []
   tempsAffichagemessage: 2
 --- !u!114 &114634195798170214
 MonoBehaviour:

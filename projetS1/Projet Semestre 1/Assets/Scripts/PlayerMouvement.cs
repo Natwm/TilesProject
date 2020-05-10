@@ -15,8 +15,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     public bool drawDebug;
     public bool isOffline;
     public Vector3 offset;
-    
-    
+
+
 
     [Space]
     [Header("Player's Settings")]
@@ -26,6 +26,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     [Tooltip("Correspond a l'arc de cercle autours du joueur")]
     [SerializeField] private float FOV;
+
+    [Tooltip("Où le joueur peut ce déplacer")]
+    [SerializeField] private LayerMask targetLayer;
 
     PhotonView view;
     private Grid grid;
@@ -37,13 +40,15 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Tooltip("Indique si le joueur peut effectuer une action")]
     public bool m_ActionPhase = false;
 
+    public List<Carte> hand;
+
     [Space]
     [Header("Canvas")]
     private TMP_Text infoText;
     private NetworkUi m_Canvas;
     public float tempsAffichagemessage = 2f;
 
-    
+
 
 
 
@@ -61,7 +66,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             NetworkPlayer.LocalPlayerInstance = this.gameObject;
         }
 
-        
+
         gameObject.name += "_" + view.Owner.NickName;
         gameObject.transform.parent = FindObjectOfType<Grid>().gameObject.transform;
 
@@ -72,12 +77,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
 
         grid = transform.parent.GetComponent<Grid>();
-        Debug.Log(m_Canvas);
-        m_Canvas.SetGameUI(this,PhotonNetwork.IsMasterClient);
+        m_Canvas.SetGameUI(this, PhotonNetwork.IsMasterClient);
     }
     #endregion
 
-    
+
 
     #region LateUpdate || Update || FixedUpdate
     // Update is called once per frame
@@ -106,10 +110,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         Debug.DrawRay(mousePosition, Vector3.forward);
         RaycastHit hit;
-        if(Physics.Raycast(mousePosition, Vector3.forward,out hit, 50f))
+        if (Physics.Raycast(mousePosition, Vector3.forward, out hit, 50f, targetLayer))
         {
             GameObject selectedPosition = hit.collider.gameObject;
-
+            Debug.Log(hit.collider.gameObject.name);
             targetpos = new Vector3(grid.LocalToCell(selectedPosition.transform.position).x, grid.LocalToCell(selectedPosition.transform.position).y, -1);
         }
         return targetpos;
@@ -118,18 +122,18 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void ApplyDesiredMovement()
     {
         Vector3 targetPosition = CalculeMouvement();
-        if(targetPosition != new Vector3(-1, -1 ))
+        if (targetPosition != new Vector3(-1, -1))
         {
             transform.position = targetPosition;
             SendMouvementDone();
         }
-        
+
     }
 
     bool ApplyDesiredMovementForward()
     {
         Vector3 targetPosition = CalculeMouvement();
-        
+
 
         if (CanApplyMouvement(targetPosition))
         {
@@ -211,23 +215,20 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void ChangeTurn()
     {
         m_canPlay = true;
-        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay);
+        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay, hand);
     }
 
     void LaunchGame()
     {
         m_Canvas.StartGameUI();
-        if(m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay))
+        if (PhotonNetwork.IsMasterClient)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                m_canPlay = true;
-                m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay);
-                Debug.Log(m_canPlay);
-            }
-        } 
-        
+            m_canPlay = true;
+            m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay, hand);
+        }
     }
+
+
 
     #endregion
 
@@ -251,7 +252,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_canPlay = false;
         m_ActionPhase = true;
 
-        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay);
+        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay, hand);
 
         byte evCode = 2; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { 1, "tour" }; // Array contains the target position and the IDs of the selected units
@@ -269,9 +270,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_ActionPhase = false;
         m_canPlay = false;
 
-        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay);
+        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay, hand);
         byte evCode = 3; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] { transform.GetChild(0).position, FOV , "Je sais pas encore" }; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] { transform.GetChild(0).position, FOV, "Je sais pas encore" }; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
@@ -299,7 +300,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         Debug.Log("master client sending that the game Start");
         byte evCode = 2; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] {}; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] { }; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
@@ -335,7 +336,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         {
             SendActionDone();
         }
-        
+
         //message affichage
     }
 
@@ -350,7 +351,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         bool result = hit.collider.gameObject.GetComponent<TilesBehaviours>().IsChest;
         Debug.Log(hit.collider.gameObject.name);
-    
+
         StartCoroutine(m_Canvas.ShowInformation(result, true));
 
         if (view.IsMine)
@@ -361,7 +362,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     public void PassTurn()
     {
-        
+
         Debug.Log("Je passe");
         if (view.IsMine)
         {
@@ -385,13 +386,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void UpdateBoard(Vector3 position, float radius, string tag)
     {
         Debug.LogWarning("Modification du plateau ");
-        Debug.Log("Le radius " +radius);
+        Debug.Log("Le radius " + radius);
         Debug.Log("la position " + position);
         Collider[] effacer = Physics.OverlapSphere(position, radius);
 
-        foreach  (Collider item in effacer)
+        foreach (Collider item in effacer)
         {
-            if(item.gameObject.GetComponent<TilesBehaviours>() != null)
+            if (item.gameObject.GetComponent<TilesBehaviours>() != null)
             {
                 Debug.Log(item.gameObject);
                 item.gameObject.GetComponent<TilesBehaviours>().EraseTiles();
@@ -411,7 +412,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         {
             case 1:
                 //Debug.LogFormat("client {0} received event {1}", view.Owner.NickName, photonEvent.Code);
-                data= (object[])photonEvent.CustomData;
+                data = (object[])photonEvent.CustomData;
                 string playerName = (string)data[0];
                 int playerID = (int)data[1];
                 SetId(playerName, playerID);
@@ -424,7 +425,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
             case 3:
                 ChangeTurn();
-                data= (object[])photonEvent.CustomData;
+                data = (object[])photonEvent.CustomData;
                 Vector3 pos = (Vector3)data[0];
                 float radius = (float)data[1];
                 string tag = (string)data[2];

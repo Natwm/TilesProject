@@ -19,13 +19,7 @@ public class GestionCartes : MonoBehaviour
         grid = FindObjectOfType<GridGen>();
 
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            GenerateCards();
-        }
-    }
+
 
     public bool GenerateCards()
     {
@@ -36,10 +30,8 @@ public class GestionCartes : MonoBehaviour
 
             CellData[] nearbyCells = new CellData[9];
             nearbyCells = GetAdjCells(item);
-            Debug.Log(nearbyCells.Length);
             for (int i = 0; i < nearbyCells.Length; i++)
             {
-                Debug.Log(nearbyCells[i].assignedSprite.name);
                 //PENSER A CHANGER QUAND ON AURA REMIS EN UN SEUL GO;
                 Carte newCarte = new Carte(nearbyCells[i], i);
                 allCards.Add(newCarte);
@@ -48,6 +40,7 @@ public class GestionCartes : MonoBehaviour
         }
         return allCards.Count > 0 ;
     }
+
 
     public CellData[] GetAdjCells(CellData baseCell)
     {
@@ -75,6 +68,8 @@ public class GestionCartes : MonoBehaviour
     }
 
 }
+
+
 [System.Serializable]
 public class Carte
 {
@@ -106,8 +101,8 @@ public class Carte
         cardRenderer = Resources.Load<GameObject>("sprite/carte");
         currentFace = visibleFace.front;
         ingameDisplay = GameObject.Instantiate(cardRenderer);
+        ingameDisplay.gameObject.transform.parent = GameObject.Find("Card Holder").transform;
         cardInterface = ingameDisplay.GetComponentInChildren<CardReader>();
-        cardInterface.transform.parent = GameObject.Find("Card Holder").transform;
         cardInterface.Initialisation();
         cardInterface.UpdateCard(this);
     }
