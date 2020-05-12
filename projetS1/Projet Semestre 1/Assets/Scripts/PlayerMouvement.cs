@@ -40,7 +40,17 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Tooltip("Indique si le joueur peut effectuer une action")]
     public bool m_ActionPhase = false;
 
+    [Tooltip("Le nombre maximum de cartes que le joueur peut avoir")]
+    [SerializeField] private int nbCardToDraw = 2;
+
+    [Tooltip("Indique si le joueur peut effectuer une action")]
+    public bool handFull = true;
+
     public List<Carte> hand;
+
+    public GameObject handGO;
+
+    [SerializeField]private GameObject gameDeck;
 
     [Space]
     [Header("Canvas")]
@@ -49,10 +59,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     public float tempsAffichagemessage = 2f;
 
 
-
-
-
     #endregion
+
 
     #region Awake || Start
     // Start is called before the first frame update
@@ -78,6 +86,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         grid = transform.parent.GetComponent<Grid>();
         m_Canvas.SetGameUI(this, PhotonNetwork.IsMasterClient);
+        gameDeck = GameObject.Find("Deck(Clone)");
     }
     #endregion
 
@@ -87,6 +96,22 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     // Update is called once per frame
     void Update()
     {
+        if(hand.Count == 2 && handFull)
+        {
+            for (int i = 0; i < hand.Count; i++)
+            {
+                Debug.Log("ok");
+                hand[i].ingameDisplay.transform.parent = null;
+                hand[i].ingameDisplay.transform.position = new Vector3(25,15 +i*4,0);
+                Debug.Log(hand[i].ingameDisplay.transform.position);
+            }
+            handFull = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            GameObject.Find("Card Holder").transform.GetChild(0).gameObject.transform.position = Vector3.zero;
+        }
         Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward * 50);
         if (m_canPlay && !m_ActionPhase)
         {
@@ -221,14 +246,16 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void LaunchGame()
     {
         m_Canvas.StartGameUI();
+        GestionCartes deck = gameDeck.GetComponent<GestionCartes>();
+        Instantiate(handGO).transform.parent = GameObject.Find("GamePanel").transform;
+        Debug.Log("test");
+
         if (PhotonNetwork.IsMasterClient)
         {
             m_canPlay = true;
-            m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay, hand);
         }
+        m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay, hand);
     }
-
-
 
     #endregion
 
@@ -310,6 +337,20 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
+    /*public void SendDeckModif()
+    {
+        Debug.Log("A player have draw");
+        byte evCode = 4; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { }; // Array contains the target position and the IDs of the selected units
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.All;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }*/
+
 
     #endregion
 
@@ -320,7 +361,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Debug.Log(m_Neighbours.Count);
         foreach (GameObject item in m_Neighbours)
         {
-            if (item.GetComponent<TilesBehaviours>().IsChest)
+            if (item.GetComponent<CellData>().isTreasure)
             {
                 //call l'affichage d'un message 
                 result = true;
@@ -329,7 +370,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             result = false;
         }
 
-        Debug.Log("result" + result);
+        Debug.Log("is CheckIsNearChest =" + result);
         StartCoroutine(m_Canvas.ShowInformation(result, false));
 
         if (view.IsMine)
@@ -349,9 +390,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         Debug.DrawRay(transform.position + offset, Vector3.forward * 2, color);
 
-        bool result = hit.collider.gameObject.GetComponent<TilesBehaviours>().IsChest;
+        bool result = hit.collider.gameObject.GetComponent<CellData>().isTreasure;
         Debug.Log(hit.collider.gameObject.name);
-
+        Debug.Log("is CheckIsChest =" + result);
         StartCoroutine(m_Canvas.ShowInformation(result, true));
 
         if (view.IsMine)
@@ -433,7 +474,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 UpdateBoard(pos, radius, tag);
                 break;
 
-
+            case 4:
+                break;
         }
     }
 
@@ -456,7 +498,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     #region GETTER && SETTER
     public TMP_Text InfoText { get => infoText; set => infoText = value; }
     public NetworkUi Canva { get => m_Canvas; set => m_Canvas = value; }
-
+    public int NbCardToDraw { get => nbCardToDraw; set => nbCardToDraw = value; }
 
     void SetId(string PlayerName, int playerID)
     {

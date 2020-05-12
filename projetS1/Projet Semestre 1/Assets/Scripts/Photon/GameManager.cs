@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
 {
     public GameObject playerPrefab;
     public GameObject gridPrefab;
+    public GameObject deckPrefab;
+    public GameObject handPrefabs;
 
     private NetworkUi canvas;
 
@@ -20,10 +22,14 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        GameObject board = Instantiate(gridPrefab, new Vector2(1,1), Quaternion.identity);
+        GameObject board = Instantiate(gridPrefab, new Vector2(1, 1), Quaternion.identity);
         board.transform.parent = GameObject.Find("Grid").transform;
 
-        if(canvas == null)
+        GameObject deck = Instantiate(deckPrefab, Vector3.zero, Quaternion.identity);
+
+
+
+        if (canvas == null)
             canvas = GameObject.Find("Launcher").GetComponent<NetworkUi>();
 
         if (NetworkPlayer.LocalPlayerInstance == null)
@@ -38,27 +44,13 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         GridGen board = GameObject.Find("GridHolder(Clone)").GetComponent<GridGen>();
-        if (board != null && canvas.textInfos.isActiveAndEnabled && !cardIsCreate)
+        if (!cardIsCreate && board != null && canvas.textInfos.isActiveAndEnabled)
         {
-            cardIsCreate = board.gameObject.GetComponent<GestionCartes>().GenerateCards();
-            DrawCard(board.gameObject.GetComponent<GestionCartes>().allCards);
+            cardIsCreate = GameObject.FindObjectOfType<GestionCartes>().GenerateCards();
+            //DrawCard(board.gameObject.GetComponent<GestionCartes>().allCards);
         }
     }
 
-    private void DrawCard(List<Carte> deck)
-    {
-        PlayerMouvement[] players = FindObjectsOfType<PlayerMouvement>();
-        for (int x = 0; x < players.Length; x++)
-        {
-            for (int y = 0; y < nbCardToDraw; y++)
-            {
-                int idCardTodraw = Random.Range(0, deck.Count);
-                Carte my1 = deck[idCardTodraw];
-                deck.RemoveAt(idCardTodraw);
-                players[x].hand.Add(my1);
-                Debug.Log(idCardTodraw + " " + players[x].name);
-            }
-        }
-    }
+
 
 }

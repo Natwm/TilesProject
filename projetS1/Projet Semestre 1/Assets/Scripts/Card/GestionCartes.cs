@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[DefaultExecutionOrder (1000)]
 public class GestionCartes : MonoBehaviour
 {
     GridGen grid;
@@ -15,9 +14,7 @@ public class GestionCartes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         grid = FindObjectOfType<GridGen>();
-
     }
 
 
@@ -27,7 +24,6 @@ public class GestionCartes : MonoBehaviour
         allCardsDisplay = new List<CardReader>();
         foreach (CellData item in chestTiles)
         {
-
             CellData[] nearbyCells = new CellData[9];
             nearbyCells = GetAdjCells(item);
             for (int i = 0; i < nearbyCells.Length; i++)
@@ -38,9 +34,28 @@ public class GestionCartes : MonoBehaviour
                 allCardsDisplay.Add(newCarte.ingameDisplay.GetComponentInChildren<CardReader>());
             }
         }
+        DrawCard();
         return allCards.Count > 0 ;
     }
 
+    public void DrawCard()
+    {
+        Debug.Log("DrawCard");
+        PlayerMouvement[] players = FindObjectsOfType<PlayerMouvement>();
+        for (int x = 0; x < players.Length; x++)
+        {
+            Debug.Log("DrawCard by + " + players[x].name);
+            for (int y = 0; y < players[x].NbCardToDraw; y++)
+            {
+                int cardIndex = Random.Range(0, allCards.Count);
+                Carte cardDraw = allCards[cardIndex];
+                allCards.RemoveAt(cardIndex);
+                players[x].hand.Add(cardDraw);
+            }
+            Debug.LogWarning(players[x].hand);
+        }
+
+    }
 
     public CellData[] GetAdjCells(CellData baseCell)
     {
@@ -101,7 +116,7 @@ public class Carte
         cardRenderer = Resources.Load<GameObject>("sprite/carte");
         currentFace = visibleFace.front;
         ingameDisplay = GameObject.Instantiate(cardRenderer);
-        ingameDisplay.gameObject.transform.parent = GameObject.Find("Card Holder").transform;
+        ingameDisplay.gameObject.transform.SetParent( GameObject.Find("Card Holder").transform);
         cardInterface = ingameDisplay.GetComponentInChildren<CardReader>();
         cardInterface.Initialisation();
         cardInterface.UpdateCard(this);

@@ -370,6 +370,10 @@ MonoBehaviour:
     type: 3}
   gridPrefab: {fileID: 3453831354389151346, guid: 8bcb657fa75a74f4bbce8375b63c2922,
     type: 3}
+  deckPrefab: {fileID: 244029036514954659, guid: 44ac62c79f062a148bcf19ae779a2a1b,
+    type: 3}
+  handPrefabs: {fileID: 0}
+  nbCardToDraw: 2
 --- !u!4 &1953003073
 Transform:
   m_ObjectHideFlags: 0

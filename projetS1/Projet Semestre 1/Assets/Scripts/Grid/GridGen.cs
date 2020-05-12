@@ -35,7 +35,7 @@ public class GridGen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cardScript = GetComponent<GestionCartes>();
+        cardScript = GameObject.FindObjectOfType<GestionCartes>();
 
         allCell = new CellData[gridSize.x * gridSize.y];
         gridObjectCollider = gridObject.transform.GetChild(0).gameObject.GetComponent<BoxCollider>();

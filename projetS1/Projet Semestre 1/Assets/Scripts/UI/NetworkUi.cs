@@ -37,6 +37,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public GameObject cardHolder;
 
     Launcher networkManager;
+
+    
     // Start is called before the first frame update
     void Awake()
     {
@@ -68,6 +70,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     {
         waitingPanel.SetActive(false);
         gamePanel.SetActive(true);
+        
     }
 
     void Initializedbutton (PlayerMouvement player) {
@@ -82,11 +85,11 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public bool UpdateInterface(bool actionPhase, bool canPlay, List<Carte> hand)
     {
-        foreach (Carte item in hand)
+        /*for (int i = 0; i < hand.Count; i++)
         {
-            handInfos.text += "\n";
-            handInfos.text += item.cardType;
-        }
+            Debug.Log("ok");
+            hand[i].ingameDisplay.transform.position = new Vector3(26,20 + 6*i,0);
+        }*/
 
         if (!actionPhase)
         {

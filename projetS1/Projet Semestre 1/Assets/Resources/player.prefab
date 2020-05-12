@@ -147,7 +147,11 @@ MonoBehaviour:
     m_Bits: 1024
   m_canPlay: 0
   m_ActionPhase: 0
+  nbCardToDraw: 2
+  handFull: 1
   hand: []
+  handGO: {fileID: 1072591110075657310, guid: 721c1c4a33b7b914a9bf9148bb44c992, type: 3}
+  gameDeck: {fileID: 0}
   tempsAffichagemessage: 2
 --- !u!114 &114634195798170214
 MonoBehaviour:
