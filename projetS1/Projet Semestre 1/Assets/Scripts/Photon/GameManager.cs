@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
         board.transform.parent = GameObject.Find("Grid").transform;
 
         GameObject deck = Instantiate(deckPrefab, Vector3.zero, Quaternion.identity);
-
+        //GameObject deck = PhotonNetwork.Instantiate(deckPrefab.name, Vector3.zero, Quaternion.identity);
 
 
         if (canvas == null)

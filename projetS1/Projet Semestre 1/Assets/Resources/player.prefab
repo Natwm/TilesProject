@@ -145,14 +145,30 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 1024
+  cardLayer:
+    serializedVersion: 2
+    m_Bits: 0
   m_canPlay: 0
   m_ActionPhase: 0
   nbCardToDraw: 2
-  handFull: 1
   hand: []
   handGO: {fileID: 1072591110075657310, guid: 721c1c4a33b7b914a9bf9148bb44c992, type: 3}
   gameDeck: {fileID: 0}
   tempsAffichagemessage: 2
+  toChange:
+    cardId: 0
+    cardName: 
+    front: {fileID: 0}
+    back: {fileID: 0}
+    cardRenderer: {fileID: 0}
+    ingameDisplay: {fileID: 0}
+    cardInterface: {fileID: 0}
+    cardCell: {fileID: 0}
+    chestCell: {fileID: 0}
+    cardType: 0
+    cardDirection: 0
+    currentFace: 0
+  canDraw: 0
 --- !u!114 &114634195798170214
 MonoBehaviour:
   m_ObjectHideFlags: 0

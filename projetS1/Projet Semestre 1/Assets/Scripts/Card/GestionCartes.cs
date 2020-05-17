@@ -7,16 +7,26 @@ public class GestionCartes : MonoBehaviour
     GridGen grid;
     public List<CellData> chestTiles;
     public List<Carte> allCards;
+    public List<Carte> allCardsinPlayerHand;
     public CellData[] nearChest;
     public CellData chest;
     public List<CardReader> allCardsDisplay;
+
+
+    public bool ready = false;
 
     // Start is called before the first frame update
     void Start()
     {
         grid = FindObjectOfType<GridGen>();
+        allCardsinPlayerHand = new List<Carte>();
     }
 
+    public void d(int id)
+    {
+        Debug.Log(allCards.Count);
+        allCards.RemoveAt(id);
+    }
 
     public bool GenerateCards()
     {
@@ -31,31 +41,13 @@ public class GestionCartes : MonoBehaviour
                 //PENSER A CHANGER QUAND ON AURA REMIS EN UN SEUL GO;
                 Carte newCarte = new Carte(nearbyCells[i], i);
                 allCards.Add(newCarte);
-                allCardsDisplay.Add(newCarte.ingameDisplay.GetComponentInChildren<CardReader>());
+                //allCardsDisplay.Add(newCarte.ingameDisplay.GetComponentInChildren<CardReader>());
             }
         }
-        DrawCard();
+        ready = true;
         return allCards.Count > 0 ;
     }
 
-    public void DrawCard()
-    {
-        Debug.Log("DrawCard");
-        PlayerMouvement[] players = FindObjectsOfType<PlayerMouvement>();
-        for (int x = 0; x < players.Length; x++)
-        {
-            Debug.Log("DrawCard by + " + players[x].name);
-            for (int y = 0; y < players[x].NbCardToDraw; y++)
-            {
-                int cardIndex = Random.Range(0, allCards.Count);
-                Carte cardDraw = allCards[cardIndex];
-                allCards.RemoveAt(cardIndex);
-                players[x].hand.Add(cardDraw);
-            }
-            Debug.LogWarning(players[x].hand);
-        }
-
-    }
 
     public CellData[] GetAdjCells(CellData baseCell)
     {
@@ -115,8 +107,12 @@ public class Carte
         back = Resources.Load<Sprite>("sprite/directions/" + cardDirection.ToString());
         cardRenderer = Resources.Load<GameObject>("sprite/carte");
         currentFace = visibleFace.front;
+    }
+
+    public void Create()
+    {
         ingameDisplay = GameObject.Instantiate(cardRenderer);
-        ingameDisplay.gameObject.transform.SetParent( GameObject.Find("Card Holder").transform);
+        ingameDisplay.gameObject.transform.SetParent(GameObject.Find("Card Holder").transform);
         cardInterface = ingameDisplay.GetComponentInChildren<CardReader>();
         cardInterface.Initialisation();
         cardInterface.UpdateCard(this);

@@ -30,6 +30,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Tooltip("Où le joueur peut ce déplacer")]
     [SerializeField] private LayerMask targetLayer;
 
+    [Tooltip("Où le joueur peut ce déplacer")]
+    [SerializeField] private LayerMask cardLayer;
+
     PhotonView view;
     private Grid grid;
     List<GameObject> m_Neighbours = new List<GameObject>();
@@ -43,14 +46,12 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Tooltip("Le nombre maximum de cartes que le joueur peut avoir")]
     [SerializeField] private int nbCardToDraw = 2;
 
-    [Tooltip("Indique si le joueur peut effectuer une action")]
-    public bool handFull = true;
 
     public List<Carte> hand;
 
     public GameObject handGO;
 
-    [SerializeField]private GameObject gameDeck;
+    [SerializeField] private GameObject gameDeck;
 
     [Space]
     [Header("Canvas")]
@@ -58,6 +59,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     private NetworkUi m_Canvas;
     public float tempsAffichagemessage = 2f;
 
+    public Carte toChange;
+    public bool canDraw = false ;
 
     #endregion
 
@@ -96,22 +99,24 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     // Update is called once per frame
     void Update()
     {
-        if(hand.Count == 2 && handFull)
+        
+        if (PlayerID == 0 && gameDeck.GetComponent<GestionCartes>().ready && hand.Count == 0 && view.IsMine)
         {
-            for (int i = 0; i < hand.Count; i++)
-            {
-                Debug.Log("ok");
-                hand[i].ingameDisplay.transform.parent = null;
-                hand[i].ingameDisplay.transform.position = new Vector3(25,15 +i*4,0);
-                Debug.Log(hand[i].ingameDisplay.transform.position);
-            }
-            handFull = false;
+            Debug.Log(gameDeck.GetComponent<GestionCartes>().ready);
+            DrawCard();
         }
 
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.E) && view.IsMine)
         {
-            GameObject.Find("Card Holder").transform.GetChild(0).gameObject.transform.position = Vector3.zero;
+            foreach (var item in hand)
+            {
+                Debug.LogWarning(item.cardName);
+            }
+            
+            ChangeCard();
+            //Debug.Log(gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Count);
         }
+
         Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward * 50);
         if (m_canPlay && !m_ActionPhase)
         {
@@ -120,6 +125,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             {
                 ApplyDesiredMovement();
                 UseFov();
+
+                foreach (Carte card in hand)
+                {
+                    Debug.Log(card.cardType);
+                }
             }
         }
     }
@@ -138,7 +148,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         if (Physics.Raycast(mousePosition, Vector3.forward, out hit, 50f, targetLayer))
         {
             GameObject selectedPosition = hit.collider.gameObject;
-            Debug.Log(hit.collider.gameObject.name);
             targetpos = new Vector3(grid.LocalToCell(selectedPosition.transform.position).x, grid.LocalToCell(selectedPosition.transform.position).y, -1);
         }
         return targetpos;
@@ -248,13 +257,94 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_Canvas.StartGameUI();
         GestionCartes deck = gameDeck.GetComponent<GestionCartes>();
         Instantiate(handGO).transform.parent = GameObject.Find("GamePanel").transform;
-        Debug.Log("test");
 
         if (PhotonNetwork.IsMasterClient)
         {
             m_canPlay = true;
         }
         m_Canvas.UpdateInterface(m_ActionPhase, m_canPlay, hand);
+
+       /* if (PhotonNetwork.IsMasterClient && canDraw)
+        {
+            DrawCard();
+        }*/
+    }
+
+    public void DrawCard()
+    {
+        Debug.Log("j'ai ma carte et je suis " + this.name);
+        Debug.Log("je pioche et il y a carte : " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
+        for (int y = 0; y < nbCardToDraw; y++)
+        {
+            int cardIndex = Random.Range(0, gameDeck.GetComponent<GestionCartes>().allCards.Count);
+            Carte cardDraw = gameDeck.GetComponent<GestionCartes>().allCards[cardIndex];
+            gameDeck.GetComponent<GestionCartes>().allCards.RemoveAt(cardIndex);
+            Debug.Log("ma carte : " + cardDraw.cardName);
+            hand.Add(cardDraw);
+            gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Add(cardDraw);
+            cardDraw.Create();
+        }
+        if(hand.Count == 2)
+        {
+            Debug.Log("il reste cate : " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
+            SendPlayerhasDraw();
+        }
+            
+    }
+
+    void ModifDeck(int handID, int hand1ID)
+    {
+        Debug.Log("Avant " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
+        //faire un for récuperer la position de l'objet et sup après
+        List<Carte> deck = gameDeck.GetComponent<GestionCartes>().allCards;
+        List<Carte> toRemove = new List<Carte>();
+
+        for (int i = 0; i < deck.Count; i++)
+        {
+            if (deck[i].cardId == handID || deck[i].cardId == hand1ID)
+            {
+                toRemove.Add(deck[i]);
+            }
+        }
+
+        foreach (Carte item in toRemove)
+        {
+            gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Add(item);
+            gameDeck.GetComponent<GestionCartes>().allCards.Remove(item);
+        }
+        Debug.Log("j'ai ma carte");
+        Debug.Log("Après " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
+    }
+
+    void ChangeCard()
+    {
+        //showdeck();
+        
+        Debug.Log("je change de carte");
+        Carte drop = hand[0];
+        Carte get = gameDeck.GetComponent<GestionCartes>().allCards[0];
+
+        gameDeck.GetComponent<GestionCartes>().allCards.Add(drop);
+        gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Remove(drop);
+        hand.Remove(drop);
+        Destroy(drop.ingameDisplay);
+
+        hand.Add(get);
+        get.Create();
+        gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Add(get);
+        gameDeck.GetComponent<GestionCartes>().allCards.Remove(get);
+
+        Debug.Log("Je met " + drop.cardName +" dans la pioche et je prend "+ get.cardName +" dans ma main" );
+
+        SendDeckHasChange(drop, get);
+    }
+
+    void showdeck()
+    {
+        foreach (Carte item in gameDeck.GetComponent<GestionCartes>().allCards)
+        {
+            Debug.Log("Deck : " + item);
+        }
     }
 
     #endregion
@@ -337,20 +427,33 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
-    /*public void SendDeckModif()
+    public void SendPlayerhasDraw()
     {
         Debug.Log("A player have draw");
         byte evCode = 4; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] { }; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] {PlayerID,hand[0].cardId, hand[1].cardId }; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
-        raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
-        raiseEventOptions.Receivers = ReceiverGroup.All;
+        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.Others;
         SendOptions sendOptions = new SendOptions();
         sendOptions.DeliveryMode = DeliveryMode.Reliable;
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
-    }*/
+    }
 
+    public void SendDeckHasChange(Carte drop, Carte get)
+    {
+        Debug.Log("A player have draw");
+        byte evCode = 5; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { drop.cardId, get.cardId}; // Array contains the target position and the IDs of the selected units
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.Others;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
 
     #endregion
 
@@ -475,9 +578,58 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 break;
 
             case 4:
+                data = (object[])photonEvent.CustomData;
+                int playerId = (int)data[0];
+                int handID = (int)data[1];
+                int hand1ID = (int)data[2];
+                Debug.Log(hand1ID + "recu le deck"+ handID);
+
+                ModifDeck(hand1ID, handID);
+                if (PlayerID == playerId + 1)
+                {
+                    DrawCard();
+                }
+                break;
+
+            case 5:
+                data = (object[])photonEvent.CustomData;
+                int carteToDeckId = (int)data[0];
+                int carteToHandId = (int)data[1];
+                Carte toRemove;
+
+                foreach (Carte carte in gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand)
+                {
+                    Debug.Log("carte.cardId = " + carte.cardName + " carteId = " + carteToDeckId);
+                    if(carte.cardId == carteToDeckId)
+                    {
+                        Debug.Log("it's true");
+                        toRemove = carte;
+                        gameDeck.GetComponent<GestionCartes>().allCards.Add(carte);
+                        gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Remove(toRemove);
+                        break;
+                    }
+                }
+
+                foreach (Carte carte in gameDeck.GetComponent<GestionCartes>().allCards)
+                {
+                    Debug.Log("carte.cardId = " + carte.cardName + " carteId = " + carteToDeckId);
+                    if (carte.cardId == carteToHandId)
+                    {
+                        Debug.Log("it's true");
+                        toRemove = carte;
+                        gameDeck.GetComponent<GestionCartes>().allCards.Remove(carte);
+                        gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Add(toRemove);
+                        break;
+                    }
+                }
+
+                //if (toRemove != null)
+                //  gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Remove(toRemove);
+                //showdeck();
                 break;
         }
     }
+    
 
     public void OnEnable()
     {

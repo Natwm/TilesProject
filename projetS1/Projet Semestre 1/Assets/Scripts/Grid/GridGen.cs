@@ -99,9 +99,8 @@ public class GridGen : MonoBehaviour
         cardScript.chestTiles = new List<CellData>();
         for (int i = 0; i < numberOfChest; i++)
         {
-
             Vector3Int chestPos = new Vector3Int(Random.Range(2, gridSize.x), Random.Range(2, gridSize.x), 0);
-            Debug.Log(chestPos);
+            //Debug.Log(chestPos);
             foreach (CellData item in allCell)
             {
                 if (chestPos == item.gridPos)
