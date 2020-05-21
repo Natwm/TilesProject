@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5766947533455612237}
   - component: {fileID: 6982754292180857136}
   - component: {fileID: 4746005529076674085}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,7 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6408716207175666567}
   - component: {fileID: 2103534206837874372}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: mainsprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 3561058868393440964}
   - component: {fileID: 2880944785301198365}
   - component: {fileID: 6594472797270144499}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: cardback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -399,7 +399,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8214631939849775456}
   - component: {fileID: 5622080637821418768}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: carte
   m_TagString: Untagged
   m_Icon: {fileID: 0}

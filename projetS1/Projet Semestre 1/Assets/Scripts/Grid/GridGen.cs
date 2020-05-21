@@ -135,7 +135,7 @@ public class GridGen : MonoBehaviour
         temporaryListOfCells = GetAllCellFromType(type);
         foreach (CellData item in temporaryListOfCells)
         {
-            item.objMesh.material.color = new Color(0, 255f, 0, 0.50f);
+            item.ShowTile();
         }
     }
 

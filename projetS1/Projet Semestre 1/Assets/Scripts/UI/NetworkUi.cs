@@ -83,7 +83,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         passButton.onClick.AddListener(player.PassTurn);
     }
 
-    public bool UpdateInterface(bool actionPhase, bool canPlay, List<Carte> hand)
+    public bool UpdateInterface(PlayerMouvement.m_Action action, List<Carte> hand)
     {
         /*for (int i = 0; i < hand.Count; i++)
         {
@@ -91,7 +91,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
             hand[i].ingameDisplay.transform.position = new Vector3(26,20 + 6*i,0);
         }*/
 
-        if (!actionPhase)
+        if (action == PlayerMouvement.m_Action.Mouvement || action == PlayerMouvement.m_Action.Wait)
         {
             nearButton.gameObject.SetActive(false);
             chestButton.gameObject.SetActive(false);
@@ -104,9 +104,9 @@ public class NetworkUi : MonoBehaviourPunCallbacks
             passButton.gameObject.SetActive(true);
         }
 
-        if (canPlay)
+        if (action == PlayerMouvement.m_Action.Mouvement)
             textInfos.text = "C'est votre tours !";
-        else if (!canPlay && actionPhase)
+        else if (action == PlayerMouvement.m_Action.Action)
             textInfos.text = "Faites une action";
         else
             textInfos.text = "Ce n'est pas votre tour";

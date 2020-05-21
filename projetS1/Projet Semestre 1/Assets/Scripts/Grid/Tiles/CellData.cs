@@ -7,11 +7,14 @@ public class CellData : MonoBehaviour
     cellTypeInitialisation masterCell;
     public cellTypeInitialisation.cellType cellType = cellTypeInitialisation.cellType.blank;
     public Sprite assignedSprite;
-
     public bool isTreasure;
     public Vector3Int gridPos;
     public MeshRenderer objMesh;
     public Color baseCol;
+
+    public m_State state = m_State.Hide;
+
+    public enum m_State { Hide, Show }
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +37,7 @@ public class CellData : MonoBehaviour
 
     public bool ShowTile()
     {
+        state = m_State.Show;
         objMesh.material.color = Color.white;
         return true;
     }
@@ -43,6 +47,7 @@ public class CellData : MonoBehaviour
         if(objMesh.material.color == Color.white)
         {
             objMesh.material.color = Color.black;
+            state = m_State.Hide;
         }
         return true;
     }
