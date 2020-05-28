@@ -20,22 +20,5 @@ public class TilesBehaviours : MonoBehaviour
         
     }
 
-    public void callColor()
-    {
-
-        if (IsChest)
-        {
-            Debug.Log("win");
-            GetComponent<Renderer>().material.color = Color.yellow;
-        }
-        else
-        {
-            GetComponent<CellData>().ShowTile();
-        }
-    }
-
-    public void EraseTiles()
-    {
-        GetComponent<CellData>().HideTile();
-    }
+    
 }

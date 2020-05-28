@@ -135,7 +135,7 @@ public class GridGen : MonoBehaviour
         temporaryListOfCells = GetAllCellFromType(type);
         foreach (CellData item in temporaryListOfCells)
         {
-            item.ShowTile();
+            item.ShowTile("");
         }
     }
 

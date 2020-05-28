@@ -31,10 +31,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [SerializeField] private float FOV;
 
     [Tooltip("Indique les actions que le joueur peut faire")]
-    [SerializeField]private m_Action m_MyActionPhase = m_Action.Wait;
+    [SerializeField] private m_Action m_MyActionPhase = m_Action.Wait;
 
     [Tooltip("Le nombre maximum de cartes que le joueur peut avoir")]
     [SerializeField] private int nbCardToDraw = 2;
+
+    [Tooltip("Indique la catégorie de la bombe que le joueur utilise")]
+    [SerializeField] private Bomb m_MyBomb = Bomb.Nothing;
 
     PhotonView view;
     private Grid grid;
@@ -51,7 +54,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
 
     [Space]
-    [Header ("Card")]
+    [Header("Card")]
     public bool canDraw = false;
     public List<Carte> hand;
     public GameObject handGO;
@@ -63,8 +66,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     private NetworkUi m_Canvas;
     public float tempsAffichagemessage = 2f;
 
-    
+    [SerializeField]private float TimeCardAvailable = 2.0f;
     public enum m_Action { Mouvement, Action, Wait }
+    public enum Bomb { RED, BLACK, WHITE, Nothing }
 
     #endregion
 
@@ -103,42 +107,39 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     // Update is called once per frame
     void Update()
     {
-        if(drawDebug)
+        if (drawDebug)
             Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward * 50);
 
-        if (PlayerID == 0 && gameDeck.GetComponent<GestionCartes>().ready && hand.Count == 0 && view.IsMine)
-        {
-            Debug.Log(gameDeck.GetComponent<GestionCartes>().ready);
-            DrawCard();
-        }
 
-        if (Input.GetKeyDown(KeyCode.E) && view.IsMine)
+        if (view.IsMine)
         {
-            foreach (var item in hand)
+            if (PlayerID == 0 && gameDeck.GetComponent<GestionCartes>().ready && hand.Count == 0)
             {
-                Debug.LogWarning(item.cardName);
+                Debug.Log("Les cartes sont générer" + gameDeck.GetComponent<GestionCartes>().ready);
+                MakeHand();
             }
-            
-            //ChangeCard();
-            //Debug.Log(gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Count);
-        }
 
-        if (m_MyActionPhase == m_Action.Mouvement)
-        {
-            //MOUVEMENT BY CLICK
-            if (Input.GetButtonDown("Fire1") && GetComponent<PhotonView>().IsMine)
+            /*if (Input.GetButtonDown("Fire1"))
             {
-                ApplyDesiredMovement();
-                UseFov();
+                TurnCard();
+            }*/
+
+            if (m_MyActionPhase == m_Action.Mouvement)
+            {
+                //MOUVEMENT BY CLICK
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    ApplyDesiredMovement();
+                }
             }
-        }
 
-        if(m_MyActionPhase == m_Action.Action)
-        {
-            if (Input.GetButtonDown("Fire1") && GetComponent<PhotonView>().IsMine)
+            if (m_MyActionPhase == m_Action.Action)
             {
-                ChangemyCard();
-            }   
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    PlayerAction();
+                }
+            }
         }
     }
 
@@ -156,7 +157,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         if (Physics.Raycast(mousePosition, Vector3.forward, out hit, 50f, targetLayer))
         {
             GameObject selectedPosition = hit.collider.gameObject;
-            if(selectedPosition.GetComponent<CellData>().state == CellData.m_State.Show)
+            if (selectedPosition.GetComponent<CellData>().State == CellData.m_State.Show)
                 targetpos = new Vector3(grid.LocalToCell(selectedPosition.transform.position).x, grid.LocalToCell(selectedPosition.transform.position).y, -1);
         }
         return targetpos;
@@ -165,9 +166,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void ApplyDesiredMovement()
     {
         Vector3 targetPosition = CalculeMouvement();
-        if (targetPosition != new Vector3(-1, -1))
+        if (targetPosition != transform.position)
         {
             transform.position = targetPosition;
+            UseFov();
             SendMouvementDone();
         }
 
@@ -245,15 +247,105 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_Neighbours.Clear();
         foreach (Collider item in Physics.OverlapSphere(transform.GetChild(0).position, FOV))
         {
-            if (item.gameObject.GetComponent<TilesBehaviours>() != null)
+            if (item.gameObject.GetComponent<CellData>() != null)
             {
                 m_Neighbours.Add(item.gameObject);
-                //Erreur est ici
-                item.gameObject.GetComponent<TilesBehaviours>().callColor();
+                item.gameObject.GetComponent<CellData>().ShowTile(gameObject.name);
+
+                if (item.gameObject.GetComponent<CellData>().IsBomb())
+                    bombImact(item.gameObject.GetComponent<CellData>());
+                    
             }
         }
     }
 
+    void TurnCard()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = -1;
+        RaycastHit hit;
+        if (Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity, cardLayer))
+        {
+            Debug.Log("JetBrains tourne la carte");
+        }
+        
+    }
+
+    void bombImact(CellData item)
+    {
+        if(item.BombOwner != gameObject.name)
+        {
+            //BombTrigger(item.gameObject.GetComponent<CellData>().BombState);
+            SendBombTrigger(item.BombState,item.gameObject.transform.parent.name,item.BombOwner);
+            item.ResetTile();
+        } 
+    }
+
+    void BombTrigger(CellData bomb)
+    {
+        
+        CellData.m_BombState typeOfBomb = bomb.BombState;
+        switch (typeOfBomb)
+        {
+            case CellData.m_BombState.RED:
+                StartCoroutine(REDtrigger());
+                break;
+            case CellData.m_BombState.BLACK:
+                BLACKtrigger();
+                break;
+            case CellData.m_BombState.WHITE:
+                WHITEtrigger();
+                break;
+            case CellData.m_BombState.Nothing:
+                Debug.Log("Nothing");
+                break;
+            default:
+                Debug.Log("Default");
+                break;
+        }
+    }
+
+    IEnumerator REDtrigger()
+    {
+        foreach (Carte item in hand)
+        {
+            Destroy(item.ingameDisplay);
+        }
+        Debug.LogWarning("C'est une ROUGE !");
+        foreach (Carte item in gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand)
+        {
+            item.Create();
+            Debug.Log(item.cardName);
+        }
+        yield return new WaitForSeconds(TimeCardAvailable);
+
+        foreach (Carte item in gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand)
+        {
+            Destroy(item.ingameDisplay);
+        }
+        foreach (Carte item in hand)
+        {
+            item.Create();
+        }
+    }
+
+    void BLACKtrigger()
+    {
+        DrawCard();
+    }
+
+    void WHITEtrigger()
+    {
+        Debug.LogWarning("C'est une BLANCHE !");
+    }
+
+    void highlightTiles()
+    {
+        foreach (var item in m_Neighbours)
+        {
+            item.GetComponent<CellData>().Bomb();
+        }
+    }
 
     void ChangeTurn()
     {
@@ -274,37 +366,72 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             m_MyActionPhase = m_Action.Mouvement;
         }
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
-
-       /* if (PhotonNetwork.IsMasterClient && canDraw)
-        {
-            DrawCard();
-        }*/
     }
 
-    public void DrawCard()
+    void PlayerAction()
+    {
+        
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = -1;
+        RaycastHit hit;
+
+        if (Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity, cardLayer))
+        {
+            ChangemyCard(hit);
+            m_MyActionPhase = m_Action.Wait;
+        }
+
+        if (Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity, targetLayer))
+        {
+            if (hit.collider.gameObject.GetComponent<CellData>().CanPlantBomb && m_MyBomb != Bomb.Nothing)
+            {
+                foreach (var item in m_Neighbours)
+                {
+                    item.GetComponent<CellData>().ShowTile(gameObject.name);
+                }
+                hit.collider.gameObject.GetComponent<CellData>().PlantBomb(m_MyBomb,gameObject.name);
+
+                SendDropMine(m_MyBomb, hit.collider.gameObject.transform.parent.name);
+
+                m_MyBomb = Bomb.Nothing;
+            }
+        }
+    }
+
+    public void MakeHand()
     {
         Debug.Log("j'ai ma carte et je suis " + this.name);
         Debug.Log("je pioche et il y a carte : " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
         for (int y = 0; y < nbCardToDraw; y++)
         {
-            int cardIndex = Random.Range(0, gameDeck.GetComponent<GestionCartes>().allCards.Count);
-            Carte cardDraw = gameDeck.GetComponent<GestionCartes>().allCards[cardIndex];
-            gameDeck.GetComponent<GestionCartes>().allCards.RemoveAt(cardIndex);
-            Debug.Log("ma carte : " + cardDraw.cardName);
-            hand.Add(cardDraw);
-            gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Add(cardDraw);
-            cardDraw.Create();
+            if(gameDeck.GetComponent<GestionCartes>().allCards.Count > 0)
+                DrawCard();
         }
-        if(hand.Count == 2)
+        if (hand.Count == 2)
         {
-            Debug.Log("il reste cate : " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
+            Debug.Log("il reste carte : " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
             terrain.HighlightTypeOfCell(hand[0].cardType);
-            SendPlayerhasDraw();
-        }
             
+        }
+
     }
 
-    void ModifDeck(int handID, int hand1ID)
+    Carte DrawCard()
+    {
+        int cardIndex = Random.Range(0, gameDeck.GetComponent<GestionCartes>().allCards.Count);
+        Carte cardDraw = gameDeck.GetComponent<GestionCartes>().allCards[cardIndex];
+        gameDeck.GetComponent<GestionCartes>().allCards.RemoveAt(cardIndex);
+        Debug.Log("ma carte : " + cardDraw.cardName);
+        hand.Add(cardDraw);
+        gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand.Add(cardDraw);
+        cardDraw.Create();
+
+        SendPlayerhasDraw(cardDraw);
+
+        return cardDraw;
+    }
+
+    void ModifDeck(string handID)
     {
         Debug.Log("Avant " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
         //faire un for récuperer la position de l'objet et sup après
@@ -313,7 +440,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         for (int i = 0; i < deck.Count; i++)
         {
-            if (deck[i].cardId == handID || deck[i].cardId == hand1ID)
+            if (deck[i].cardName == handID)
             {
                 toRemove.Add(deck[i]);
             }
@@ -321,7 +448,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         foreach (Carte item in toRemove)
         {
-            gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Add(item);
+            gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand.Add(item);
             gameDeck.GetComponent<GestionCartes>().allCards.Remove(item);
         }
         Debug.Log("j'ai ma carte");
@@ -331,42 +458,80 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void ChangeCard(Carte cardToDrop)
     {
         //showdeck();
-        
+
         Debug.Log("je change de carte");
         int newCardIndex = Random.Range(0, gameDeck.GetComponent<GestionCartes>().allCards.Count);
         Debug.Log("je change de carte avec la cartes numéro : " + newCardIndex);
         Carte drop = cardToDrop;
-        Carte get = gameDeck.GetComponent<GestionCartes>().allCards[newCardIndex];
 
         gameDeck.GetComponent<GestionCartes>().allCards.Add(drop);
-        gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Remove(drop);
+        gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand.Remove(drop);
         hand.Remove(drop);
         Destroy(drop.ingameDisplay);
 
-        hand.Add(get);
-        get.Create();
-        gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Add(get);
-        gameDeck.GetComponent<GestionCartes>().allCards.Remove(get);
+        Carte get = DrawCard();
 
-        Debug.Log("Je met " + drop.cardName +" dans la pioche et je prend "+ get.cardName +" dans ma main" );
+        Debug.Log("Je met " + drop.cardName + " dans la pioche et je prend " + get.cardName + " dans ma main");
 
         SendDeckHasChange(drop, get);
     }
 
-    void ChangemyCard()
+    void ChangemyCard(RaycastHit hit)
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = -1;
-        RaycastHit hit;
-
-        if (Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity, cardLayer))
-        {
-            Debug.Log(hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.cardName);
-            Carte toDrop = hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead;
-            ChangeCard(toDrop);
-        }
+        Debug.Log(hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.cardName);
+        Carte toDrop = hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead;
+        ChangeCard(toDrop);
     }
 
+    public void PlantBombBlack()
+    {
+        highlightTiles();
+        m_MyBomb = Bomb.BLACK;
+    }
+
+    public void PlantBombRed()
+    {
+        highlightTiles();
+        m_MyBomb = Bomb.RED;
+    }
+
+    public void PlantBombWhite()
+    {
+        highlightTiles();
+        m_MyBomb = Bomb.WHITE;
+    }
+
+
+    void UpdateDeck(int carteToDeckId, int carteToHandId)
+    {
+        Carte toRemove;
+
+        foreach (Carte carte in gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand)
+        {
+            Debug.Log("carte.cardId = " + carte.cardName + " carteId = " + carteToDeckId);
+            if (carte.cardId == carteToDeckId)
+            {
+                Debug.Log("it's true");
+                toRemove = carte;
+                gameDeck.GetComponent<GestionCartes>().allCards.Add(carte);
+                gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand.Remove(toRemove);
+                break;
+            }
+        }
+
+        foreach (Carte carte in gameDeck.GetComponent<GestionCartes>().allCards)
+        {
+            Debug.Log("carte.cardId = " + carte.cardName + " carteId = " + carteToDeckId);
+            if (carte.cardId == carteToHandId)
+            {
+                Debug.Log("it's true");
+                toRemove = carte;
+                gameDeck.GetComponent<GestionCartes>().allCards.Remove(carte);
+                gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand.Add(toRemove);
+                break;
+            }
+        }
+    }
     #endregion
 
     #region Event 
@@ -386,21 +551,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void SendMouvementDone()
     {
-        // m_canPlay = false;
-        //m_ActionPhase = true;
         m_MyActionPhase = m_Action.Action;
 
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
-
-        byte evCode = 2; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] { 1, "tour" }; // Array contains the target position and the IDs of the selected units
-
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
-        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
-        raiseEventOptions.Receivers = ReceiverGroup.Others;
-        SendOptions sendOptions = new SendOptions();
-        sendOptions.DeliveryMode = DeliveryMode.Reliable;
-        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
     void SendActionDone()
@@ -449,11 +602,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
-    public void SendPlayerhasDraw()
+    public void SendPlayerhasDraw(Carte myCard)
     {
         Debug.Log("A player have draw");
         byte evCode = 4; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] {PlayerID,hand[0].cardId, hand[1].cardId }; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] { PlayerID, myCard.cardName, hand.Count}; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
@@ -465,9 +618,91 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     public void SendDeckHasChange(Carte drop, Carte get)
     {
+        m_MyActionPhase = m_Action.Wait;
+
+        m_Canvas.UpdateInterface(m_MyActionPhase, hand);
         Debug.Log("A player have draw");
         byte evCode = 5; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] { drop.cardId, get.cardId}; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] { drop.cardId, get.cardId }; // Array contains the target position and the IDs of the selected units
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.Others;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+    void SendDropMine(Bomb bombState,string tileName)
+    {
+        Debug.Log("j'ai poser une bomb");
+        m_MyActionPhase = m_Action.Wait;
+        m_Canvas.UpdateInterface(m_MyActionPhase, hand);
+        int indexOfMine;
+
+        switch (bombState)
+        {
+            case Bomb.RED:
+                indexOfMine = 0;
+                break;
+
+            case Bomb.BLACK:
+                indexOfMine = 1;
+                break;
+
+            case Bomb.WHITE:
+                indexOfMine = 2;
+                break;
+
+            case Bomb.Nothing:
+                indexOfMine = 3;
+                break;
+
+            default:
+                indexOfMine = -1;
+                break;
+        }
+
+        byte evCode = 6; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { indexOfMine, tileName }; // Array contains the target position and the IDs of the selected units
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.Others;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+    void SendBombTrigger(CellData.m_BombState bombState, string tileName, string bombOwner) 
+    {
+        int indexOfMine;
+
+        switch (bombState)
+        {
+            case CellData.m_BombState.RED:
+                indexOfMine = 0;
+                break;
+
+            case CellData.m_BombState.BLACK:
+                indexOfMine = 1;
+                break;
+
+            case CellData.m_BombState.WHITE:
+                indexOfMine = 2;
+                break;
+
+            case CellData.m_BombState.Nothing:
+                indexOfMine = 3;
+                break;
+
+            default:
+                indexOfMine = -1;
+                break;
+        }
+
+        byte evCode = 7; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { indexOfMine, tileName, bombOwner }; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
@@ -551,17 +786,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void UpdateBoard(Vector3 position, float radius, string tag)
     {
-        Debug.LogWarning("Modification du plateau ");
-        Debug.Log("Le radius " + radius);
-        Debug.Log("la position " + position);
         Collider[] effacer = Physics.OverlapSphere(position, radius);
 
         foreach (Collider item in effacer)
         {
-            if (item.gameObject.GetComponent<TilesBehaviours>() != null)
+            if (item.gameObject.GetComponent<CellData>() != null)
             {
-                Debug.Log(item.gameObject);
-                item.gameObject.GetComponent<TilesBehaviours>().EraseTiles();
+                item.gameObject.GetComponent<CellData>().HideTile();
             }
         }
     }
@@ -602,14 +833,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             case 4:
                 data = (object[])photonEvent.CustomData;
                 int playerId = (int)data[0];
-                int handID = (int)data[1];
-                int hand1ID = (int)data[2];
-                Debug.Log(hand1ID + "recu le deck"+ handID);
+                string handID = (string)data[1];
+                int nbCardInHand = (int)data[2];
 
-                ModifDeck(hand1ID, handID);
-                if (PlayerID == playerId + 1)
+                ModifDeck(handID);
+                if (PlayerID == playerId + 1 && nbCardInHand == 2)
                 {
-                    DrawCard();
+                    MakeHand();
                 }
                 break;
 
@@ -617,41 +847,57 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 data = (object[])photonEvent.CustomData;
                 int carteToDeckId = (int)data[0];
                 int carteToHandId = (int)data[1];
-                Carte toRemove;
 
-                foreach (Carte carte in gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand)
+                UpdateDeck(carteToDeckId, carteToHandId);
+                break;
+
+            case 6:
+                data = (object[])photonEvent.CustomData;
+                int typeofMine = (int)data[0];
+                string goName = (string)data[1];
+                Debug.Log(goName);
+
+                switch (typeofMine)
                 {
-                    Debug.Log("carte.cardId = " + carte.cardName + " carteId = " + carteToDeckId);
-                    if(carte.cardId == carteToDeckId)
-                    {
-                        Debug.Log("it's true");
-                        toRemove = carte;
-                        gameDeck.GetComponent<GestionCartes>().allCards.Add(carte);
-                        gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Remove(toRemove);
+                    case 0:
+                        GameObject.Find(goName).transform.GetChild(0).GetComponent<CellData>().UpdateBombState(Bomb.RED, gameObject.name);
                         break;
-                    }
+                    case 1:
+                        GameObject.Find(goName).transform.GetChild(0).GetComponent<CellData>().UpdateBombState(Bomb.BLACK, gameObject.name);
+                        break;
+                    case 2:
+                        GameObject.Find(goName).transform.GetChild(0).GetComponent<CellData>().UpdateBombState(Bomb.WHITE, gameObject.name);
+                        break;
+                    case 3:
+                        GameObject.Find(goName).transform.GetChild(0).GetComponent<CellData>().UpdateBombState(Bomb.Nothing, gameObject.name);
+                        break;
+                    default:
+                        GameObject.Find(goName).transform.GetChild(0).GetComponent<CellData>().UpdateBombState(Bomb.Nothing, gameObject.name);
+                        break;
                 }
+                ChangeTurn();
+                break;
 
-                foreach (Carte carte in gameDeck.GetComponent<GestionCartes>().allCards)
+            case 7:
+                data = (object[])photonEvent.CustomData;
+                int typeOfMine = (int)data[0];
+                string tileName = (string)data[1];
+                string ownerName = (string)data[2];
+
+                Debug.LogWarning(tileName +"   " + ownerName + "   " + typeOfMine);
+                GameObject tileGO = GameObject.Find(tileName).transform.GetChild(0).gameObject;
+                
+                if (ownerName == this.name)
                 {
-                    Debug.Log("carte.cardId = " + carte.cardName + " carteId = " + carteToDeckId);
-                    if (carte.cardId == carteToHandId)
-                    {
-                        Debug.Log("it's true");
-                        toRemove = carte;
-                        gameDeck.GetComponent<GestionCartes>().allCards.Remove(carte);
-                        gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Add(toRemove);
-                        break;
-                    }
+                    Debug.Log("erreur ici");
+                    BombTrigger(tileGO.GetComponent<CellData>());
                 }
-
-                //if (toRemove != null)
-                //  gameDeck.GetComponent<GestionCartes>().allCardsinPlayerHand.Remove(toRemove);
-                //showdeck();
+                tileGO.GetComponent<CellData>().ResetTile();
+                // affecter la bomb + l'effacer sur tous les tableaux
                 break;
         }
     }
-    
+
 
     public void OnEnable()
     {

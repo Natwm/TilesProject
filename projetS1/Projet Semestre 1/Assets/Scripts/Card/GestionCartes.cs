@@ -7,7 +7,7 @@ public class GestionCartes : MonoBehaviour
     GridGen grid;
     public List<CellData> chestTiles;
     public List<Carte> allCards;
-    public List<Carte> allCardsinPlayerHand;
+    public List<Carte> allCardsInPlayerHand;
     public CellData[] nearChest;
     public CellData chest;
     public List<CardReader> allCardsDisplay;
@@ -19,7 +19,7 @@ public class GestionCartes : MonoBehaviour
     void Start()
     {
         grid = FindObjectOfType<GridGen>();
-        allCardsinPlayerHand = new List<Carte>();
+        allCardsInPlayerHand = new List<Carte>();
     }
 
     public void d(int id)
@@ -51,14 +51,54 @@ public class GestionCartes : MonoBehaviour
 
     public CellData[] GetAdjCells(CellData baseCell)
     {
-        List<CellData> adjCell = new List<CellData>();
-
-        foreach (Collider item in Physics.OverlapSphere(baseCell.gameObject.transform.position,1.2f))
+        CellData[] adjCell = new CellData[8];
+        //Y VERTICAL X HORIZONTAL 
+        Vector3Int upCellVector = new Vector3Int(baseCell.gridPos.x, baseCell.gridPos.y + 1, baseCell.gridPos.z);
+        Vector3Int downCellVector = new Vector3Int(baseCell.gridPos.x, baseCell.gridPos.y - 1, baseCell.gridPos.z);
+        Vector3Int leftCellVector = new Vector3Int(baseCell.gridPos.x - 1, baseCell.gridPos.y, baseCell.gridPos.z);
+        Vector3Int rightCellVector = new Vector3Int(baseCell.gridPos.x + 1, baseCell.gridPos.y, baseCell.gridPos.z);
+        Vector3Int upLeftCellVector = new Vector3Int(baseCell.gridPos.x - 1, baseCell.gridPos.y + 1, baseCell.gridPos.z);
+        Vector3Int upRightCellVector = new Vector3Int(baseCell.gridPos.x + 1, baseCell.gridPos.y + 1, baseCell.gridPos.z);
+        Vector3Int downLeftCellVector = new Vector3Int(baseCell.gridPos.x - 1, baseCell.gridPos.y - 1, baseCell.gridPos.z);
+        Vector3Int downRightCellVector = new Vector3Int(baseCell.gridPos.x + 1, baseCell.gridPos.y - 1, baseCell.gridPos.z);
+        foreach (CellData item in grid.allCell)
         {
-            adjCell.Add(item.gameObject.GetComponent<CellData>());
+            if (item.gridPos == upCellVector)
+            {
+
+                adjCell[0] = item;
+            }
+            else if (item.gridPos == downCellVector)
+            {
+                adjCell[1] = item;
+            }
+            else if (item.gridPos == leftCellVector)
+            {
+                adjCell[2] = item;
+            }
+            else if (item.gridPos == rightCellVector)
+            {
+                adjCell[3] = item;
+            }
+            else if (item.gridPos == upLeftCellVector)
+            {
+                adjCell[4] = item;
+            }
+            else if (item.gridPos == upRightCellVector)
+            {
+                adjCell[5] = item;
+            }
+            else if (item.gridPos == downLeftCellVector)
+            {
+                adjCell[6] = item;
+            }
+            else if (item.gridPos == downRightCellVector)
+            {
+                adjCell[7] = item;
+            }
         }
-        nearChest = adjCell.ToArray();
-        return adjCell.ToArray();
+        nearChest = adjCell;
+        return adjCell;
     }
 
     public Carte FindCardFromID(int _id)
@@ -106,7 +146,7 @@ public class Carte
         cardDirection = (directionFromChest)cardId;
         back = Resources.Load<Sprite>("sprite/directions/" + cardDirection.ToString());
         cardRenderer = Resources.Load<GameObject>("sprite/carte");
-        currentFace = visibleFace.front;
+        currentFace = visibleFace.back;
     }
 
     public void Create()

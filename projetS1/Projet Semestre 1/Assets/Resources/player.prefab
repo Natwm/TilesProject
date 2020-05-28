@@ -144,6 +144,7 @@ MonoBehaviour:
   FOV: 1.2
   m_MyActionPhase: 2
   nbCardToDraw: 2
+  m_MyBomb: 3
   targetLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -155,6 +156,7 @@ MonoBehaviour:
   handGO: {fileID: 1072591110075657310, guid: 721c1c4a33b7b914a9bf9148bb44c992, type: 3}
   gameDeck: {fileID: 0}
   tempsAffichagemessage: 2
+  TimeCardAvailable: 2
 --- !u!114 &114634195798170214
 MonoBehaviour:
   m_ObjectHideFlags: 0

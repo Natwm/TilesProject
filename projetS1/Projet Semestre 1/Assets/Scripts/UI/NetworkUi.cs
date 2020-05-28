@@ -34,6 +34,9 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public Button nearButton;
     public Button chestButton;
     public Button passButton;
+    public Button bombButton1;
+    public Button bombButton2;
+    public Button bombButton3;
     public GameObject cardHolder;
 
     Launcher networkManager;
@@ -81,6 +84,12 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         chestButton.onClick.AddListener(player.CheckIsChest);
 
         passButton.onClick.AddListener(player.PassTurn);
+
+        bombButton1.onClick.AddListener(player.PlantBombRed);
+
+        bombButton2.onClick.AddListener(player.PlantBombBlack);
+
+        bombButton3.onClick.AddListener(player.PlantBombWhite);
     }
 
     public bool UpdateInterface(PlayerMouvement.m_Action action, List<Carte> hand)
@@ -96,12 +105,18 @@ public class NetworkUi : MonoBehaviourPunCallbacks
             nearButton.gameObject.SetActive(false);
             chestButton.gameObject.SetActive(false);
             passButton.gameObject.SetActive(false);
+            bombButton1.gameObject.SetActive(false);
+            bombButton2.gameObject.SetActive(false);
+            bombButton3.gameObject.SetActive(false);
         }
         else
         {
             nearButton.gameObject.SetActive(true);
             chestButton.gameObject.SetActive(true);
             passButton.gameObject.SetActive(true);
+            bombButton1.gameObject.SetActive(true);
+            bombButton2.gameObject.SetActive(true);
+            bombButton3.gameObject.SetActive(true);
         }
 
         if (action == PlayerMouvement.m_Action.Mouvement)
