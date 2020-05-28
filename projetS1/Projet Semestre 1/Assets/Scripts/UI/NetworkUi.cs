@@ -29,6 +29,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     [Space]
     [Header("Game Canvas")]
     public GameObject gamePanel;
+    public TMP_Text turnInfos;
     public TMP_Text textInfos;
     public TMP_Text handInfos;
     public Button nearButton;
@@ -94,13 +95,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public bool UpdateInterface(PlayerMouvement.m_Action action, List<Carte> hand)
     {
-        /*for (int i = 0; i < hand.Count; i++)
-        {
-            Debug.Log("ok");
-            hand[i].ingameDisplay.transform.position = new Vector3(26,20 + 6*i,0);
-        }*/
 
-        if (action == PlayerMouvement.m_Action.Mouvement || action == PlayerMouvement.m_Action.Wait)
+        if (action != PlayerMouvement.m_Action.Action)
         {
             nearButton.gameObject.SetActive(false);
             chestButton.gameObject.SetActive(false);
@@ -120,11 +116,11 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         }
 
         if (action == PlayerMouvement.m_Action.Mouvement)
-            textInfos.text = "C'est votre tours !";
+            turnInfos.text = "C'est votre tours !";
         else if (action == PlayerMouvement.m_Action.Action)
-            textInfos.text = "Faites une action";
+            turnInfos.text = "Faites une action";
         else
-            textInfos.text = "Ce n'est pas votre tour";
+            turnInfos.text = "Ce n'est pas votre tour";
 
         return true;
     }
@@ -142,6 +138,11 @@ public class NetworkUi : MonoBehaviourPunCallbacks
             }
             roomInfos.text += text;
         }
+    }
+    
+    public void ShowWinner( string playerName)
+    {
+        textInfos.text = playerName + " has find the treasure !";
     }
 
     public IEnumerator ShowInformation(bool isfind, bool isForChest)

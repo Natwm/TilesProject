@@ -54,6 +54,12 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
 
     [Space]
+    [Header("Mine")]
+    [SerializeField]int amountOfRedMines = 2;
+    [SerializeField] int amountOfWhiteMines = 3;
+    [SerializeField] int amountOfBlackMines = 3;
+
+    [Space]
     [Header("Card")]
     public bool canDraw = false;
     public List<Carte> hand;
@@ -71,7 +77,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [SerializeField] private float TimeCardAvailable = 2.0f;
     [SerializeField] private bool turnCard = false;
 
-    public enum m_Action { Mouvement, Action, Wait }
+    public enum m_Action { Mouvement, Action, Wait, End }
     public enum Bomb { RED, BLACK, WHITE, Nothing }
 
     #endregion
@@ -414,6 +420,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 foreach (var item in m_Neighbours)
                 {
                     item.GetComponent<CellData>().ShowTile(gameObject.name);
+                    item.GetComponent<CellData>().CanPlantBomb = false;
                 }
                 hit.collider.gameObject.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name);
 
@@ -511,20 +518,35 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     public void PlantBombBlack()
     {
-        highlightTiles();
-        m_MyBomb = Bomb.BLACK;
+        if (amountOfBlackMines > 0)
+        {
+            highlightTiles();
+            m_MyBomb = Bomb.BLACK;
+            amountOfBlackMines--;
+        }
+        
     }
 
     public void PlantBombRed()
     {
-        highlightTiles();
-        m_MyBomb = Bomb.RED;
+        if(amountOfRedMines > 0)
+        {
+            highlightTiles();
+            m_MyBomb = Bomb.RED;
+            amountOfRedMines--;
+        }
+        
     }
 
     public void PlantBombWhite()
     {
-        highlightTiles();
-        m_MyBomb = Bomb.WHITE;
+        if(amountOfWhiteMines > 0)
+        {
+            highlightTiles();
+            m_MyBomb = Bomb.WHITE;
+            amountOfWhiteMines--;
+        }
+        
     }
 
 
@@ -751,6 +773,19 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
+    void SendPlayerGetTreasure()
+    {
+        byte evCode = 9; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { this.gameObject.name }; // Array contains the target position and the IDs of the selected units
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.All;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
     #endregion
 
     #region Button
@@ -796,7 +831,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         if (view.IsMine)
         {
-            SendActionDone();
+            if (!result)
+                SendActionDone();
+            else
+                SendPlayerGetTreasure();
         }
     }
 
@@ -944,7 +982,14 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                         card.CanTurnCard = true;
                     }
                 }
+                break;
 
+            case 9:
+                data = (object[])photonEvent.CustomData;
+                string winnerName = (string)data[0];
+                m_MyActionPhase = m_Action.End;
+                m_Canvas.UpdateInterface(m_MyActionPhase, hand);
+                m_Canvas.ShowWinner(winnerName);
                 break;
         }
     }

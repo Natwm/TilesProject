@@ -43,8 +43,11 @@ public class CellData : MonoBehaviour
 
     public void Bomb()
     {
-        objMesh.material.color = Color.yellow;
-        canPlantBomb = true;
+        if (BombState == m_BombState.Nothing)
+        {
+            objMesh.material.color = Color.yellow;
+            canPlantBomb = true;
+        }
     }
 
     public void PlantBomb(PlayerMouvement.Bomb type, string owner)
