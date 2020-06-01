@@ -151,6 +151,9 @@ MonoBehaviour:
   cardLayer:
     serializedVersion: 2
     m_Bits: 2048
+  amountOfRedMines: 2
+  amountOfWhiteMines: 3
+  amountOfBlackMines: 3
   canDraw: 0
   hand: []
   handGO: {fileID: 1072591110075657310, guid: 721c1c4a33b7b914a9bf9148bb44c992, type: 3}

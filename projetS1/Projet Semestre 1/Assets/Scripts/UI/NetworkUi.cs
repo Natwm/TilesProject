@@ -116,7 +116,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         }
 
         if (action == PlayerMouvement.m_Action.Mouvement)
-            turnInfos.text = "C'est votre tours !";
+            turnInfos.text = "C'est votre tour !";
         else if (action == PlayerMouvement.m_Action.Action)
             turnInfos.text = "Faites une action";
         else
