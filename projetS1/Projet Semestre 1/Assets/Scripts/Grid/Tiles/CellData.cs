@@ -14,13 +14,14 @@ public class CellData : MonoBehaviour
 
     [SerializeField] private bool canPlantBomb = false;
     [SerializeField] private m_State state = m_State.Hide;
-    [SerializeField] private m_BombState bombState = m_BombState.Nothing;
-    [SerializeField] private string bombOwner;
+    
+    [SerializeField] private List<Mine> m_Listbomb = new List<Mine>(); 
+    
 
 
 
     public enum m_State { Hide, Show }
-    public enum m_BombState { RED, BLACK, WHITE, Nothing };
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,113 +39,174 @@ public class CellData : MonoBehaviour
         }
 
         objMesh.material.color = Color.black;
-
     }
 
-    public void Bomb()
+    public void Bomb(string playerName)
     {
-        if (BombState == m_BombState.Nothing)
+        if (m_Listbomb.Count == 0)
         {
             objMesh.material.color = Color.yellow;
             canPlantBomb = true;
+        }
+        else
+        {
+            foreach (Mine item in m_Listbomb)
+            {
+                if(item.BombOwner != playerName)
+                {
+                    objMesh.material.color = Color.yellow;
+                    canPlantBomb = true;
+                }
+            }
         }
     }
 
     public void PlantBomb(PlayerMouvement.Bomb type, string owner)
     {
-        bombOwner = owner;
+        Mine newMine = new Mine();
+        newMine.BombOwner = owner;
         switch (type)
         {
             case PlayerMouvement.Bomb.RED:
                 objMesh.material.color = Color.red;
-                bombState = m_BombState.RED;
+                newMine.BombState = Mine.m_BombState.RED;
                 break;
 
             case PlayerMouvement.Bomb.BLACK:
                 objMesh.material.color = Color.yellow;
-                bombState = m_BombState.BLACK;
+                newMine.BombState = Mine.m_BombState.BLACK;
                 break;
 
             case PlayerMouvement.Bomb.WHITE:
                 objMesh.material.color = Color.magenta;
-                bombState = m_BombState.WHITE;
+                newMine.BombState = Mine.m_BombState.WHITE;
                 break;
 
             case PlayerMouvement.Bomb.Nothing:
-                bombState = m_BombState.Nothing;
+                newMine.BombState = Mine.m_BombState.Nothing;
                 break;
 
             default:
                 break;
         }
-
+        m_Listbomb.Add(newMine);
     }
 
     public void UpdateBombState(PlayerMouvement.Bomb type, string owner)
     {
-        Debug.Log(owner);
-        bombOwner = owner;
+        Debug.Log(" UpdateBombState " + owner);
+        Mine enemyMine = new Mine();
+        enemyMine.BombOwner = owner;
         switch (type)
         {
             case PlayerMouvement.Bomb.RED:
-                bombState = m_BombState.RED;
+                enemyMine.BombState = Mine.m_BombState.RED;
                 break;
 
             case PlayerMouvement.Bomb.BLACK:
-                bombState = m_BombState.BLACK;
+                enemyMine.BombState = Mine.m_BombState.BLACK;
                 break;
 
             case PlayerMouvement.Bomb.WHITE:
-                bombState = m_BombState.WHITE;
+                enemyMine.BombState = Mine.m_BombState.WHITE;
                 break;
 
             case PlayerMouvement.Bomb.Nothing:
-                bombState = m_BombState.Nothing;
+                enemyMine.BombState = Mine.m_BombState.Nothing;
                 break;
 
             default:
                 break;
         }
+        AddToList(enemyMine);
+            
     }
 
-    public void ResetTile()
+    public void ResetTile(Mine toReset)
     {
-        Debug.Log("reset " + gameObject.name +"  at position : " + gridPos);
-        bombOwner = "";
-        bombState = m_BombState.Nothing;
-        state = m_State.Show;
-        objMesh.material.color = Color.white;
+        Listbomb.Remove(toReset);
+    }
+
+    public void ResetTileMine(Mine toReset)
+    {
+        Listbomb.Remove(toReset);
+        state = m_State.Hide;
+        objMesh.material.color = Color.black;
     }
 
     public bool ShowTile( string player)
     {
-        if (bombState == m_BombState.Nothing || player != bombOwner)
+        if (m_Listbomb.Count == 0)
         {
             state = m_State.Show;
             objMesh.material.color = Color.white;
         }
+        else
+        {
+            List<Mine> canChange = new List<Mine>();
+            foreach (Mine item in m_Listbomb)
+            {
+                if (item.BombOwner == player)
+                {
+                    canChange.Add(item);
+                }
+            }
+            if (canChange.Count == 0)
+            {
+                state = m_State.Show;
+                objMesh.material.color = Color.white;
+            }
+        }
+
         return true;
     }
 
-    public bool HideTile()
+    public bool HideTile(string player)
     {
-        if (state == m_State.Show && bombState == m_BombState.Nothing )
+
+        if (state == m_State.Show && m_Listbomb.Count == 0)
         {
             objMesh.material.color = Color.black;
             state = m_State.Hide;
         }
+        else if(state == m_State.Show)
+        {
+            List<Mine> canChange = new List<Mine>();
+            foreach (Mine item in m_Listbomb)
+            {
+                if (item.BombOwner == player)
+                {
+                    canChange.Add(item);
+                }
+            }
+            if(canChange.Count == 0)
+            {
+                objMesh.material.color = Color.black;
+                state = m_State.Hide;
+            }
+        }
+
         return true;
     }
 
     public bool IsBomb()
     {
-        return bombState != m_BombState.Nothing;
+        return m_Listbomb.Count > 0;
+    }
+
+    private void AddToList(Mine mine)
+    {
+        foreach (Mine item in Listbomb)
+        {
+            if (mine.BombOwner == item.BombOwner)
+                return;
+        }
+        Listbomb.Add(mine);
     }
 
     #region GETTER && SETTER
-    public m_BombState BombState { get => bombState; set => bombState = value; }
     public bool CanPlantBomb { get => canPlantBomb; set => canPlantBomb = value; }
     public m_State State { get => state; set => state = value; }
-    public string BombOwner { get => bombOwner; set => bombOwner = value; }
-    #endregion
+    public List<Mine> Listbomb { get => m_Listbomb; set => m_Listbomb = value; }
+    #endregion*/
 }

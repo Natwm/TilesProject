@@ -16,8 +16,6 @@ public class GameManager : MonoBehaviour
 
     private NetworkUi canvas;
 
-    [SerializeField] int nbCardToDraw = 2;
-
     bool cardIsCreate;
 
     void Start()
