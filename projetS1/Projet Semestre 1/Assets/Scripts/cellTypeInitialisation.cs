@@ -26,10 +26,10 @@ public class cellTypeInitialisation : MonoBehaviour
     {
         allCellSprites = Resources.LoadAll<Sprite>(TypeChemin);
         allHiddenCellSprites = Resources.LoadAll<Sprite>(HiddenChemin);
-        shovelHolder = Resources.Load<GameObject>("ShovelHolder");
-        HoleTile = Resources.Load<GameObject>("HoleTile");
-        HolePlane = Resources.Load<GameObject>("HolePlane");
-        treasure = Resources.Load<GameObject>("TreasureBox");
+        shovelHolder = Resources.Load<GameObject>("prefabs/ShovelHolder");
+        HoleTile = Resources.Load<GameObject>("prefabs/HoleTile");
+        HolePlane = Resources.Load<GameObject>("prefabs/HolePlane");
+        treasure = Resources.Load<GameObject>("prefabs/TreasureBox");
     }
 
     public void GetRandomCellType(cellData currentCell)

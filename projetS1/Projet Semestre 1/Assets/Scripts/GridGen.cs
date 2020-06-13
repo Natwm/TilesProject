@@ -39,18 +39,7 @@ public class GridGen : MonoBehaviour
         
     }
 
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.O))
-        {
-            HighlightTypeOfCell(typeToSearch);
-        }
-        if (Input.GetKeyUp(KeyCode.N)) 
-        {
-            allCell[11].isTreasure = true;
-            allCell[11].Dig();
-        }
-    }
+    
     // X correspond à l'horizontal Y correspond au vertical
     public void CreateGrid()
     {
@@ -111,7 +100,7 @@ public class GridGen : MonoBehaviour
 
     public void GenerateForest(Vector3 RealGridSize)
     {
-        GameObject borderObject = Resources.Load<GameObject>("Border");
+        GameObject borderObject = Resources.Load<GameObject>("prefabs/Border");
         GameObject[] borderTiles = new GameObject[4];
         Vector3 halfBorderSize;
         Vector2 TextureTiling;
