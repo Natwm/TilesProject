@@ -32,7 +32,7 @@ public class GestionCartes : MonoBehaviour
             nearbyCells = GetAdjCells(item);
             for (int i = 0; i < nearbyCells.Length; i++)
             {
-                //PENSER A CHANGER QUAND ON AURA REMIS EN UN SEUL GO;
+                
                 Carte newCarte = new Carte(nearbyCells[i],i);
                 allCards.Add(newCarte);
                 allCardsDisplay.Add(newCarte.ingameDisplay.GetComponentInChildren<CardReader>());
@@ -103,6 +103,15 @@ public class GestionCartes : MonoBehaviour
             }
         }
         return search;
+    }
+    public void Update()
+    {
+
+        if (Input.GetKey(KeyCode.C))
+        {
+            generateCards();
+        }
+        
     }
 
 }

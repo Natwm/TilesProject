@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 6973f1ccaab1d904593e4ca7b0720008, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -119,10 +119,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellType: 0
   assignedSprite: {fileID: 0}
+  hiddenSprite: {fileID: 0}
+  Glow_Amplitude: 0
   isTreasure: 0
   gridPos: {x: 0, y: 0, z: 0}
   objMesh: {fileID: 0}
   baseCol: {r: 0, g: 0, b: 0, a: 0}
+  leavesBurst: {fileID: 122191679459281013, guid: 446878c8f3a255142bd43df90bb0ae3a,
+    type: 3}
 --- !u!1 &8689200998252338104
 GameObject:
   m_ObjectHideFlags: 0
