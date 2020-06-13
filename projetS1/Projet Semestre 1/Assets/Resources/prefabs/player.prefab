@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 6143988518016405948}
   - component: {fileID: 114634195798170214}
   - component: {fileID: 114684004065608894}
+  - component: {fileID: 65269442316873470}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -140,12 +141,27 @@ MonoBehaviour:
   drawDebug: 0
   isOffline: 0
   offset: {x: 0.5, y: 0.5, z: 0}
-  FOV: 1
-  id: 0
-  m_canPlay: 1
-  m_ActionPhase: 0
-  m_Canvas: {fileID: 0}
-  tempsAffichagemessage: 2
+  PlayerID: -1
+  FOV: 1.2
+  m_MyActionPhase: 2
+  nbCardToDraw: 2
+  m_MyBomb: 3
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  cardLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  amountOfRedMines: 2
+  amountOfWhiteMines: 3
+  amountOfBlackMines: 3
+  canDraw: 0
+  hand: []
+  handGO: {fileID: 1072591110075657310, guid: 721c1c4a33b7b914a9bf9148bb44c992, type: 3}
+  gameDeck: {fileID: 0}
+  tempsAffichageMessage: 20
+  TimeCardAvailable: 10
+  turnCard: 0
 --- !u!114 &114634195798170214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,3 +199,16 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
+--- !u!65 &65269442316873470
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6143988518016405950}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0.5, y: 0.5, z: 0}

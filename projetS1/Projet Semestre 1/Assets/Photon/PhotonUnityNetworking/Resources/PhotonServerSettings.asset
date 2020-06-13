@@ -39,6 +39,7 @@ MonoBehaviour:
   - OnPlayerClick
   - PointerStateDown
   - PointerStateUp
+  - receiveSeed
   - PassSeed
   - receiveSeed
   DisableAutoOpenWizard: 1
