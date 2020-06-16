@@ -39,11 +39,38 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Tooltip("Indique la catégorie de la bombe que le joueur utilise")]
     [SerializeField] private Bomb m_MyBomb = Bomb.Nothing;
 
+    
+    List<GameObject> m_Neighbours = new List<GameObject>();
+    List<GameObject> share = new List<GameObject>();
+
+    [Space]
+    [Header("Player Component")]
+    private CharacterController characterController;
+    public Camera cam;
     PhotonView view;
     private Grid grid;
     private GridGen terrain;
-    List<GameObject> m_Neighbours = new List<GameObject>();
-    List<GameObject> share = new List<GameObject>();
+
+    [Space]
+
+    [Header("Environment Check Properties")]
+    public GameObject groundCheck;
+    public LayerMask groundMask;
+    [SerializeField] private float groundDistance;
+    [SerializeField] private float interactDistance;
+    [SerializeField] private bool isGrounded;
+
+    [Space]
+
+    [Header("Movement Variable")]
+    [SerializeField]
+    private float speedMouvement = 10.0f;
+    [SerializeField]
+    private float gravity = -9.51f;
+    Vector3 velocity;
+
+    private GameObject tile;
+    public GameObject interactTile;
 
     [Space]
     [Header("Player's Layer")]
@@ -56,7 +83,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     [Space]
     [Header("Mine")]
-    [SerializeField]int amountOfRedMines = 2;
+    [SerializeField] int amountOfRedMines = 2;
     [SerializeField] int amountOfWhiteMines = 3;
     [SerializeField] int amountOfBlackMines = 3;
 
@@ -84,9 +111,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     #endregion
 
     #region Awake || Start
+
     // Start is called before the first frame update
     void Start()
     {
+        characterController = GetComponent<CharacterController>();
         view = GetComponent<PhotonView>();
         m_Canvas = GameObject.Find("Launcher").GetComponent<NetworkUi>();
 
@@ -104,23 +133,22 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             SendPlayerID(view.Owner.NickName, PhotonNetwork.CurrentRoom.PlayerCount - 1);
         }
 
-
         grid = transform.parent.GetComponent<Grid>();
         m_Canvas.SetGameUI(this, PhotonNetwork.IsMasterClient);
         gameDeck = GameObject.Find("Deck(Clone)");
     }
     #endregion
 
-
-
     #region LateUpdate || Update || FixedUpdate
+
+    void Update()
+    {
+        physicsCheck();
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (drawDebug)
-            Debug.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward * 50);
-
-
         if (view.IsMine)
         {
             if (PlayerID == 0 && gameDeck.GetComponent<GestionCartes>().ready && hand.Count == 0)
@@ -129,25 +157,18 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 MakeHand();
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (isGrounded  && view.IsMine && m_MyActionPhase != m_Action.End)
             {
-                Debug.Log(turnCard);
-                TurnCard(turnCard);
-            }
-
-            if (m_MyActionPhase == m_Action.Mouvement)
-            {
-                //MOUVEMENT BY CLICK
-                if (Input.GetButtonDown("Fire1"))
+                FpsMove();
+                if (tile != null && Input.GetKeyDown(KeyCode.E) && m_MyActionPhase == m_Action.Mouvement)
                 {
-                    ApplyDesiredMovement();
+                    interactTile = tile;
+                    UseFov();
+                    SendMouvementDone();
                 }
-            }
-
-            if (m_MyActionPhase == m_Action.Action)
-            {
-                if (Input.GetButtonDown("Fire1"))
+                if (tile != null && Input.GetKeyDown(KeyCode.E) && m_MyActionPhase == m_Action.Action && m_MyBomb != Bomb.Nothing)
                 {
+                    interactTile = tile;
                     PlayerAction();
                 }
             }
@@ -157,6 +178,22 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     #endregion
 
     #region Mouvement
+    #region FPS Mouvement
+
+    void FpsMove()
+    {
+            float moveVertical = Input.GetAxis("Vertical");
+            float moveHorizontal = Input.GetAxis("Horizontal");
+
+            Vector3 mouvement = (transform.right * moveHorizontal + transform.forward * moveVertical) * speedMouvement;
+            characterController.Move(mouvement * Time.deltaTime);
+
+            velocity.y += gravity * Time.deltaTime;
+            characterController.Move(velocity * Time.deltaTime);
+    }
+
+    #endregion
+
     #region Click Mouvement
 
     /// <summary>
@@ -264,13 +301,18 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
 
     #endregion
+
     #endregion
 
     #region METHODE
-    void UseFov()
+    public void UseFov()
     {
+        Debug.Log("use FOV");
         m_Neighbours.Clear();
-        foreach (Collider item in Physics.OverlapSphere(this.transform.GetChild(0).position, FOV))
+
+        Vector3 pos = new Vector3(grid.LocalToCell(interactTile.transform.position).x + offset.x, grid.LocalToCell(interactTile.transform.position).y + offset.y);
+        
+        foreach (Collider item in Physics.OverlapSphere(pos, FOV))
         {
             if (item.gameObject.GetComponent<CellData>() != null)
             {
@@ -279,11 +321,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
                 if (item.gameObject.GetComponent<CellData>().IsBomb())
                     bombImact(item.gameObject.GetComponent<CellData>());
-
             }
         }
     }
-
+   
     void TurnCard(bool canturnCard)
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -426,6 +467,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void LaunchGame()
     {
+        Debug.Log("Start");
         m_Canvas.StartGameUI();
         GestionCartes deck = gameDeck.GetComponent<GestionCartes>();
         terrain = GameObject.FindObjectOfType<GridGen>();
@@ -438,30 +480,24 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void PlayerAction()
     {
-
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = -1;
-        RaycastHit hit;
-
-        if (Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity, cardLayer))
+        /*if (Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity, cardLayer))
         {
             ChangeMyCard(hit);
             m_MyActionPhase = m_Action.Wait;
-        }
+        }*/
 
-        if (Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity, targetLayer))
+        if (interactTile != null)
         {
-            if (hit.collider.gameObject.GetComponent<CellData>().CanPlantBomb && m_MyBomb != Bomb.Nothing)
+            if (interactTile.GetComponent<CellData>().CanPlantBomb && m_MyBomb != Bomb.Nothing)
             {
                 foreach (var item in m_Neighbours)
                 {
                     item.GetComponent<CellData>().ShowTile(gameObject.name);
                     item.GetComponent<CellData>().CanPlantBomb = false;
                 }
-                hit.collider.gameObject.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name);
+                interactTile.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name);
 
-                SendDropMine(m_MyBomb, hit.collider.gameObject.transform.parent.name);
-                
+                SendDropMine(m_MyBomb, interactTile.gameObject.transform.parent.name);
                 
                 m_MyBomb = Bomb.Nothing;
 
@@ -527,7 +563,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 return;
             }
         }
-        if (view.IsMine)
+        if (view.IsMine && interactTile !=null)
         {
             Debug.Log("Mouvement");
             SendChangeTurn();
@@ -735,6 +771,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     public void SendPlayerhasDraw(Carte myCard)
     {
+        Debug.LogWarning("SendPlayerhasDraw");
         Debug.Log("A player have draw");
         byte evCode = 2; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { PlayerID, myCard.cardName, hand.Count }; // Array contains the target position and the IDs of the selected units
@@ -749,6 +786,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     public void SendDeckHasChange(Carte drop, Carte get)
     {
+        Debug.LogWarning("SendDeckHasChange");
         m_MyActionPhase = m_Action.Wait;
 
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
@@ -769,6 +807,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// </summary>
     void SendMouvementDone()
     {
+        Debug.LogWarning("send action done");
         m_MyActionPhase = m_Action.Wait;
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
 
@@ -789,6 +828,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// </summary>
     void SendActionPhase()
     {
+        Debug.LogWarning("SendActionPhase");
         byte evCode = 5; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] {name }; // Array contains the target position and the IDs of the selected units
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
@@ -805,8 +845,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void SendActionDone()
     {
         m_MyActionPhase = m_Action.Wait;
-        Debug.Log("________"+transform.GetChild(0).transform.position);
-        
+        Debug.LogWarning("SendActionDone");
+
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
         byte evCode = 6; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { transform.GetChild(0).transform.position, FOV, "Je sais pas encore",name, PlayerID }; // Array contains the target position and the IDs of the selected units
@@ -826,7 +866,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// <param name="tileName"> the name of the tile /his position </param>
     void SendDropMine(Bomb bombState, string tileName)
     {
-        Debug.Log("j'ai posé une bomb");
+        Debug.LogWarning("SendDropMine");
 
         int indexOfMine;
 
@@ -869,11 +909,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// </summary>
     void SendChangeTurn()
     {
+        //Debug.LogWarning("SendChangeTurn" + interactTile.transform.position);
+
         m_MyActionPhase = m_Action.Wait;
 
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
         byte evCode = 8; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] { transform.GetChild(0).transform.position, FOV, "Je sais pas encore", name, PlayerID }; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] { interactTile.transform.position, FOV, "Je sais pas encore", name, PlayerID }; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
@@ -916,6 +958,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 break;
         }
 
+        Debug.LogWarning("SendBombTrigger");
+
         byte evCode = 9; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { indexOfMine, tileName, bombOwner }; // Array contains the target position and the IDs of the selected units
 
@@ -935,6 +979,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// </param>
     void SendUnlockCard(string cardName)
     {
+        Debug.LogWarning("SendUnlockCard");
+
         byte evCode = 10; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { cardName }; // Array contains the target position and the IDs of the selected units
 
@@ -951,6 +997,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// </summary>
     void SendPlayerGetTreasure()
     {
+        Debug.LogWarning("SendPlayerGetTreasure");
+
         byte evCode = 11; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { this.gameObject.name }; // Array contains the target position and the IDs of the selected units
 
@@ -960,6 +1008,40 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         SendOptions sendOptions = new SendOptions();
         sendOptions.DeliveryMode = DeliveryMode.Reliable;
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+    #endregion
+
+    #region Affichage
+    /// <summary>
+    /// Update the game board for a player
+    /// </summary>
+    /// <param name="position"> this is the position of the opponent who mask some of yours tiles </param>
+    /// <param name="radius"> this corresponds to the lenght of his FOV</param>
+    /// <param name="tag"> the tag</param>
+    void UpdateBoard(Vector3 position, float radius, string tag)
+    {
+        Debug.Log("je modifie le plateau");
+        foreach (Collider item in Physics.OverlapSphere(position, radius))
+        {
+            if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
+            {
+                Debug.Log("il possède un celldata");
+                if (m_Neighbours.Contains(item.gameObject))
+                {
+                    Debug.Log("il est partagé par les deux joueurs");
+                }
+                else
+                {
+                    Debug.Log("il n'est pas partagé");
+                    item.gameObject.GetComponent<CellData>().HideTile(gameObject.name);
+                }
+            }
+            else
+            {
+                Debug.Log("il n'a pas de celldata");
+            }
+        }
     }
 
     #endregion
@@ -997,8 +1079,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         Debug.Log("is CheckIsNearChest =" + result);
         StartCoroutine(m_Canvas.ShowInformation(result, false));
-
-        if (view.IsMine)
+        Debug.LogError(view.Owner.NickName);
+        if (view.IsMine && gameObject.name.Contains(view.Owner.NickName))
         {
             m_MyActionPhase = m_Action.Wait;
             SendActionDone();
@@ -1061,7 +1143,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
 
         Debug.Log("Je passe");
-        if (view.IsMine)
+        Debug.Log(view.Owner.NickName + "  " + gameObject.name +"   " + (view.IsMine && gameObject.name.Contains(view.Owner.NickName)));
+        if (view.IsMine && gameObject.name.Contains(view.Owner.NickName))
         {
             m_MyActionPhase = m_Action.Wait;
             SendActionDone();
@@ -1080,40 +1163,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             SendStart();
         }
     }
-    #endregion
-
-    #region Affichage
-    /// <summary>
-    /// Update the game board for a player
-    /// </summary>
-    /// <param name="position"> this is the position of the opponent who mask some of yours tiles </param>
-    /// <param name="radius"> this corresponds to the lenght of his FOV</param>
-    /// <param name="tag"> the tag</param>
-    void UpdateBoard(Vector3 position, float radius, string tag)
-    {
-        Debug.Log("je modifie le plateau");
-        foreach (Collider item in Physics.OverlapSphere(position, radius))
-        {
-            if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
-            {
-                Debug.Log("il possède un celldata" );
-                if (m_Neighbours.Contains(item.gameObject))
-                {
-                    Debug.Log("il est partagé par les deux joueurs");
-                }
-                else
-                {
-                    Debug.Log("il n'est pas partagé");
-                    item.gameObject.GetComponent<CellData>().HideTile(gameObject.name);
-                }
-            }
-            else
-            {
-                Debug.Log("il n'a pas de celldata");
-            }
-        }
-    }
-
     #endregion
 
     #region Interface
@@ -1168,8 +1217,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             case 5:
                 data = (object[])photonEvent.CustomData;
                 playerName = (string)data[0];
-                /*if(view.IsMine)
-                    SendActionDone();*/
                 Debug.Log("reçu 5 de la part de +" + playerName);
                 m_MyActionPhase = m_Action.Action;
                 m_Canvas.UpdateInterface(m_MyActionPhase, hand);
@@ -1220,8 +1267,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 int playerId = (int)data[4];
 
                 if (playerId != this.PlayerID)
+                {
                     UpdateBoard(pos, radius, tag);
-                if (m_MyActionPhase == m_Action.Wait)
+                }
+                    
+                if (m_MyActionPhase == m_Action.Wait && interactTile != null)
                     SendChangeTurn();
 
                 m_MyActionPhase = m_Action.Mouvement;
@@ -1284,10 +1334,72 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     #endregion
 
+    #region Physics
+    private void physicsCheck()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.transform.position, groundDistance, groundMask);
+        if (!isGrounded && velocity.x < 0)
+        {
+            velocity.x = -1.5f;
+        }
+
+        RaycastHit hit;
+        Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, interactDistance, groundMask);
+
+        Color color = hit.collider != null ? Color.green : Color.red;
+
+        Debug.DrawRay(cam.transform.position, cam.transform.forward * interactDistance, color);
+
+        if(m_MyActionPhase == m_Action.Mouvement)
+        {
+            if (hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show)
+            {
+                    if (tile != null && tile != hit.collider.gameObject)
+                    {
+                        tile.GetComponent<CellData>().UnHighlightTile(this.name);
+                    }
+                    tile = hit.collider.gameObject;
+                    tile.GetComponent<CellData>().HighlightTile(this.name);
+            }
+            else if(hit.collider != null)
+            {
+                if (tile != null)
+                    tile.GetComponent<CellData>().UnHighlightTile(this.name);
+                tile = null;
+            }
+        }
+        else if(m_MyActionPhase == m_Action.Action && m_MyBomb != Bomb.Nothing)
+        {
+            if (hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show && m_Neighbours.Contains(hit.collider.gameObject))
+            {
+
+                    if (tile != null && tile != hit.collider.gameObject)
+                    {
+                        tile.GetComponent<CellData>().HighlightTile(this.name);
+                    }
+                    tile = hit.collider.gameObject;
+                    tile.GetComponent<CellData>().UnHighlightTile(this.name);
+                
+            }
+            else if (hit.collider != null)
+            {
+                if (tile != null)
+                    tile.GetComponent<CellData>().HighlightTile(this.name);
+                tile = null;
+            }
+        }
+        
+    }
+
+    #endregion
+
     #region GETTER && SETTER
     public TMP_Text InfoText { get => infoText; set => infoText = value; }
     public NetworkUi Canva { get => m_Canvas; set => m_Canvas = value; }
     public int NbCardToDraw { get => nbCardToDraw; set => nbCardToDraw = value; }
+    public PhotonView View { get => view; set => view = value; }
+    public Grid Grid { get => grid; set => grid = value; }
+    public GridGen Terrain { get => terrain; set => terrain = value; }
 
     void SetId(string PlayerName, int playerID)
     {
@@ -1310,14 +1422,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         if (drawDebug)
         {
-            Gizmos.DrawSphere(transform.GetChild(0).position, FOV);
-
-            //axes of Mouvements
-            Gizmos.DrawLine(transform.position + offset, (transform.position + Vector3.up) * 3 + offset);
-            Gizmos.DrawLine(transform.position + offset, (transform.position + Vector3.down) * 3 + offset);
-            Gizmos.DrawLine(transform.position + offset, (transform.position + Vector3.left) * 3 + offset);
-            Gizmos.DrawLine(transform.position + offset, (transform.position + Vector3.right) * 3 + offset);
-            Gizmos.DrawLine(transform.position + offset, (transform.position + Vector3.forward) * 3 + offset);
+            //Gizmos.DrawSphere(new Vector3(grid.LocalToCell(transform.position).x + offset.x, grid.LocalToCell(transform.position).y + offset.y), 1.2f);
+            Gizmos.DrawRay(transform.GetChild(0).transform.position, Vector3.forward * 1.2f);
         }
     }
     #endregion

@@ -306,9 +306,9 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
-  orthographic size: 13
-  m_Depth: -1
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -366,14 +366,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c4c7d2b140d0a4aa0b433f95bce002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 6143988518016405950, guid: 3da65b17862f125468a71c013516db7f,
+  playerPrefab: {fileID: 5557735472172946939, guid: 2938b6b101a97b246aaef5265da6a24c,
     type: 3}
   gridPrefab: {fileID: 3453831354389151346, guid: 8bcb657fa75a74f4bbce8375b63c2922,
     type: 3}
   deckPrefab: {fileID: 244029036514954659, guid: 44ac62c79f062a148bcf19ae779a2a1b,
     type: 3}
   handPrefabs: {fileID: 0}
-  nbCardToDraw: 2
+  cardIsCreate: 0
 --- !u!4 &1953003073
 Transform:
   m_ObjectHideFlags: 0

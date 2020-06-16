@@ -74,7 +74,6 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     {
         waitingPanel.SetActive(false);
         gamePanel.SetActive(true);
-        
     }
 
     void Initializedbutton (PlayerMouvement player) {

@@ -5,11 +5,11 @@ using UnityEngine;
 [System.Serializable]
 public class Mine 
 {
-    [SerializeField] private string bombOwner;
-    [SerializeField] private m_BombState bombState = m_BombState.Nothing;
+    [SerializeField] private string m_MineOwner;
+    [SerializeField] private m_BombState m_MineState = m_BombState.Nothing;
 
-    public string BombOwner { get => bombOwner; set => bombOwner = value; }
-    public m_BombState BombState { get => bombState; set => bombState = value; }
+    public string BombOwner { get => m_MineOwner; set => m_MineOwner = value; }
+    public m_BombState BombState { get => m_MineState; set => m_MineState = value; }
 
     public enum m_BombState { RED, BLACK, WHITE, Nothing };
 

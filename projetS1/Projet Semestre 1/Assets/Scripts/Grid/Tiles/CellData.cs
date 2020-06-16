@@ -12,10 +12,10 @@ public class CellData : MonoBehaviour
     public MeshRenderer objMesh;
     public Color baseCol;
 
-    [SerializeField] private bool canPlantBomb = false;
+    [SerializeField] private bool canPlantMine = false;
     [SerializeField] private m_State state = m_State.Hide;
     
-    [SerializeField] private List<Mine> m_Listbomb = new List<Mine>(); 
+    [SerializeField] private List<Mine> m_ListMine = new List<Mine>(); 
     
 
 
@@ -43,19 +43,19 @@ public class CellData : MonoBehaviour
 
     public void Bomb(string playerName)
     {
-        if (m_Listbomb.Count == 0)
+        if (m_ListMine.Count == 0)
         {
             objMesh.material.color = Color.yellow;
-            canPlantBomb = true;
+            canPlantMine = true;
         }
         else
         {
-            foreach (Mine item in m_Listbomb)
+            foreach (Mine item in m_ListMine)
             {
                 if(item.BombOwner != playerName)
                 {
                     objMesh.material.color = Color.yellow;
-                    canPlantBomb = true;
+                    canPlantMine = true;
                 }
             }
         }
@@ -89,7 +89,7 @@ public class CellData : MonoBehaviour
             default:
                 break;
         }
-        m_Listbomb.Add(newMine);
+        m_ListMine.Add(newMine);
     }
 
     public void UpdateBombState(PlayerMouvement.Bomb type, string owner)
@@ -136,7 +136,7 @@ public class CellData : MonoBehaviour
 
     public bool ShowTile( string player)
     {
-        if (m_Listbomb.Count == 0)
+        if (m_ListMine.Count == 0)
         {
             state = m_State.Show;
             objMesh.material.color = Color.white;
@@ -144,7 +144,7 @@ public class CellData : MonoBehaviour
         else
         {
             List<Mine> canChange = new List<Mine>();
-            foreach (Mine item in m_Listbomb)
+            foreach (Mine item in m_ListMine)
             {
                 if (item.BombOwner == player)
                 {
@@ -161,10 +161,44 @@ public class CellData : MonoBehaviour
         return true;
     }
 
+    public void HighlightTile(string playerName)
+    {
+        if(state == m_State.Show && Listbomb.Count == 0)
+        {
+            objMesh.material.color = Color.yellow;
+        }
+        else
+        {
+            foreach (Mine item in Listbomb)
+            {
+                if (playerName == item.BombOwner)
+                    return;
+            }
+            objMesh.material.color = Color.yellow;
+        }
+    }
+
+    public void UnHighlightTile(string playerName)
+    {
+        if (state == m_State.Show && Listbomb.Count == 0)
+        {
+            objMesh.material.color = Color.white;
+        }
+        else
+        {
+            foreach (Mine item in Listbomb)
+            {
+                if (playerName == item.BombOwner)
+                    return;
+            }
+            objMesh.material.color = Color.white;
+        }
+    }
+
     public bool HideTile(string player)
     {
 
-        if (state == m_State.Show && m_Listbomb.Count == 0)
+        if (state == m_State.Show && m_ListMine.Count == 0)
         {
             objMesh.material.color = Color.black;
             state = m_State.Hide;
@@ -172,7 +206,7 @@ public class CellData : MonoBehaviour
         else if(state == m_State.Show)
         {
             List<Mine> canChange = new List<Mine>();
-            foreach (Mine item in m_Listbomb)
+            foreach (Mine item in m_ListMine)
             {
                 if (item.BombOwner == player)
                 {
@@ -191,7 +225,7 @@ public class CellData : MonoBehaviour
 
     public bool IsBomb()
     {
-        return m_Listbomb.Count > 0;
+        return m_ListMine.Count > 0;
     }
 
     private void AddToList(Mine mine)
@@ -205,8 +239,8 @@ public class CellData : MonoBehaviour
     }
 
     #region GETTER && SETTER
-    public bool CanPlantBomb { get => canPlantBomb; set => canPlantBomb = value; }
+    public bool CanPlantBomb { get => canPlantMine; set => canPlantMine = value; }
     public m_State State { get => state; set => state = value; }
-    public List<Mine> Listbomb { get => m_Listbomb; set => m_Listbomb = value; }
+    public List<Mine> Listbomb { get => m_ListMine; set => m_ListMine = value; }
     #endregion*/
 }

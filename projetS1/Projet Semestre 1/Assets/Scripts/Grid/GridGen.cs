@@ -29,9 +29,10 @@ public class GridGen : MonoBehaviour
 
     private void Awake()
     {
-        //Debug.Log(GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed);
+        Debug.Log(GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed);
         Random.seed = GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed;
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -73,6 +74,7 @@ public class GridGen : MonoBehaviour
                 objToSpawn = GameObject.Instantiate(gridObject, realPos, new Quaternion(0f, 0f, 0f, 0f));
                 objToSpawn.transform.parent = gameObject.transform;
                 objToSpawn.name = gridPos.ToString();
+                objToSpawn.transform.Rotate(new Vector3(90, 0, 0));
                 Vector3Int tempPos = new Vector3Int(gridPos.x, gridPos.y, 0);
                 CellData tempCellData = objToSpawn.transform.GetChild(0).gameObject.GetComponent<CellData>();
                 tempCellData.gridPos = tempPos;
@@ -84,7 +86,7 @@ public class GridGen : MonoBehaviour
             }
             //Incrément des variables Y
             gridPos.y++;
-            realPos.y += shiftSize;
+            realPos.z += shiftSize;
             //Remise à 0 des x
             realPos.x = 0;
             gridPos.x = 1;
@@ -165,7 +167,6 @@ public class GridGen : MonoBehaviour
     //Permet de repasser les cases dans leur couleur initiale
     void ResetTiles()
     {
-
         if (temporaryListOfCells != null)
         {
             foreach (CellData item in temporaryListOfCells)
@@ -175,14 +176,4 @@ public class GridGen : MonoBehaviour
         }
     }
 
-    int SendSeed(int mySeed)
-    {
-        return 1;
-    }
-
-    [PunRPC]
-    void receiveSeed(int seed)
-    {
-        m_seed = seed;
-    }
 }

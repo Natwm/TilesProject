@@ -16,7 +16,9 @@ public class GameManager : MonoBehaviour
 
     private NetworkUi canvas;
 
-    bool cardIsCreate;
+    public bool cardIsCreate;
+
+    int nbplayer = 0;
 
     void Start()
     {
@@ -32,10 +34,21 @@ public class GameManager : MonoBehaviour
 
         if (NetworkPlayer.LocalPlayerInstance == null)
         {
+            nbplayer++;
             //Debug.LogFormat("GAME MANAGER START");
-            Vector3 pos = new Vector3(0, 0, -1);
+            Vector3 pos = new Vector3(1, 1, nbplayer + 2f);
             GameObject playerGO = PhotonNetwork.Instantiate(playerPrefab.name, pos, Quaternion.identity);
+            //playerGO.transform.Rotate(-90f, 0, 0);
+
+            Camera.main.gameObject.transform.position = playerGO.transform.position;
+            Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x, Camera.main.gameObject.transform.position.y + 0.75f, Camera.main.gameObject.transform.position.z);
+            Camera.main.gameObject.AddComponent<CamController>();
+            Camera.main.gameObject.transform.parent = playerGO.transform;
+            Camera.main.gameObject.GetComponent<CamController>().playerPos = playerGO;
+
+            playerGO.GetComponent<PlayerMouvement>().cam = Camera.main;
             NetworkPlayer.LocalPlayerInstance = playerGO;
+
         }
     }
 
