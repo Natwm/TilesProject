@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3453831354389151344}
   - component: {fileID: 3453831354389151347}
-  - component: {fileID: 114962413500653292}
-  - component: {fileID: 1896257827351156403}
   m_Layer: 0
   m_Name: GridHolder
   m_TagString: Untagged
@@ -27,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3453831354389151346}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.5218447, y: -0.777002, z: -1.3988355}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -42,46 +40,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3453831354389151346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1ccc852261054c4f8bb0c36d8f78d36, type: 3}
+  m_Script: {fileID: 11500000, guid: d66c07975b4fb754cb2ceb2b4dbf363c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: {x: 10, y: 10}
+  gridSize: {x: 4, y: 4}
   gridObject: {fileID: 8689200998252338104, guid: efd220f2d1a9616479072e1944311479,
     type: 3}
   allCell: []
-  chestNumber: 1
-  m_seed: 0
-  originCorner: {x: 0, y: 0, z: 0}
-  farCorner: {x: 0, y: 0, z: 0}
+  chestNumber: 0
   typeToSearch: 0
---- !u!114 &114962413500653292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3453831354389151346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 420af1269351d954c96ac4ced2a46eac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Chemin: Sprites
-  debug: 1
---- !u!114 &1896257827351156403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3453831354389151346}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54f85d8d06fa32b4198df96499e6488d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chestTiles: []
-  allCards: []
-  nearChest: []
-  chest: {fileID: 0}
-  allCardsDisplay: []
