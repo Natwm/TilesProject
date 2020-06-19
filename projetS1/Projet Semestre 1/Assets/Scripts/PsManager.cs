@@ -5,13 +5,13 @@ using UnityEngine;
 public class PsManager : MonoBehaviour
 {
     ParticleSystem burst;
-    cellData currentCell;
+    CellData currentCell;
     bool hasCalled;
     // Start is called before the first frame update
     void Start()
     {
         burst = gameObject.transform.parent.GetChild(0).GetComponent<ParticleSystem>();
-        currentCell = gameObject.transform.parent.transform.parent.GetComponent<cellData>();
+        currentCell = gameObject.transform.parent.transform.parent.GetComponent<CellData>();
     }
     public void PlayParticles()
     {

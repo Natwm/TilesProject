@@ -34,6 +34,14 @@ public class PoissonInterface : MonoBehaviour
             SpawnTrees(grid.farCorner,gameObject,gameObject.transform.position,1.5f);
         }
     }
+    public GameObject ActualForest()
+    {
+        GameObject forest = new GameObject();
+        forest.transform.SetPositionAndRotation(new Vector3(-1, -1, 0), forest.transform.rotation);
+        forest.name = "Forest";
+        SpawnTrees(grid.farCorner, forest, gameObject.transform.position, 1.5f);
+        return forest;
+    }
 
     public void SpawnTrees(Vector2 inputSize,GameObject holder,Vector3 holderPosition,float radius)
     {

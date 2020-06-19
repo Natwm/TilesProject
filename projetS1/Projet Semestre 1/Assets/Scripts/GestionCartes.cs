@@ -5,10 +5,10 @@ using UnityEngine;
 public class GestionCartes : MonoBehaviour
 {
     GridGen grid;
-    public List<cellData> chestTiles;
+    public List<CellData> chestTiles;
     public List<Carte> allCards;
-    public cellData[] nearChest;
-    public cellData chest;
+    public CellData[] nearChest;
+    public CellData chest;
     public List<CardReader> allCardsDisplay;
     
     // Start is called before the first frame update
@@ -16,7 +16,7 @@ public class GestionCartes : MonoBehaviour
     {
         
         grid = FindObjectOfType<GridGen>();
-        nearChest = new cellData[8];
+        nearChest = new CellData[8];
         
     }
 
@@ -25,10 +25,10 @@ public class GestionCartes : MonoBehaviour
         grid = FindObjectOfType<GridGen>();
         allCards = new List<Carte>();
         allCardsDisplay = new List<CardReader>();
-        foreach (cellData item in chestTiles)
+        foreach (CellData item in chestTiles)
         {
 
-            cellData[] nearbyCells = new cellData[8];
+            CellData[] nearbyCells = new CellData[8];
             nearbyCells = GetAdjCells(item);
             for (int i = 0; i < nearbyCells.Length; i++)
             {
@@ -40,9 +40,9 @@ public class GestionCartes : MonoBehaviour
         }
     }
 
-    public cellData[] GetAdjCells(cellData baseCell)
+    public CellData[] GetAdjCells(CellData baseCell)
     {
-        cellData[] adjCell = new cellData[8];
+        CellData[] adjCell = new CellData[8];
         //Y VERTICAL X HORIZONTAL 
         Vector3Int upCellVector = new Vector3Int(baseCell.gridPos.x, baseCell.gridPos.y+1, baseCell.gridPos.z);
         Vector3Int downCellVector = new Vector3Int(baseCell.gridPos.x, baseCell.gridPos.y - 1, baseCell.gridPos.z);
@@ -52,7 +52,7 @@ public class GestionCartes : MonoBehaviour
         Vector3Int upRightCellVector = new Vector3Int(baseCell.gridPos.x + 1, baseCell.gridPos.y + 1, baseCell.gridPos.z);
         Vector3Int downLeftCellVector = new Vector3Int(baseCell.gridPos.x - 1, baseCell.gridPos.y - 1, baseCell.gridPos.z);
         Vector3Int downRightCellVector = new Vector3Int(baseCell.gridPos.x + 1, baseCell.gridPos.y - 1, baseCell.gridPos.z);
-        foreach (cellData item in grid.allCell)
+        foreach (CellData item in grid.allCell)
         {
             if (item.gridPos == upCellVector)
             {
@@ -126,15 +126,15 @@ public class Carte
     public GameObject cardRenderer;
     public GameObject ingameDisplay;
     public CardReader cardInterface;
-    public cellData cardCell;
-    public cellData chestCell;
+    public CellData cardCell;
+    public CellData chestCell;
     public cellTypeInitialisation.cellType cardType;
     public enum directionFromChest { up,down,left,right,upleft,upright,downleft,downright}
     public directionFromChest cardDirection;
     public enum visibleFace { front,back};
     public visibleFace currentFace;
 
-    public Carte (cellData _cell,int _id)
+    public Carte (CellData _cell,int _id)
     {
         cardCell = _cell;
         cardType = cardCell.cellType;

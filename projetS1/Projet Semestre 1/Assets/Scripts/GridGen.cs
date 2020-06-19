@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 
 public class GridGen : MonoBehaviour
 {
@@ -11,7 +14,7 @@ public class GridGen : MonoBehaviour
     public GameObject gridObject;
     BoxCollider2D gridObjectCollider2D;
     PoissonInterface trees;
-    public cellData[] allCell;
+    public CellData[] allCell;
     Vector3 realPos = Vector3.zero;
     public int chestNumber;
     public GestionCartes cardScript;
@@ -22,21 +25,45 @@ public class GridGen : MonoBehaviour
     [Space]
     [Header("Debug")]
     public cellTypeInitialisation.cellType typeToSearch;
-    List<cellData> temporaryListOfCells;
+    List<CellData> temporaryListOfCells;
     Color cellBaseCol;
 
+    GameObject Tiles;
+    GameObject AllBorders;
+    GameObject Forest;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        Debug.Log(GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed);
+        Random.seed = GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed;
+    }
+
     void Start()
     {
-        allCell = new cellData[gridSize.x*gridSize.y];
+        Tiles = new GameObject();
+        Tiles.name = "Cases";
+        AllBorders = new GameObject();
+        AllBorders.name = "Bordures";
+        
+        allCell = new CellData[gridSize.x*gridSize.y];
         gridObjectCollider2D = gridObject.transform.GetChild(0).gameObject.GetComponent<BoxCollider2D>();
-        GameObject TopLeavesInst = Resources.Load<GameObject>("TopLeaves");
+        GameObject TopLeavesInst = Resources.Load<GameObject>("prefabs/TopLeaves");
         TopLeaves = Instantiate(TopLeavesInst);
         TopLeavesPs = TopLeaves.GetComponent<ParticleSystem>();
-        trees = GameObject.FindObjectOfType<PoissonInterface>();
+        GameObject Insttrees = Resources.Load<GameObject>("prefabs/PoissonDiscSampling");
+        GameObject actualPs = Instantiate(Insttrees);
+        actualPs.transform.SetPositionAndRotation(new Vector3(-0.5f,-0.5f,0),actualPs.transform.rotation);
+        trees = actualPs.GetComponent<PoissonInterface>();
         trees.LoadResources();
         CreateGrid();
-        
+        Forest = trees.ActualForest();
+        Tiles.transform.parent = transform;
+        AllBorders.transform.parent = transform;
+        Forest.transform.SetPositionAndRotation(gridObject.transform.position, gridObject.transform.rotation);
+        Forest.transform.parent = transform;
+        TopLeaves.transform.parent = transform;
+        transform.SetPositionAndRotation(transform.position,Quaternion.Euler(90,0,0));
     }
 
     
@@ -68,10 +95,10 @@ public class GridGen : MonoBehaviour
                     farCorner = realPos;
                 }
                 objToSpawn = GameObject.Instantiate(gridObject,realPos,new Quaternion (0f,0f,180f,0f));
-                objToSpawn.transform.parent = gameObject.transform;
+                objToSpawn.transform.parent = Tiles.transform;
                 objToSpawn.name = gridPos.ToString();
                 Vector3Int tempPos = new Vector3Int(gridPos.x, gridPos.y,0);
-                cellData tempCellData = objToSpawn.transform.GetChild(0).gameObject.GetComponent<cellData>();
+                CellData tempCellData = objToSpawn.transform.GetChild(0).gameObject.GetComponent<CellData>();
                 tempCellData.gridPos = tempPos;
                 allCell[incrémentIndex] = tempCellData;
                 //Incrément des variables X
@@ -120,7 +147,7 @@ public class GridGen : MonoBehaviour
                 borderBox = borderTiles[i].GetComponent<BoxCollider>();
                 borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex",TextureTiling);
                 borderTiles[i].transform.SetPositionAndRotation(new Vector3(RealGridSize.x/2-1,Mathf.Round(-1-halfBorderSize.y*0.75f),0),borderTiles[i].transform.rotation);
-                treePos = new Vector3(borderTiles[i].transform.position.x - borderBox.size.x* borderTiles[i].transform.localScale.x/2, Mathf.Round(borderTiles[i].transform.position.y+halfBorderSize.y/2)-0.5f);
+                treePos = new Vector3(borderTiles[i].transform.position.x - borderBox.size.x* borderTiles[i].transform.localScale.x/2, Mathf.Round(borderTiles[i].transform.position.y+halfBorderSize.y/2)-1.5f);
                 trees.SpawnTrees(new Vector2(RealGridSize.x,3),borderTiles[i],treePos,1);
             }
             //Haut
@@ -162,24 +189,24 @@ public class GridGen : MonoBehaviour
                 borderBox = borderTiles[i].GetComponent<BoxCollider>();
                 borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", TextureTiling);
                 borderTiles[i].transform.SetPositionAndRotation(new Vector3(Mathf.Round(RealGridSize.y-1 + halfBorderSize.y *0.75f), RealGridSize.y / 2-1, 0), borderTiles[i].transform.rotation);
-                treePos = new Vector3(Mathf.Round(borderTiles[i].transform.position.x - halfBorderSize.x / 2) - 3.5f, borderTiles[i].transform.position.y - (borderBox.size.z / 2 * borderTiles[i].transform.localScale.z), 0);
+                treePos = new Vector3(Mathf.Round(borderTiles[i].transform.position.x - halfBorderSize.x / 2) - 2.5f, borderTiles[i].transform.position.y - (borderBox.size.z / 2 * borderTiles[i].transform.localScale.z), 0);
                 trees.SpawnTrees(new Vector2(3, RealGridSize.y), borderTiles[i], treePos,1);
             }
             borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureOffset("_MainTex", new Vector2(Random.Range(0f,100f), Random.Range(0f, 100f)));
-            
+            borderTiles[i].transform.parent = AllBorders.transform;
         }
     }
     //Va chercher x cases aléatoire pour leur assigner le chest. 
     //IMPORTANT : Pour l'instant, la logique de génération de cartes peut fonctionner avec plusieurs chests mais j'ai pas encore testé.
     public void SpawnChest(int numberOfChest)
     {
-        cardScript.chestTiles = new List<cellData>();
+        cardScript.chestTiles = new List<CellData>();
         for (int i = 0; i < numberOfChest; i++)
         {
 
             Vector3Int chestPos = new Vector3Int(Random.Range(2,gridSize.x), Random.Range(2, gridSize.x),0);
             
-            foreach (cellData item in allCell)
+            foreach (CellData item in allCell)
             {
                 if (chestPos == item.gridPos)
                 {
@@ -191,10 +218,10 @@ public class GridGen : MonoBehaviour
     }
 
     // Retourne une liste de toute les cases d'un type
-    public List<cellData> GetAllCellFromType(cellTypeInitialisation.cellType typeToCheck)
+    public List<CellData> GetAllCellFromType(cellTypeInitialisation.cellType typeToCheck)
     {
-        List<cellData> listOfAllObjects = new List<cellData>();
-        foreach (cellData item in allCell)
+        List<CellData> listOfAllObjects = new List<CellData>();
+        foreach (CellData item in allCell)
         {
             if (item.cellType == typeToCheck)
             {
@@ -208,9 +235,9 @@ public class GridGen : MonoBehaviour
     public void HighlightTypeOfCell(cellTypeInitialisation.cellType type)
     {
         ResetTiles();
-        temporaryListOfCells = new List<cellData>();
+        temporaryListOfCells = new List<CellData>();
         temporaryListOfCells = GetAllCellFromType(type);
-        foreach (cellData item in temporaryListOfCells)
+        foreach (CellData item in temporaryListOfCells)
         {
             item.ShowTile();
         }
@@ -222,7 +249,7 @@ public class GridGen : MonoBehaviour
         
         if (temporaryListOfCells != null)
         {
-            foreach (cellData item in temporaryListOfCells)
+            foreach (CellData item in temporaryListOfCells)
             {
                 item.HideTile();
             }

@@ -32,7 +32,7 @@ public class cellTypeInitialisation : MonoBehaviour
         treasure = Resources.Load<GameObject>("prefabs/TreasureBox");
     }
 
-    public void GetRandomCellType(cellData currentCell)
+    public void GetRandomCellType(CellData currentCell)
     {
         currentCell.SetResources(shovelHolder,animationITeration,HoleTile,HolePlane,treasure);
         currentCell.setCellReferences(TextureRef,AmplitudeFloatRef);

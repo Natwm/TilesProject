@@ -30,7 +30,7 @@ public class TilesBehaviours : MonoBehaviour
         }
         else
         {
-            transform.GetChild(0).GetComponent<cellData>().ShowTile();
+            transform.GetChild(0).GetComponent<CellData>().ShowTile();
         }
     }
 }
