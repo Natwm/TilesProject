@@ -32,13 +32,13 @@ public class GridGen : MonoBehaviour
     GameObject AllBorders;
     GameObject Forest;
     // Start is called before the first frame update
-
+/*
     private void Awake()
     {
         Debug.Log(GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed);
         Random.seed = GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed;
     }
-
+    */
     void Start()
     {
         Tiles = new GameObject();
@@ -66,7 +66,14 @@ public class GridGen : MonoBehaviour
         transform.SetPositionAndRotation(transform.position,Quaternion.Euler(90,0,0));
     }
 
-    
+    public void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.T))
+        {
+            HighlightTypeOfCell(typeToSearch);
+        }
+        
+    }
     // X correspond à l'horizontal Y correspond au vertical
     public void CreateGrid()
     {
