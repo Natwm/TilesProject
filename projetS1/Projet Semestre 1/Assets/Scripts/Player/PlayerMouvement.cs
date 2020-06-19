@@ -310,8 +310,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Debug.Log("use FOV");
         m_Neighbours.Clear();
 
-        Vector3 pos = new Vector3(grid.LocalToCell(interactTile.transform.position).x + offset.x, grid.LocalToCell(interactTile.transform.position).y + offset.y);
-        
+        Vector3 pos = new Vector3(grid.LocalToCell(interactTile.transform.position).x + offset.x,0, grid.LocalToCell(interactTile.transform.position).y + offset.y);
+        Debug.LogError(pos);
         foreach (Collider item in Physics.OverlapSphere(pos, FOV))
         {
             if (item.gameObject.GetComponent<CellData>() != null)
@@ -1022,6 +1022,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void UpdateBoard(Vector3 position, float radius, string tag)
     {
         Debug.Log("je modifie le plateau");
+        Debug.LogError("updateBoard  : " + position);
         foreach (Collider item in Physics.OverlapSphere(position, radius))
         {
             if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
