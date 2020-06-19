@@ -239,7 +239,7 @@ public class GridGen : MonoBehaviour
         temporaryListOfCells = GetAllCellFromType(type);
         foreach (CellData item in temporaryListOfCells)
         {
-            item.ShowTile();
+            item.ShowGraphics();
         }
     }
 
@@ -251,7 +251,7 @@ public class GridGen : MonoBehaviour
         {
             foreach (CellData item in temporaryListOfCells)
             {
-                item.HideTile();
+                item.HideGraphics();
             }
         }
     }
