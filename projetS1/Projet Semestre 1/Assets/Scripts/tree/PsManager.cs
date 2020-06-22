@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PsManager : MonoBehaviour
 {
-   /* ParticleSystem burst;
+    ParticleSystem burst;
     CellData currentCell;
     bool hasCalled;
     // Start is called before the first frame update
@@ -52,5 +52,5 @@ public class PsManager : MonoBehaviour
     void Update()
     {
         
-    }*/
+    }
 }

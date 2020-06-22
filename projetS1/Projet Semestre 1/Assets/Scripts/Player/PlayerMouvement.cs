@@ -166,7 +166,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                     UseFov();
                     SendMouvementDone();
                 }
-                if (tile != null && Input.GetButtonDown("Fire2") && m_MyActionPhase == m_Action.Action && m_MyBomb == Bomb.Nothing)
+                if (tile != null && Input.GetButtonDown("Fire2") && m_MyActionPhase == m_Action.Action )
                 {
                     Debug.Log("ok");
                     PlayerAction();
@@ -311,7 +311,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_Neighbours.Clear();
 
         Vector3 pos = new Vector3(grid.LocalToCell(tile.transform.position).x + offset.x,0, grid.LocalToCell(tile.transform.position).y + offset.y);
-        Debug.LogError(pos);
         foreach (Collider item in Physics.OverlapSphere(pos, FOV))
         {
             if (item.gameObject.GetComponent<CellData>() != null)
@@ -488,9 +487,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         if (interactTile != null)
         {
-            Debug.Log("je veux cresser");
-            interactTile.GetComponent<CellData>().Dig();
-
             if (interactTile.GetComponent<CellData>().CanPlantBomb && m_MyBomb != Bomb.Nothing)
             {
                 foreach (var item in m_Neighbours)
@@ -503,9 +499,15 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 SendDropMine(m_MyBomb, interactTile.gameObject.transform.parent.name);
                 
                 m_MyBomb = Bomb.Nothing;
-
                 SendActionDone();
             }
+            else if(m_Neighbours.Contains(interactTile) && m_MyBomb == Bomb.Nothing)
+            {
+                Debug.Log("ok");
+                interactTile.GetComponent<CellData>().Dig();
+                SendActionDone();
+            }
+            
         }
     }
 
