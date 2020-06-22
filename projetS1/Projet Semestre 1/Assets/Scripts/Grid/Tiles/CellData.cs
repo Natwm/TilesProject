@@ -7,44 +7,56 @@ public class CellData : MonoBehaviour
     cellTypeInitialisation masterCell;
     public cellTypeInitialisation.cellType cellType = cellTypeInitialisation.cellType.blank;
     public Sprite assignedSprite;
+    public Sprite hiddenSprite;
+    public float Glow_Amplitude;
     public bool isTreasure;
     public Vector3Int gridPos;
     public MeshRenderer objMesh;
     public Color baseCol;
+    string shaderTextureRef;
+    string amplitudeShaderRef;
+    public ParticleSystem leavesBurst;
 
+    //Code de nathan
     [SerializeField] private bool canPlantMine = false;
     [SerializeField] private m_State state = m_State.Hide;
-    
-    [SerializeField] private List<Mine> m_ListMine = new List<Mine>(); 
-    
-
-
-
+    [SerializeField] private List<Mine> m_ListMine = new List<Mine>();
     public enum m_State { Hide, Show }
 
-
+    // Dig Variables
+    GameObject shovelAnimation;
+    ParticleSystem dirtBurst;
+    GameObject HoleTile;
+    float shiftAmount = -1;
+    float planeShift = 0.1f;
+    float gradualDig = 0.1f;
+    public int index = 0;
+    public int maxIterationStep;
+    GameObject HolePlane;
+    public GameObject instanciatedHolePlane;
+    Vector3 planePos;
+    GameObject treasureBox;
+    GameObject TreasureInstance;
     // Start is called before the first frame update
     void Start()
     {
         masterCell = FindObjectOfType<cellTypeInitialisation>();
         masterCell.GetRandomCellType(this);
-        //Debug.Log("a");
-        if (objMesh == null)
-            objMesh = gameObject.GetComponent<MeshRenderer>();
-
+        
+        objMesh = gameObject.GetComponent<MeshRenderer>();
         if (masterCell.debug)
         {
             objMesh.material.SetTexture("_MainTex", assignedSprite.texture);
-            baseCol = objMesh.material.color;
+             
         }
-
-        objMesh.material.color = Color.black;
+        HideGraphics();    
     }
 
     public void Bomb(string playerName)
     {
         if (m_ListMine.Count == 0)
         {
+            //????
             objMesh.material.color = Color.yellow;
             canPlantMine = true;
         }
@@ -52,8 +64,9 @@ public class CellData : MonoBehaviour
         {
             foreach (Mine item in m_ListMine)
             {
-                if(item.BombOwner != playerName)
+                if (item.BombOwner != playerName)
                 {
+                    ///????
                     objMesh.material.color = Color.yellow;
                     canPlantMine = true;
                 }
@@ -119,7 +132,7 @@ public class CellData : MonoBehaviour
                 break;
         }
         AddToList(enemyMine);
-            
+
     }
 
     public void ResetTile(Mine toReset)
@@ -134,12 +147,11 @@ public class CellData : MonoBehaviour
         objMesh.material.color = Color.black;
     }
 
-    public bool ShowTile( string player)
+    public bool ShowTile(string player)
     {
         if (m_ListMine.Count == 0)
         {
-            state = m_State.Show;
-            objMesh.material.color = Color.white;
+            ShowGraphics();
         }
         else
         {
@@ -153,8 +165,7 @@ public class CellData : MonoBehaviour
             }
             if (canChange.Count == 0)
             {
-                state = m_State.Show;
-                objMesh.material.color = Color.white;
+                ShowGraphics();
             }
         }
 
@@ -163,7 +174,7 @@ public class CellData : MonoBehaviour
 
     public void HighlightTile(string playerName)
     {
-        if(state == m_State.Show && Listbomb.Count == 0)
+        if (state == m_State.Show && Listbomb.Count == 0)
         {
             objMesh.material.color = Color.yellow;
         }
@@ -200,10 +211,9 @@ public class CellData : MonoBehaviour
 
         if (state == m_State.Show && m_ListMine.Count == 0)
         {
-            objMesh.material.color = Color.black;
-            state = m_State.Hide;
+            HideGraphics();
         }
-        else if(state == m_State.Show)
+        else if (state == m_State.Show)
         {
             List<Mine> canChange = new List<Mine>();
             foreach (Mine item in m_ListMine)
@@ -213,10 +223,10 @@ public class CellData : MonoBehaviour
                     canChange.Add(item);
                 }
             }
-            if(canChange.Count == 0)
+            if (canChange.Count == 0)
             {
-                objMesh.material.color = Color.black;
-                state = m_State.Hide;
+                HideGraphics();
+                
             }
         }
 
@@ -238,9 +248,85 @@ public class CellData : MonoBehaviour
         Listbomb.Add(mine);
     }
 
+    #region GRAPHICS
+    public void setCellReferences(string textureRef,string amplitudeRef)
+    {
+        shaderTextureRef = textureRef;
+        amplitudeShaderRef = amplitudeRef;
+    }
+    public void HideGraphics()
+    {
+        objMesh.material.SetTexture(shaderTextureRef,hiddenSprite.texture);
+        objMesh.material.SetFloat(amplitudeShaderRef, 0);
+        state = m_State.Hide;
+    }
+
+    public void ShowGraphics()
+    {
+        objMesh.material.SetFloat(amplitudeShaderRef, 2f);
+        objMesh.material.SetTexture(shaderTextureRef, assignedSprite.texture);
+        ParticleSystem currentBurst = Instantiate(leavesBurst);
+        currentBurst.transform.SetPositionAndRotation(transform.position,currentBurst.transform.localRotation);
+        state = m_State.Show;
+    }
+    public void Dig()
+    {
+        if (isTreasure && TreasureInstance == null)
+        {
+            Vector3 treasurePos = new Vector3(transform.position.x,transform.position.y,0.5f);
+            TreasureInstance = Instantiate(treasureBox);
+            TreasureInstance.transform.SetPositionAndRotation(treasurePos, treasureBox.transform.rotation);
+        }
+        //Débug
+        if (index == 0)
+        {
+            planePos = new Vector3(transform.position.x, transform.position.y, planeShift);
+            objMesh.enabled = false;
+            GameObject hole = Instantiate(HoleTile);
+            instanciatedHolePlane = Instantiate(HolePlane);
+            instanciatedHolePlane.transform.SetPositionAndRotation(planePos,instanciatedHolePlane.transform.rotation);
+            ShowGraphics();
+            Vector3 holePos = new Vector3(transform.position.x,transform.position.y,transform.position.z);
+            hole.transform.SetPositionAndRotation(holePos,hole.transform.rotation);
+        }
+
+        if (index < maxIterationStep)
+        {
+            GameObject newShovel = Instantiate(shovelAnimation);
+            Vector3 currPos = new Vector3(transform.position.x, transform.position.y + 1.2f, shiftAmount * 2);
+            newShovel.transform.SetPositionAndRotation(currPos, newShovel.transform.rotation);
+            newShovel.transform.parent = gameObject.transform;
+            newShovel.transform.GetChild(1).GetComponent<Animator>().Play("Dig", 0);
+            shiftAmount += gradualDig;
+            
+            index++;
+        }
+        if (index == maxIterationStep)
+        {
+            treasureBox.transform.GetChild(0).GetComponent<Animator>().Play("FoundBox");
+        }
+        
+        
+    }
+
+    public void UpdatePlane()
+    {
+        planePos.z += gradualDig;
+        instanciatedHolePlane.transform.SetPositionAndRotation(planePos,instanciatedHolePlane.transform.rotation);
+    }
+    public void SetResources(GameObject shovel, int maxAnimationIteration, GameObject holeTile, GameObject holePlane,GameObject treasure)
+    {
+        shovelAnimation = shovel;
+        maxIterationStep = maxAnimationIteration;
+        HoleTile = holeTile;
+        HolePlane = holePlane;
+        treasureBox = treasure;
+    }
+    #endregion
+
     #region GETTER && SETTER
     public bool CanPlantBomb { get => canPlantMine; set => canPlantMine = value; }
     public m_State State { get => state; set => state = value; }
     public List<Mine> Listbomb { get => m_ListMine; set => m_ListMine = value; }
-    #endregion*/
+    #endregion
 }

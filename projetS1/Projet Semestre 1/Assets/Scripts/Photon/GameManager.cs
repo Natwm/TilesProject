@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
         {
             nbplayer++;
             //Debug.LogFormat("GAME MANAGER START");
-            Vector3 pos = new Vector3(1, 1, nbplayer + 2f);
+            Vector3 pos = new Vector3(1, 2, nbplayer + 2f);
             GameObject playerGO = PhotonNetwork.Instantiate(playerPrefab.name, pos, Quaternion.identity);
             //playerGO.transform.Rotate(-90f, 0, 0);
 

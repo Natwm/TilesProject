@@ -1022,7 +1022,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void UpdateBoard(Vector3 position, float radius, string tag)
     {
         Debug.Log("je modifie le plateau");
-        Debug.LogError("updateBoard  : " + position);
         foreach (Collider item in Physics.OverlapSphere(position, radius))
         {
             if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
@@ -1128,6 +1127,46 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 SendPlayerGetTreasure();
         }
     }
+
+    /*public void Dig()
+    {
+        if (isTreasure && TreasureInstance == null)
+        {
+            Vector3 treasurePos = new Vector3(transform.position.x, transform.position.y, 0.5f);
+            TreasureInstance = Instantiate(treasureBox);
+            TreasureInstance.transform.SetPositionAndRotation(treasurePos, treasureBox.transform.rotation);
+        }
+        //Débug
+        if (index == 0)
+        {
+            planePos = new Vector3(transform.position.x, transform.position.y, planeShift);
+            objMesh.enabled = false;
+            GameObject hole = Instantiate(HoleTile);
+            instanciatedHolePlane = Instantiate(HolePlane);
+            instanciatedHolePlane.transform.SetPositionAndRotation(planePos, instanciatedHolePlane.transform.rotation);
+            ShowGraphics();
+            Vector3 holePos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            hole.transform.SetPositionAndRotation(holePos, hole.transform.rotation);
+        }
+
+        if (index < maxIterationStep)
+        {
+            GameObject newShovel = Instantiate(shovelAnimation);
+            Vector3 currPos = new Vector3(transform.position.x, transform.position.y + 1.2f, shiftAmount * 2);
+            newShovel.transform.SetPositionAndRotation(currPos, newShovel.transform.rotation);
+            newShovel.transform.parent = gameObject.transform;
+            newShovel.transform.GetChild(1).GetComponent<Animator>().Play("Dig", 0);
+            shiftAmount += gradualDig;
+
+            index++;
+        }
+        if (index == maxIterationStep)
+        {
+            treasureBox.transform.GetChild(0).GetComponent<Animator>().Play("FoundBox");
+        }
+
+
+    }*/
 
     /// <summary>
     /// This method is call when a player don't want to make an action during the action phase
