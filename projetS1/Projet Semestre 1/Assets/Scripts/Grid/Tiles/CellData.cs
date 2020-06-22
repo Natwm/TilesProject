@@ -273,7 +273,7 @@ public class CellData : MonoBehaviour
     }
     public void Dig()
     {
-        //Grid grid = GameObject.FindObjectOfType<Grid>();
+        
         Debug.Log("dig");
         if (isTreasure && TreasureInstance == null)
         {
@@ -284,26 +284,29 @@ public class CellData : MonoBehaviour
         //Débug
         if (index == 0)
         {
-            planePos = new Vector3(transform.position.x, transform.position.y, planeShift);
+            //Hole ok
+            planePos = new Vector3(transform.position.x, transform.position.y-planeShift, transform.position.z);
             objMesh.enabled = false;
             GameObject hole = Instantiate(HoleTile);
             instanciatedHolePlane = Instantiate(HolePlane);
-            instanciatedHolePlane.transform.SetPositionAndRotation(planePos,instanciatedHolePlane.transform.rotation);
-            ShowGraphics();
+            instanciatedHolePlane.transform.SetPositionAndRotation(planePos,Quaternion.identity);
+            //ShowGraphics();
             Vector3 holePos = new Vector3(transform.position.x,transform.position.y,transform.position.z);
             hole.transform.SetPositionAndRotation(holePos,hole.transform.rotation);
+            
         }
 
         if (index < maxIterationStep)
         {
             GameObject newShovel = Instantiate(shovelAnimation);
-            Vector3 currPos = new Vector3(transform.position.x, transform.position.y + 1.2f, shiftAmount * 2);
-            newShovel.transform.SetPositionAndRotation(currPos, newShovel.transform.rotation);
+            Vector3 currPos = new Vector3(transform.position.x,transform.position.y - shiftAmount+0.6f, transform.position.z-0.8f);
+            newShovel.transform.SetPositionAndRotation(currPos, Quaternion.Euler(new Vector3(-90,0,0)));
             newShovel.transform.parent = gameObject.transform;
             newShovel.transform.GetChild(1).GetComponent<Animator>().Play("Dig", 0);
             shiftAmount += gradualDig;
             
             index++;
+            
         }
         if (index == maxIterationStep)
         {
@@ -315,7 +318,7 @@ public class CellData : MonoBehaviour
 
     public void UpdatePlane()
     {
-        planePos.z += gradualDig;
+        planePos.y -= gradualDig;
         instanciatedHolePlane.transform.SetPositionAndRotation(planePos,instanciatedHolePlane.transform.rotation);
     }
     public void SetResources(GameObject shovel, int maxAnimationIteration, GameObject holeTile, GameObject holePlane,GameObject treasure)
