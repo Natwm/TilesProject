@@ -35,7 +35,6 @@ public class GridGen : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log(GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed);
         Random.seed = GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed;
     }
 
@@ -118,7 +117,6 @@ public class GridGen : MonoBehaviour
         }
         ParticleSpawnRate = (gridSize.x * gridSize.y) / 10;
         RealGridPos = new Vector3(gridSize.x * gridObject.transform.localScale.x, gridSize.y * gridObject.transform.localScale.y,0);
-        Debug.Log(RealGridPos);
         var psRate = TopLeavesPs.emission;
         psRate.rateOverTime = ParticleSpawnRate;
         var psShape = TopLeavesPs.shape;

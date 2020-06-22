@@ -44,6 +44,18 @@ public class TreeOpacity : MonoBehaviour
 
     void CastOpacity()
     {
+        foreach (MeshRenderer item in treeMat)
+        {
+            if (item != null)
+            {
+                float treeDistance = Vector2.Distance(new Vector2(1, triggerCenter.y), new Vector2(1, item.transform.position.y));
+                float clampedTreeDistance = Mathf.Lerp(0, 1, treeDistance / 2f);
+                float alphaTree = opacityModifier.Evaluate(clampedTreeDistance);
+                Color alpha = new Color(item.material.color.r, item.material.color.g, item.material.color.b, 255);
+                item.material.color = alpha;
+            }
+        }
+
         treeInVision.Clear() ;
         treeMat.Clear();
         
