@@ -140,9 +140,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   groundDistance: 0.5
-  interactDistance: 3
+  interactDistance: 1.75
   isGrounded: 0
-  speedMouvement: 10
+  speedMouvement: 5
   gravity: -9.51
   interactTile: {fileID: 0}
   targetLayer:
