@@ -147,7 +147,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 5557735471907591529}
-  - {fileID: 6005409905291043875}
+  - {fileID: 1140569757762251190}
   - {fileID: 8956646012545072563}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -216,7 +216,6 @@ MonoBehaviour:
   FOV: 1.2
   m_MyActionPhase: 3
   nbCardToDraw: 2
-  m_MyBomb: 3
   cam: {fileID: 1605870385619619606}
   groundCheck: {fileID: 5557735471907591528}
   groundMask:
@@ -234,9 +233,16 @@ MonoBehaviour:
   cardLayer:
     serializedVersion: 2
     m_Bits: 0
+  redMineGO: {fileID: 1724411474883253610, guid: b7a15ccf6e7e9b847a586c8b1b563f3e,
+    type: 3}
   amountOfRedMines: 2
+  whiteMineGO: {fileID: 3776672088336850600, guid: ae71f9e2bf89be24d875010d69061a7f,
+    type: 3}
   amountOfWhiteMines: 3
+  blackMineGO: {fileID: 7902560420666743878, guid: 09199355c90c45746ad05892c5cdb1ae,
+    type: 3}
   amountOfBlackMines: 3
+  m_MyBomb: 3
   canDraw: 0
   hand: []
   handGO: {fileID: 1072591110075657310, guid: 721c1c4a33b7b914a9bf9148bb44c992, type: 3}
@@ -430,7 +436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f33a6fd1612eab245af033398c775b5d, type: 3}
---- !u!4 &6005409905291043875 stripped
+--- !u!4 &1140569757762251190 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6666345989055762139, guid: f33a6fd1612eab245af033398c775b5d,
     type: 3}

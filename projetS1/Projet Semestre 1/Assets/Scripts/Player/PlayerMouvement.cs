@@ -35,10 +35,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     [Tooltip("Le nombre maximum de cartes que le joueur peut avoir")]
     [SerializeField] private int nbCardToDraw = 2;
-
-    [Tooltip("Indique la catégorie de la bombe que le joueur utilise")]
-    [SerializeField] private Bomb m_MyBomb = Bomb.Nothing;
-
     
     List<GameObject> m_Neighbours = new List<GameObject>();
     List<GameObject> share = new List<GameObject>();
@@ -83,9 +79,17 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     [Space]
     [Header("Mine")]
+    [SerializeField] GameObject redMineGO;
     [SerializeField] int amountOfRedMines = 2;
+
+    [SerializeField] GameObject whiteMineGO;
     [SerializeField] int amountOfWhiteMines = 3;
+
+    [SerializeField] GameObject blackMineGO;
     [SerializeField] int amountOfBlackMines = 3;
+
+    [Tooltip("Indique la catégorie de la bombe que le joueur utilise")]
+    [SerializeField] private Bomb m_MyBomb = Bomb.Nothing;
 
     [Space]
     [Header("Card")]
@@ -494,7 +498,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                     item.GetComponent<CellData>().ShowTile(gameObject.name);
                     item.GetComponent<CellData>().CanPlantBomb = false;
                 }
+
+                GameObject mine = SpawnBomB(interactTile.transform.position);
                 interactTile.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name);
+
+                
 
                 SendDropMine(m_MyBomb, interactTile.gameObject.transform.parent.name);
                 
@@ -511,6 +519,29 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
     }
 
+    GameObject SpawnBomB(Vector3 tilePos)
+    {
+        switch (m_MyBomb)
+        {
+            case Bomb.RED:
+                Debug.Log("Rouge");
+                return Instantiate(redMineGO, new Vector3(interactTile.transform.position.x, interactTile.transform.position.y + 0.05f, interactTile.transform.position.z), Quaternion.Euler(-90f,0f,0f));
+                break;
+            case Bomb.BLACK:
+                Debug.Log("Noir");
+                return Instantiate(blackMineGO, new Vector3(interactTile.transform.position.x, interactTile.transform.position.y + 0.05f, interactTile.transform.position.z), Quaternion.Euler(-90f, 0f, 0f));
+                break;
+            case Bomb.WHITE:
+                Debug.Log("Blanche");
+                return Instantiate(whiteMineGO, new Vector3(interactTile.transform.position.x, interactTile.transform.position.y + 0.05f, interactTile.transform.position.z), Quaternion.Euler(-90f, 0f, 0f));
+                break;
+            case Bomb.Nothing:
+                break;
+            default:
+                break;
+        }
+        return null;
+    }
     void ChangePhase(string playerName, int playerPhase, bool actionPhase)
     {
         switch (playerPhase)
@@ -1355,10 +1386,12 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Color color = hit.collider != null ? Color.green : Color.red;
 
         Debug.DrawRay(cam.transform.position, cam.transform.forward * interactDistance, color);
+
         if(hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show)
         {
             interactTile = hit.collider.gameObject;
         }
+
         if(m_MyActionPhase == m_Action.Mouvement)
         {
             if (hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show)
