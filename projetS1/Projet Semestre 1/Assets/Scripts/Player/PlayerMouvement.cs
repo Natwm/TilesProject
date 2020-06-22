@@ -159,14 +159,14 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
             if (isGrounded  && view.IsMine && m_MyActionPhase != m_Action.End)
             {
-                interactTile = tile;
+                //interactTile = tile;
                 FpsMove();
                 if (tile != null && Input.GetKeyDown(KeyCode.E) && m_MyActionPhase == m_Action.Mouvement)
                 {
                     UseFov();
                     SendMouvementDone();
                 }
-                if (tile != null && Input.GetButtonDown("Fire1") && m_MyActionPhase == m_Action.Action && m_MyBomb == Bomb.Nothing)
+                if (tile != null && Input.GetButtonDown("Fire2") && m_MyActionPhase == m_Action.Action && m_MyBomb == Bomb.Nothing)
                 {
                     Debug.Log("ok");
                     PlayerAction();
@@ -310,7 +310,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Debug.Log("use FOV");
         m_Neighbours.Clear();
 
-        Vector3 pos = new Vector3(grid.LocalToCell(interactTile.transform.position).x + offset.x,0, grid.LocalToCell(interactTile.transform.position).y + offset.y);
+        Vector3 pos = new Vector3(grid.LocalToCell(tile.transform.position).x + offset.x,0, grid.LocalToCell(tile.transform.position).y + offset.y);
         Debug.LogError(pos);
         foreach (Collider item in Physics.OverlapSphere(pos, FOV))
         {
@@ -1353,7 +1353,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Color color = hit.collider != null ? Color.green : Color.red;
 
         Debug.DrawRay(cam.transform.position, cam.transform.forward * interactDistance, color);
-
+        if(hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show)
+        {
+            interactTile = hit.collider.gameObject;
+        }
         if(m_MyActionPhase == m_Action.Mouvement)
         {
             if (hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show)
