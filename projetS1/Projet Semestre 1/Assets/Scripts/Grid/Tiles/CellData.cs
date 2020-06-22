@@ -273,6 +273,7 @@ public class CellData : MonoBehaviour
     }
     public void Dig()
     {
+        //Grid grid = GameObject.FindObjectOfType<Grid>();
         Debug.Log("dig");
         if (isTreasure && TreasureInstance == null)
         {
