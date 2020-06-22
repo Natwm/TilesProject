@@ -6,8 +6,19 @@ using UnityEngine;
 public class Mine 
 {
     [SerializeField] private string m_MineOwner;
-    [SerializeField] private GameObject mineGO;
+    [SerializeField] private GameObject mineGO = null;
     [SerializeField] private m_BombState m_MineState = m_BombState.Nothing;
+
+    public Mine(string owner, GameObject mineGO)
+    {
+        m_MineOwner = owner;
+        mineGO = MineGO;
+
+    }
+    public Mine(string owner)
+    {
+        m_MineOwner = owner;
+    }
 
     public enum m_BombState { RED, BLACK, WHITE, Nothing };
 

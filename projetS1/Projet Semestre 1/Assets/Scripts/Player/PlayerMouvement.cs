@@ -500,10 +500,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 }
 
                 GameObject mine = SpawnBomB(interactTile.transform.position);
-                interactTile.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name);
-
+                Debug.LogError(mine.name);
+                interactTile.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name, mine);
                 
-
                 SendDropMine(m_MyBomb, interactTile.gameObject.transform.parent.name);
                 
                 m_MyBomb = Bomb.Nothing;

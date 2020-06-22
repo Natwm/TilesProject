@@ -74,10 +74,12 @@ public class CellData : MonoBehaviour
         }
     }
 
-    public void PlantBomb(PlayerMouvement.Bomb type, string owner)
+    public void PlantBomb(PlayerMouvement.Bomb type, string owner, GameObject mineGO)
     {
-        Mine newMine = new Mine();
-        newMine.BombOwner = owner;
+        Mine newMine = new Mine(owner, mineGO);
+        newMine.MineGO = mineGO;
+        //Debug.LogError(newMine.MineGO.name);
+
         switch (type)
         {
             case PlayerMouvement.Bomb.RED:
@@ -108,8 +110,8 @@ public class CellData : MonoBehaviour
     public void UpdateBombState(PlayerMouvement.Bomb type, string owner)
     {
         Debug.Log(" UpdateBombState " + owner);
-        Mine enemyMine = new Mine();
-        enemyMine.BombOwner = owner;
+        Mine enemyMine = new Mine(owner);
+
         switch (type)
         {
             case PlayerMouvement.Bomb.RED:
@@ -137,11 +139,13 @@ public class CellData : MonoBehaviour
 
     public void ResetTile(Mine toReset)
     {
+        Destroy(toReset.MineGO);
         Listbomb.Remove(toReset);
     }
 
     public void ResetTileMine(Mine toReset)
     {
+        Destroy(toReset.MineGO);
         Listbomb.Remove(toReset);
         state = m_State.Hide;
         objMesh.material.color = Color.black;
