@@ -108,6 +108,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Header("Other")]
     [SerializeField] private float TimeCardAvailable = 2.0f;
     [SerializeField] private bool turnCard = false;
+    [SerializeField] private GameObject lantern;
+    private GameObject terrainLantern;
 
     public enum m_Action { Mouvement, Action, Wait, End }
     public enum Bomb { RED, BLACK, WHITE, Nothing }
@@ -315,6 +317,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_Neighbours.Clear();
 
         Vector3 pos = new Vector3(grid.LocalToCell(tile.transform.position).x + offset.x,0, grid.LocalToCell(tile.transform.position).y + offset.y);
+
+        terrainLantern = Instantiate(lantern,new Vector3 (pos.x,pos.y+1.1f,pos.z),Quaternion.identity);
+
+        transform.GetChild(2).GetChild(0).gameObject.SetActive(false);
+
         foreach (Collider item in Physics.OverlapSphere(pos, FOV))
         {
             if (item.gameObject.GetComponent<CellData>() != null)
@@ -500,7 +507,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 }
 
                 GameObject mine = SpawnBomB(interactTile.transform.position);
-                Debug.LogError(mine.name);
                 interactTile.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name, mine);
                 
                 SendDropMine(m_MyBomb, interactTile.gameObject.transform.parent.name);
@@ -510,7 +516,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             }
             else if(m_Neighbours.Contains(interactTile) && m_MyBomb == Bomb.Nothing)
             {
-                Debug.Log("ok");
                 interactTile.GetComponent<CellData>().Dig();
                 SendActionDone();
             }
@@ -879,6 +884,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// </summary>
     void SendActionDone()
     {
+        transform.GetChild(2).GetChild(0).gameObject.SetActive(true);
+        Destroy(terrainLantern);
+
         m_MyActionPhase = m_Action.Wait;
         Debug.LogWarning("SendActionDone");
 
