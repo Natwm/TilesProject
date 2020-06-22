@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 7902560420666310758}
   - component: {fileID: 7902560420665540678}
   - component: {fileID: 7902560420664541830}
+  - component: {fileID: 65603532689657596}
   m_Layer: 0
   m_Name: Ham
-  m_TagString: Untagged
+  m_TagString: Trees
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7902560420666743878}
-  m_LocalRotation: {x: 0.29123423, y: 0.6443468, z: 0.6443467, w: -0.29123402}
-  m_LocalPosition: {x: 25.859892, y: 16.768003, z: -21.850414}
-  m_LocalScale: {x: 99.67068, y: 99.67068, z: 99.67068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 50, y: 50, z: 50}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &7902560420665540678
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -81,3 +82,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &65603532689657596
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7902560420666743878}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.01174779, y: 0.01124492, z: 0.006593246}
+  m_Center: {x: -0.00055314275, y: 0.0014662292, z: 0.0017791272}

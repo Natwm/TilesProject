@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
             Camera.main.gameObject.transform.parent = playerGO.transform;
             Camera.main.gameObject.GetComponent<CamController>().playerPos = playerGO;
             playerGO.transform.GetChild(1).parent = Camera.main.gameObject.transform;
+            playerGO.GetComponent<PlayerMouvement>().cam = Camera.main;
             //Camera.main.gameObject.transform.GetChild(0).position = new Vector3(-0.4f, -0.3f, 0.5f);
 
             playerGO.GetComponent<PlayerMouvement>().cam = Camera.main;
