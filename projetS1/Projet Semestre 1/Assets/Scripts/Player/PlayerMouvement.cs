@@ -159,16 +159,16 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
             if (isGrounded  && view.IsMine && m_MyActionPhase != m_Action.End)
             {
+                interactTile = tile;
                 FpsMove();
                 if (tile != null && Input.GetKeyDown(KeyCode.E) && m_MyActionPhase == m_Action.Mouvement)
                 {
-                    interactTile = tile;
                     UseFov();
                     SendMouvementDone();
                 }
-                if (tile != null && Input.GetKeyDown(KeyCode.E) && m_MyActionPhase == m_Action.Action && m_MyBomb != Bomb.Nothing)
+                if (tile != null && Input.GetButtonDown("Fire1") && m_MyActionPhase == m_Action.Action && m_MyBomb == Bomb.Nothing)
                 {
-                    interactTile = tile;
+                    Debug.Log("ok");
                     PlayerAction();
                 }
             }
@@ -488,6 +488,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         if (interactTile != null)
         {
+            Debug.Log("je veux cresser");
+            interactTile.GetComponent<CellData>().Dig();
+
             if (interactTile.GetComponent<CellData>().CanPlantBomb && m_MyBomb != Bomb.Nothing)
             {
                 foreach (var item in m_Neighbours)
