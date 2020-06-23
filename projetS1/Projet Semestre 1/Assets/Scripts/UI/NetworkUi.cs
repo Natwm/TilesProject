@@ -38,7 +38,6 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public Button bombButton1;
     public Button bombButton2;
     public Button bombButton3;
-    public GameObject cardHolder;
 
 
     [Space]
@@ -70,7 +69,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public float rescale = 1.25f;
     public Color color;
 
-
+    public GameObject cardHolder;
+    public GameObject test;
     Launcher networkManager;
 
     
@@ -164,6 +164,37 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         }
     }
 
+    public void DisplayCard(List<Carte> hand)
+    {
+        for (int i = 0; i < hand.Count; i++)
+        {
+            DisplayACard(cardHolder.transform.GetChild(i).gameObject, hand[i]);
+        }
+    }
+
+    public void DisplayACard(GameObject card, Carte toPrint)
+    {
+        if(card == null)
+        {
+            GameObject carte = Instantiate(test);
+            carte.transform.parent = cardHolder.transform;
+            carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+            carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+
+            carte.transform.localScale = Vector3.one;
+        }
+        else
+        {
+            card.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+            card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+        }
+        
+    }
+
+    public void ShowCards()
+    {
+        cardHolder.SetActive(!cardHolder.active);
+    }
     #endregion
 
     public void SetGameUI(PlayerMouvement player, bool isMaster)

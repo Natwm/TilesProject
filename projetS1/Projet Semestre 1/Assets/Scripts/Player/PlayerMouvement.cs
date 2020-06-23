@@ -111,6 +111,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [SerializeField] private GameObject lantern;
     private GameObject terrainLantern;
 
+
     public enum m_Action { Mouvement, Action, Wait, End }
     public enum Bomb { RED, BLACK, WHITE, Nothing }
 
@@ -157,6 +158,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         if (view.IsMine)
         {
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                Canva.ShowCards();
+            }
+
             if (PlayerID == 0 && gameDeck.GetComponent<GestionCartes>().ready && hand.Count == 0)
             {
                 Debug.Log("Les cartes sont générer" + gameDeck.GetComponent<GestionCartes>().ready);
@@ -717,6 +723,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             Debug.Log("il reste carte : " + gameDeck.GetComponent<GestionCartes>().allCards.Count);
             terrain.HighlightTypeOfCell(hand[0].cardType);
 
+            //Canva.DisplayCard(hand);
         }
 
     }
@@ -729,8 +736,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Debug.Log("ma carte : " + cardDraw.cardName);
         hand.Add(cardDraw);
         gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand.Add(cardDraw);
-        cardDraw.Create();
-
+        //cardDraw.Create();
+        Canva.DisplayACard(null,cardDraw);
         SendPlayerhasDraw(cardDraw);
 
         return cardDraw;
