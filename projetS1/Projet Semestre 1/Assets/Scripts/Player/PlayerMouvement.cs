@@ -187,7 +187,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
                 if(m_MyActionPhase == m_Action.Action)
                 {
-                    if (Input.GetKeyDown(KeyCode.Alpha1)){
+                    if (Input.GetKeyDown(KeyCode.Alpha1) && amountOfRedMines > 0){
                         if(m_MyBomb == Bomb.RED)
                         {
                             Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
@@ -201,7 +201,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                         }                   
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Alpha2))
+                    if (Input.GetKeyDown(KeyCode.Alpha2) && amountOfBlackMines > 0)
                     {
                         if (m_MyBomb == Bomb.BLACK)
                         {
@@ -216,7 +216,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                         }
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Alpha3))
+                    if (Input.GetKeyDown(KeyCode.Alpha3) && amountOfWhiteMines > 0)
                     {
                         if (m_MyBomb == Bomb.WHITE)
                         {
@@ -599,7 +599,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
                     case Bomb.WHITE:
                         Canva.UpdateNbUsemine(m_MyBomb, amountOfWhiteMines);
-                        amountOfBlackMines--;
+                        amountOfWhiteMines--;
                         break;
 
                     default:
