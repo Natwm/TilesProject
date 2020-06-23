@@ -75,8 +75,15 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public GameObject allCardHolder;
     public GameObject cardDisplay;
     public GameObject allCardDisplay;
+    public GameObject phaseDisplay;
 
+    [Space]
+    [Header (" Images ")]
     public Sprite lockImage;
+    public Sprite movePhaseImage;
+    public Sprite actionPhaseImage;
+    public Sprite waitPhaseImage;
+    public Sprite endPhaseImage;
 
     Launcher networkManager;
 
@@ -308,6 +315,31 @@ public class NetworkUi : MonoBehaviourPunCallbacks
             showMyCard(Hand);
         }
 
+    }
+
+    public void UpdatePhaseFeedBack(PlayerMouvement.m_Action phase)
+    {
+        switch (phase)
+        {
+            case PlayerMouvement.m_Action.Mouvement:
+                phaseDisplay.GetComponent<Image>().sprite = movePhaseImage;
+                break;
+
+            case PlayerMouvement.m_Action.Action:
+                phaseDisplay.GetComponent<Image>().sprite = actionPhaseImage;
+                break;
+
+            case PlayerMouvement.m_Action.Wait:
+                phaseDisplay.GetComponent<Image>().sprite = waitPhaseImage;
+                break;
+
+            case PlayerMouvement.m_Action.End:
+                phaseDisplay.GetComponent<Image>().sprite = endPhaseImage;
+                break;
+
+            default:
+                break;
+        }
     }
     #endregion
 
