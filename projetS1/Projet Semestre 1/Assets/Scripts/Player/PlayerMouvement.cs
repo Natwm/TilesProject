@@ -556,7 +556,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Instantiate(handGO).transform.parent = GameObject.Find("GamePanel").transform;
 
         m_MyActionPhase = m_Action.Mouvement;
-
+        Canva.UpdatePhaseFeedBack(m_MyActionPhase);
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
     }
 
@@ -926,6 +926,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         Debug.LogWarning("SendDeckHasChange");
         m_MyActionPhase = m_Action.Wait;
+        Canva.UpdatePhaseFeedBack(m_MyActionPhase);
 
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
         Debug.Log("A player have draw");
@@ -947,6 +948,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         Debug.LogWarning("send action done");
         m_MyActionPhase = m_Action.Wait;
+        Canva.UpdatePhaseFeedBack(m_MyActionPhase);
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
 
         byte evCode = 4; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
@@ -987,7 +989,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         m_MyActionPhase = m_Action.Wait;
         Debug.LogWarning("SendActionDone");
-
+        Canva.UpdatePhaseFeedBack(m_MyActionPhase);
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
         byte evCode = 6; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
         object[] content = new object[] { transform.GetChild(0).transform.position, FOV, "Je sais pas encore",name, PlayerID }; // Array contains the target position and the IDs of the selected units
@@ -1053,6 +1055,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         //Debug.LogWarning("SendChangeTurn" + interactTile.transform.position);
 
         m_MyActionPhase = m_Action.Wait;
+        Canva.UpdatePhaseFeedBack(m_MyActionPhase);
 
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
         byte evCode = 8; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
@@ -1224,6 +1227,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         if (view.IsMine && gameObject.name.Contains(view.Owner.NickName))
         {
             m_MyActionPhase = m_Action.Wait;
+            Canva.UpdatePhaseFeedBack(m_MyActionPhase);
             SendActionDone();
         }
     }
@@ -1262,6 +1266,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             if (!result)
             {
                 m_MyActionPhase = m_Action.Wait;
+                Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 SendActionDone();
             }
             else
@@ -1289,6 +1294,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         if (view.IsMine && gameObject.name.Contains(view.Owner.NickName))
         {
             m_MyActionPhase = m_Action.Wait;
+            Canva.UpdatePhaseFeedBack(m_MyActionPhase);
             SendActionDone();
         }
     }
@@ -1361,6 +1367,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 playerName = (string)data[0];
                 Debug.Log("reçu 5 de la part de +" + playerName);
                 m_MyActionPhase = m_Action.Action;
+                Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 m_Canvas.UpdateInterface(m_MyActionPhase, hand);
                 break;
 
@@ -1417,6 +1424,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                     SendChangeTurn();
 
                 m_MyActionPhase = m_Action.Mouvement;
+                Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 m_Canvas.UpdateInterface(m_MyActionPhase, hand);
                 break;
 
@@ -1454,6 +1462,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 data = (object[])photonEvent.CustomData;
                 playerName = (string)data[0];
                 m_MyActionPhase = m_Action.End;
+                Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 m_Canvas.UpdateInterface(m_MyActionPhase, hand);
                 m_Canvas.ShowWinner(playerName);
                 break;
