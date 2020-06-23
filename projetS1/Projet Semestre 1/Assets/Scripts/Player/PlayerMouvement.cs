@@ -553,14 +553,14 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         if (interactTile != null)
         {
-            if (interactTile.GetComponent<CellData>().CanPlantBomb && m_MyBomb != Bomb.Nothing && canPlatThisMine())
+            if (interactTile.GetComponent<CellData>().CanPlantBomb && m_MyBomb != Bomb.Nothing)
             {
                 foreach (var item in m_Neighbours)
                 {
                     //item.GetComponent<CellData>().ShowTile(gameObject.name);
                     item.GetComponent<CellData>().CanPlantBomb = false;
                 }
-                
+
                 GameObject mine = SpawnBomB(interactTile.transform.position);
                 interactTile.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name, mine);
                 
@@ -601,26 +601,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             
         }
     }
-    private bool canPlatThisMine()
-    {
-        switch (m_MyBomb)
-        {
-            case Bomb.RED:
-                return amountOfRedMines > 0;
-                break;
-            case Bomb.BLACK:
-                return amountOfBlackMines > 0;
-                break;
-            case Bomb.WHITE:
-                return amountOfWhiteMines > 0;
-                break;
-            case Bomb.Nothing:
-                break;
-            default:
-                break;
-        }
-        return false;
-    }
+
     GameObject SpawnBomB(Vector3 tilePos)
     {
         switch (m_MyBomb)
