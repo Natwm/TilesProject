@@ -14,6 +14,7 @@ public class PoissonInterface : MonoBehaviour
     public float maxSize;
     List<Vector2> points;
     Vector2 regionSize;
+    bool Landmark;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,11 +37,13 @@ public class PoissonInterface : MonoBehaviour
     }
     public GameObject ActualForest()
     {
+        
         GameObject forest = new GameObject();
         forest.transform.SetPositionAndRotation(new Vector3(-1, -1, 0), forest.transform.rotation);
         forest.name = "Forest";
         SpawnTrees(grid.farCorner, forest, gameObject.transform.position, 1.5f);
         return forest;
+        
     }
 
     public void SpawnTrees(Vector2 inputSize,GameObject holder,Vector3 holderPosition,float radius)
@@ -50,21 +53,32 @@ public class PoissonInterface : MonoBehaviour
         points = PoissonDiscSampling.GeneratePoints(radius, regionSize, rejectionSamples);
         GameObject subholder = new GameObject();
         
-        foreach (Vector2 item in points)
+        
+        
+        for (int i = 0; i < points.Capacity; i++)
         {
+            
             float randomRotation = Random.Range(0f, 360f);
             int randomTree = Random.Range(0, spawnOnpoint.Length);
             int randomTexture = Random.Range(0, treeTexture.Length);
             float size = Random.Range(minSize, maxSize);
-            GameObject test = Instantiate(spawnOnpoint[randomTree]);
-            Vector3 translatedPos = new Vector3(item.x, item.y, 0);
+            GameObject test;
+            Vector3 translatedPos = new Vector3(points[i].x, points[i].y, 0);
+            test = Instantiate(spawnOnpoint[randomTree]);
             test.transform.SetPositionAndRotation(translatedPos, test.transform.rotation);
             test.transform.localScale = new Vector3(size, size, 50);
-            test.GetComponent<MeshRenderer>().material.SetTexture("_MainTex",treeTexture[randomTexture]);
+            test.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", treeTexture[randomTexture]);
+            
+            
+            
+            
+            
+            
             test.transform.Rotate(Vector3.forward, randomRotation);
             test.transform.parent = subholder.transform;
             
         }
+        
         subholder.transform.SetPositionAndRotation(holderPosition, subholder.transform.rotation);
         subholder.transform.parent = holder.transform;
     }

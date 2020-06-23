@@ -27,7 +27,7 @@ public class GridGen : MonoBehaviour
     public cellTypeInitialisation.cellType typeToSearch;
     List<CellData> temporaryListOfCells;
     Color cellBaseCol;
-
+    GameObject[] AllLandmarks;
     GameObject Tiles;
     GameObject AllBorders;
     GameObject Forest;
@@ -44,7 +44,7 @@ public class GridGen : MonoBehaviour
         Tiles.name = "Cases";
         AllBorders = new GameObject();
         AllBorders.name = "Bordures";
-        
+        AllLandmarks = Resources.LoadAll<GameObject>("prefabs/landmarks");
         allCell = new CellData[gridSize.x*gridSize.y];
         gridObjectCollider = gridObject.transform.GetChild(0).gameObject.GetComponent<BoxCollider>();
         GameObject TopLeavesInst = Resources.Load<GameObject>("prefabs/TopLeaves");
@@ -123,7 +123,18 @@ public class GridGen : MonoBehaviour
         psShape.scale = new Vector3(RealGridPos.x, RealGridPos.y,0);
         TopLeaves.transform.SetPositionAndRotation(new Vector3((RealGridPos.x/2)-1,(RealGridPos.y/2)-1,-5),TopLeaves.transform.rotation);
         GenerateForest(RealGridPos);
+        GenerateLandmark();
         SpawnChest(chestNumber);
+
+    }
+
+    public void GenerateLandmark()
+    {
+        int randomLandmark = Random.Range(0, AllLandmarks.Length);
+        Vector2 randomGridPos = new Vector3(Random.Range(0, gridSize.x * gridObject.transform.localScale.x), 0, Random.Range(0, gridSize.x * gridObject.transform.localScale.x));
+        GameObject landmark = Instantiate(AllLandmarks[randomLandmark]);
+        landmark.transform.SetPositionAndRotation(randomGridPos,landmark.transform.rotation);
+
     }
 
     public void GenerateForest(Vector3 RealGridSize)
