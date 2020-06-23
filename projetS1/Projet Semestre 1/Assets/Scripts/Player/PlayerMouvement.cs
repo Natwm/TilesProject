@@ -158,11 +158,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         if (view.IsMine)
         {
-            /*if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                WHITEtrigger();
-                StartCoroutine(REDtrigger());
-            }*/
+                Cursor.lockState = CursorLockMode.None;
+            }
 
             if (Input.GetKeyDown(KeyCode.M))
             {
@@ -549,6 +548,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void LaunchGame()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         Debug.Log("Start");
         m_Canvas.StartGameUI();
         GestionCartes deck = gameDeck.GetComponent<GestionCartes>();
