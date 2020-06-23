@@ -147,7 +147,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 5557735471907591529}
-  - {fileID: 6005409905291043875}
+  - {fileID: 1140569757762251188}
   - {fileID: 8956646012545072563}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -224,12 +224,12 @@ MonoBehaviour:
   groundDistance: 0.5
   interactDistance: 1.75
   isGrounded: 0
-  speedMouvement: 5
+  speedMouvement: 2
   gravity: -9.51
   interactTile: {fileID: 0}
   targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   cardLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -247,7 +247,7 @@ MonoBehaviour:
   hand: []
   handGO: {fileID: 1072591110075657310, guid: 721c1c4a33b7b914a9bf9148bb44c992, type: 3}
   gameDeck: {fileID: 0}
-  tempsAffichageMessage: 2
+  tempsAffichageMessage: 50
   TimeCardAvailable: 2
   turnCard: 0
   lantern: {fileID: 6666345989055664891, guid: f33a6fd1612eab245af033398c775b5d, type: 3}
@@ -437,7 +437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f33a6fd1612eab245af033398c775b5d, type: 3}
---- !u!4 &6005409905291043875 stripped
+--- !u!4 &1140569757762251188 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6666345989055762139, guid: f33a6fd1612eab245af033398c775b5d,
     type: 3}
