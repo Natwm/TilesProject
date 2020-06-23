@@ -123,7 +123,7 @@ public class GridGen : MonoBehaviour
         psShape.scale = new Vector3(RealGridPos.x, RealGridPos.y,0);
         TopLeaves.transform.SetPositionAndRotation(new Vector3((RealGridPos.x/2)-1,(RealGridPos.y/2)-1,-5),TopLeaves.transform.rotation);
         GenerateForest(RealGridPos);
-        GenerateLandmark();
+       // GenerateLandmark();
         SpawnChest(chestNumber);
 
     }
@@ -131,7 +131,7 @@ public class GridGen : MonoBehaviour
     public void GenerateLandmark()
     {
         int randomLandmark = Random.Range(0, AllLandmarks.Length);
-        Vector2 randomGridPos = new Vector3(Random.Range(0, gridSize.x * gridObject.transform.localScale.x), 0, Random.Range(0, gridSize.x * gridObject.transform.localScale.x));
+        Vector3 randomGridPos = new Vector3(gridSize.x*gridObject.transform.localScale.x/2, 1,gridSize.y * gridObject.transform.localScale.y/2);
         GameObject landmark = Instantiate(AllLandmarks[randomLandmark]);
         landmark.transform.SetPositionAndRotation(randomGridPos,landmark.transform.rotation);
 

@@ -55,7 +55,7 @@ public class PoissonInterface : MonoBehaviour
         
         
         
-        for (int i = 0; i < points.Capacity; i++)
+        foreach (Vector2 item in points)
         {
             
             float randomRotation = Random.Range(0f, 360f);
@@ -63,7 +63,7 @@ public class PoissonInterface : MonoBehaviour
             int randomTexture = Random.Range(0, treeTexture.Length);
             float size = Random.Range(minSize, maxSize);
             GameObject test;
-            Vector3 translatedPos = new Vector3(points[i].x, points[i].y, 0);
+            Vector3 translatedPos = new Vector3(item.x, item.y, 0);
             test = Instantiate(spawnOnpoint[randomTree]);
             test.transform.SetPositionAndRotation(translatedPos, test.transform.rotation);
             test.transform.localScale = new Vector3(size, size, 50);

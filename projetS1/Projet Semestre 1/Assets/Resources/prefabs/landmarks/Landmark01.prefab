@@ -82,7 +82,7 @@ GameObject:
   - component: {fileID: 2761137775142697652}
   m_Layer: 0
   m_Name: Landmark01
-  m_TagString: Untagged
+  m_TagString: Trees
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,7 +96,7 @@ Transform:
   m_GameObject: {fileID: 2761137775144625268}
   m_LocalRotation: {x: -0.34075713, y: 0.61958426, z: 0.61958414, w: 0.3407572}
   m_LocalPosition: {x: 2.013289, y: 1.9, z: -19.2}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 30, y: 30, z: 30}
   m_Children:
   - {fileID: 5974193560722612097}
   m_Father: {fileID: 0}
