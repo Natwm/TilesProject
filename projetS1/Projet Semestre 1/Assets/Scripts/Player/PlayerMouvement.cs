@@ -170,8 +170,57 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 if (tile != null && Input.GetKeyDown(KeyCode.E) && m_MyActionPhase == m_Action.Mouvement)
                 {
                     UseFov();
+                    highlightTiles();
                     SendMouvementDone();
                 }
+
+                if(m_MyActionPhase == m_Action.Action)
+                {
+                    if (Input.GetKeyDown(KeyCode.Alpha1)){
+                        if(m_MyBomb == Bomb.RED)
+                        {
+                            Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
+                            m_MyBomb = Bomb.Nothing;
+                        }
+                        else
+                        {
+                            Canva.SetActionUI(m_MyBomb, Bomb.RED);
+                            m_MyBomb = Bomb.RED;
+                            
+                        }                   
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Alpha2))
+                    {
+                        if (m_MyBomb == Bomb.BLACK)
+                        {
+                            Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
+                            m_MyBomb = Bomb.Nothing;
+                        }
+                        else
+                        {
+                            Canva.SetActionUI(m_MyBomb, Bomb.BLACK);
+                            m_MyBomb = Bomb.BLACK;
+                            
+                        }
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Alpha3))
+                    {
+                        if (m_MyBomb == Bomb.WHITE)
+                        {
+                            Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
+                            m_MyBomb = Bomb.Nothing;
+                        }
+                        else
+                        {
+                            Canva.SetActionUI(m_MyBomb, Bomb.WHITE);
+                            m_MyBomb = Bomb.WHITE;
+                            
+                        }
+                    }
+                }
+
                 if (tile != null && Input.GetButtonDown("Fire2") && m_MyActionPhase == m_Action.Action )
                 {
                     Debug.Log("ok");
@@ -502,7 +551,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             {
                 foreach (var item in m_Neighbours)
                 {
-                    item.GetComponent<CellData>().ShowTile(gameObject.name);
+                    //item.GetComponent<CellData>().ShowTile(gameObject.name);
                     item.GetComponent<CellData>().CanPlantBomb = false;
                 }
 
@@ -510,7 +559,31 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 interactTile.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name, mine);
                 
                 SendDropMine(m_MyBomb, interactTile.gameObject.transform.parent.name);
+
+                Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
+
+                switch (m_MyBomb)
+                {
+                    case Bomb.RED:
+                        Canva.UpdateNbUsemine(m_MyBomb,amountOfRedMines);
+                        amountOfRedMines--;
+                        break;
+
+                    case Bomb.BLACK:
+                        Canva.UpdateNbUsemine(m_MyBomb, amountOfBlackMines);
+                        amountOfBlackMines--;
+                        break;
+
+                    case Bomb.WHITE:
+                        Canva.UpdateNbUsemine(m_MyBomb, amountOfWhiteMines);
+                        amountOfBlackMines--;
+                        break;
+
+                    default:
+                        break;
+                }
                 
+
                 m_MyBomb = Bomb.Nothing;
                 SendActionDone();
             }

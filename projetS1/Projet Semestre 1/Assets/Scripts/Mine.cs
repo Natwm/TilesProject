@@ -13,7 +13,6 @@ public class Mine
     {
         m_MineOwner = owner;
         mineGO = MineGO;
-
     }
     public Mine(string owner)
     {

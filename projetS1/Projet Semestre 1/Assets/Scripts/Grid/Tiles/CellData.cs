@@ -67,7 +67,7 @@ public class CellData : MonoBehaviour
                 if (item.BombOwner != playerName)
                 {
                     ///????
-                    objMesh.material.color = Color.yellow;
+                    //objMesh.material.color = Color.yellow;
                     canPlantMine = true;
                 }
             }
