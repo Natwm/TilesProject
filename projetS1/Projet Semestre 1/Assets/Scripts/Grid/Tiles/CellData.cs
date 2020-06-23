@@ -281,9 +281,9 @@ public class CellData : MonoBehaviour
         Debug.Log("dig");
         if (isTreasure && TreasureInstance == null)
         {
-            Vector3 treasurePos = new Vector3(transform.position.x,transform.position.y,0.5f);
+            Vector3 treasurePos = new Vector3(transform.position.x, transform.position.y-0.5f, transform.position.z);
             TreasureInstance = Instantiate(treasureBox);
-            TreasureInstance.transform.SetPositionAndRotation(treasurePos, treasureBox.transform.rotation);
+            TreasureInstance.transform.SetPositionAndRotation(treasurePos, Quaternion.Euler(new Vector3(90,0,0)));
         }
         //Débug
         if (index == 0)

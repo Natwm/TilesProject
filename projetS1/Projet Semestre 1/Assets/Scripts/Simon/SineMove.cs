@@ -19,9 +19,10 @@ public class SineMove : MonoBehaviour
         {
             sinWave = Mathf.Clamp(Mathf.Sin(2* Time.time),-0.1f,0.1f);
             Vector3 sineMove = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            sineMove.z += sinWave/100;
+            sineMove.y += sinWave/100;
             Mathf.Clamp(sineMove.z, -0.1f, 0.1f);
-            transform.SetPositionAndRotation(sineMove, transform.localRotation);
+            gameObject.transform.parent.transform.SetPositionAndRotation(sineMove, transform.localRotation);
+            
             
         }
         

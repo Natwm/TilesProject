@@ -18,7 +18,7 @@ public class shittyRotate : MonoBehaviour
     {
         if (rotate)
         {
-            transform.Rotate(Vector3.forward, shittyRotateSpeed);
+            transform.parent.transform.Rotate(Vector3.forward, shittyRotateSpeed);
         }
     }
     public void ToggleRotate()

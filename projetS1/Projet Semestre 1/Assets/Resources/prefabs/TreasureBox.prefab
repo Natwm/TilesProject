@@ -198,8 +198,8 @@ GameObject:
   - component: {fileID: 6322364739685947149}
   - component: {fileID: 6322364739686946253}
   - component: {fileID: 3186745581220955068}
-  - component: {fileID: 3935396255378246167}
-  - component: {fileID: 453083249356676753}
+  - component: {fileID: 4835036970468723042}
+  - component: {fileID: 1809324021292133354}
   m_Layer: 0
   m_Name: TreasureBoxMesh
   m_TagString: Untagged
@@ -286,21 +286,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &3935396255378246167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6322364739684682509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0f0bd332af5cbc44b2a678752874ae5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotate: 0
-  shittyRotateSpeed: 0.5
---- !u!114 &453083249356676753
+--- !u!114 &4835036970468723042
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -314,3 +300,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sine: 0
   sinWave: 0
+--- !u!114 &1809324021292133354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6322364739684682509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0f0bd332af5cbc44b2a678752874ae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotate: 0
+  shittyRotateSpeed: 0.5

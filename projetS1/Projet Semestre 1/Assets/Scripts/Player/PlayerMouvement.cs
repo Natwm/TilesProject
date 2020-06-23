@@ -380,7 +380,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         terrainLantern = Instantiate(lantern,new Vector3 (pos.x,pos.y+1.1f,pos.z),Quaternion.identity);
 
-        transform.GetChild(2).GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(3).GetChild(0).gameObject.SetActive(false);
 
         foreach (Collider item in Physics.OverlapSphere(pos, FOV))
         {
@@ -984,7 +984,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// </summary>
     void SendActionDone()
     {
-        transform.GetChild(2).GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
         Destroy(terrainLantern);
 
         m_MyActionPhase = m_Action.Wait;
