@@ -120,7 +120,7 @@ public class GestionCartes : MonoBehaviour
 [System.Serializable]
 public class Carte
 {
-    [SerializeField]private bool canTurnCard = false;
+    [SerializeField]private CardState state = CardState.LOCK;
 
     public int cardId;
     public string cardName;
@@ -135,6 +135,7 @@ public class Carte
     public enum directionFromChest { up, down, left, right, upleft, upright, downleft, downright }
     public directionFromChest cardDirection;
     public enum visibleFace { front, back };
+    public enum CardState { LOCK, UNLOCK };
     public visibleFace currentFace;
 
 
@@ -163,19 +164,9 @@ public class Carte
 
     public void CanTurn()
     {
-        CanTurnCard = true;
+        State = CardState.UNLOCK;
     }
 
-    public void TurnCard()
-    {
-        if (CanTurnCard && currentFace == visibleFace.back)
-            currentFace = visibleFace.front;
-        else if(CanTurnCard && currentFace == visibleFace.front)
-            currentFace = visibleFace.back;
-        else
-            Debug.Log("elle est bloqué");
-    }
-
-    public bool CanTurnCard { get => canTurnCard; set => canTurnCard = value; }
+    public CardState State { get => state; set => state = value; }
 
 }

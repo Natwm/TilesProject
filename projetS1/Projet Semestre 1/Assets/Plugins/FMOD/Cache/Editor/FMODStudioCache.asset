@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EditorBanks:
   - {fileID: 114041760613633768}
-  - {fileID: 114654233223332364}
+  - {fileID: 114791689974151278}
   EditorEvents:
   - {fileID: 114909382355055634}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 114654233223332364}
+  - {fileID: 114791689974151278}
   StringsBanks:
   - {fileID: 114041760613633768}
-  stringsBankWriteTime: 637285024650020254
+  stringsBankWriteTime: 637285071152587739
   cacheVersion: 3
 --- !u!114 &114041760613633768
 MonoBehaviour:
@@ -38,7 +38,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: Assets/Plugins/Desktop/Master.strings.bank
   SubDir: 
-  lastModified: 637285024650020254
+  lastModified: 637285071152587739
   LoadResult: 0
   FileSizes:
   - Name: 
@@ -80,6 +80,24 @@ MonoBehaviour:
   LoadResult: 0
   FileSizes: []
   Exists: 0
+--- !u!114 &114791689974151278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Master.bank
+  SubDir: 
+  lastModified: 637285071152577771
+  LoadResult: 0
+  FileSizes: []
+  Exists: 1
 --- !u!114 &114876883962312106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +131,7 @@ MonoBehaviour:
   Path: event:/Test
   guid: 5ad29110131f0942b6e40d04df753e00
   Banks:
-  - {fileID: 114654233223332364}
+  - {fileID: 114791689974151278}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1

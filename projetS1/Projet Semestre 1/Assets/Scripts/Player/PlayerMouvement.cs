@@ -150,7 +150,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void Update()
     {
-        physicsCheck();
+        physicsCheck(); 
     }
 
     // Update is called once per frame
@@ -158,10 +158,12 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         if (view.IsMine)
         {
-            if (Input.GetKeyDown(KeyCode.M))
+            if (Input.GetKeyDown(KeyCode.S))
             {
-                Canva.ShowCards();
+                WHITEtrigger();
+                StartCoroutine(REDtrigger());
             }
+
 
             if (PlayerID == 0 && gameDeck.GetComponent<GestionCartes>().ready && hand.Count == 0)
             {
@@ -390,7 +392,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
     }
    
-    void TurnCard(bool canturnCard)
+    /*void TurnCard(bool canturnCard)
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = -1;
@@ -419,7 +421,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             Debug.Log("nothing append" + canturnCard);
         }
 
-    }
+    }*/
 
     void bombImact(CellData item)
     {
@@ -488,7 +490,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     IEnumerator REDtrigger()
     {
-        foreach (Carte item in hand)
+        Canva.showAllCard(gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand);
+        yield return new WaitForSeconds(TimeCardAvailable);
+        Canva.DestroyAllCardsDisplay();
+        /*foreach (Carte item in hand)
         {
             Destroy(item.ingameDisplay);
         }
@@ -507,7 +512,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         foreach (Carte item in hand)
         {
             item.Create();
-        }
+        }*/
     }
 
     void BLACKtrigger()
@@ -518,8 +523,16 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void WHITEtrigger()
     {
         Debug.LogWarning("C'est une BLANCHE !");
-        turnCard = true;
-        Debug.Log("ok");
+        foreach (Carte item in hand)
+        {
+            if(item.State == Carte.CardState.LOCK)
+            {
+                item.State = Carte.CardState.UNLOCK;
+                SendUnlockCard(item.cardName);
+                Canva.ShowCards(hand);
+                return;
+            }
+        }
     }
 
     void highlightTiles()
@@ -718,8 +731,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         hand.Add(cardDraw);
         gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand.Add(cardDraw);
         //cardDraw.Create();
-        Canva.DisplayACard(null,cardDraw);
         SendPlayerhasDraw(cardDraw);
+        Canva.DisplayACard(null,cardDraw);
+        
 
         return cardDraw;
     }
@@ -1314,7 +1328,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 playerID = (int)data[0];
                 string handID = (string)data[1];
                 int nbCardInHand = (int)data[2];
-
+                Debug.Log("ModifDeck");
                 ModifDeck(handID);
                 if (PlayerID == playerID + 1 && nbCardInHand == 2)
                 {
@@ -1427,7 +1441,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 {
                     if (card.cardName == cardName)
                     {
-                        card.CanTurnCard = true;
+                        card.State = Carte.CardState.UNLOCK;
                     }
                 }
                 break;

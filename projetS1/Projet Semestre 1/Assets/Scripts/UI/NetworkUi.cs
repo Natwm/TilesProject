@@ -69,8 +69,15 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public float rescale = 1.25f;
     public Color color;
 
+    [Space]
+
     public GameObject cardHolder;
-    public GameObject test;
+    public GameObject allCardHolder;
+    public GameObject cardDisplay;
+    public GameObject allCardDisplay;
+
+    public Sprite lockImage;
+
     Launcher networkManager;
 
     
@@ -166,34 +173,134 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public void DisplayCard(List<Carte> hand)
     {
+        
         for (int i = 0; i < hand.Count; i++)
         {
             DisplayACard(cardHolder.transform.GetChild(i).gameObject, hand[i]);
         }
     }
 
+    public void showAllCard(List<Carte> allCards)
+    {
+        DestroyCardsDisplay();
+        for (int i = 0; i < allCards.Count; i++)
+        {
+            DisplayACard(null,allCards[i]);
+        }
+    }
+
+    public void DestroyAllCardsDisplay()
+    {
+        for (int i = 0; i < allCardHolder.transform.childCount; i++)
+        {
+            Destroy(allCardHolder.transform.GetChild(i).gameObject);
+        }
+    }
+
+    public void DestroyCardsDisplay()
+    {
+        for (int i = 0; i < cardHolder.transform.childCount; i++)
+        {
+            Destroy(cardHolder.transform.GetChild(i).gameObject);
+        }
+    }
+
+    public void DisplayAllCard(Carte toPrint)
+    {
+        GameObject carte = Instantiate(allCardDisplay);
+        carte.transform.parent = allCardHolder.transform;
+        carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+
+        Debug.LogError(toPrint.State);
+
+        if(toPrint.State == Carte.CardState.UNLOCK)
+        {
+            carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+        }
+        else
+        {
+            carte.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+        }
+       
+        carte.transform.localScale = Vector3.one;
+    }
+
     public void DisplayACard(GameObject card, Carte toPrint)
     {
         if(card == null)
         {
-            GameObject carte = Instantiate(test);
+            GameObject carte = Instantiate(cardDisplay);
             carte.transform.parent = cardHolder.transform;
             carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
-            carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+            if (toPrint.State == Carte.CardState.UNLOCK)
+            {
+                carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+            }
+            else
+            {
+                carte.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+            }
 
             carte.transform.localScale = Vector3.one;
         }
         else
         {
             card.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
-            card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+            if (toPrint.State == Carte.CardState.UNLOCK)
+            {
+                card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+            }
+            else
+            {
+                card.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+            }
+  
         }
         
     }
 
-    public void ShowCards()
+    public void DisplayCards(GameObject card, Carte toPrint)
+    {
+        if (card == null)
+        {
+            GameObject carte = Instantiate(allCardDisplay);
+            carte.transform.parent = allCardHolder.transform;
+            carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+            if (toPrint.State == Carte.CardState.UNLOCK)
+            {
+                carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+            }
+            else
+            {
+                carte.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+            }
+
+            carte.transform.localScale = Vector3.one;
+        }
+        else
+        {
+            card.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+            if (toPrint.State == Carte.CardState.UNLOCK)
+            {
+                card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+            }
+            else
+            {
+                card.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+            }
+
+        }
+
+    }
+
+    public void ShowCards(List<Carte>Hand)
     {
         cardHolder.SetActive(!cardHolder.active);
+        if(cardHolder.active == true)
+        {
+            showAllCard(Hand);
+        }
+
     }
     #endregion
 
