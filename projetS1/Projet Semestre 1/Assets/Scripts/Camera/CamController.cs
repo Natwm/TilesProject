@@ -7,7 +7,7 @@ public class CamController : MonoBehaviour
 
     [Header("Movement Variable")]
     [SerializeField]
-    private float mouseSensitivity = 100f;
+    private float mouseSensitivity = 50f;
     private float xRotation = 0f;
 
     [Header("Game Object")]

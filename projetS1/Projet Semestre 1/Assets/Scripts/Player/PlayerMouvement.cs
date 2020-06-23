@@ -1162,7 +1162,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// <param name="tag"> the tag</param>
     void UpdateBoard(Vector3 position, float radius, string tag)
     {
-        Debug.Log("je modifie le plateau");
+        Debug.Log("je modifie le plateau a la position : " + position);
         foreach (Collider item in Physics.OverlapSphere(position, radius))
         {
             if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
