@@ -593,7 +593,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 m_MyBomb = Bomb.Nothing;
                 SendActionDone();
             }
-            else if(m_Neighbours.Contains(interactTile) && m_MyBomb == Bomb.Nothing)
+            else if(m_Neighbours.Contains(interactTile) && m_MyBomb == Bomb.Nothing && interactTile.GetComponent<CellData>().CanPlantBomb)
             {
                 interactTile.GetComponent<CellData>().Dig();
                 SendActionDone();
