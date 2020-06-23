@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="Workspace" id="{c0935a8c-245a-4507-9491-d76d47db2d3d}">
+		<property name="builtBanksOutputDirectory">
+			<value>E:/Projets/JDP/TilesProject/projetS1/Projet Semestre 1/Assets/Plugins</value>
+		</property>
+		<relationship name="masterEventFolder">
+			<destination>{26511d4d-b24d-4f42-a246-52f2ae17004c}</destination>
+		</relationship>
+		<relationship name="masterTagFolder">
+			<destination>{97f0841b-81be-4092-893b-8d1aef752d72}</destination>
+		</relationship>
+		<relationship name="masterEffectPresetFolder">
+			<destination>{abf32f34-5864-4c32-b8f0-98a3d0a0c196}</destination>
+		</relationship>
+		<relationship name="masterParameterPresetFolder">
+			<destination>{139d9b43-f85d-47b6-a910-2cd4dcf6ce77}</destination>
+		</relationship>
+		<relationship name="masterBankFolder">
+			<destination>{a8053163-4ece-4c31-b280-446f9b441a17}</destination>
+		</relationship>
+		<relationship name="masterAssetFolder">
+			<destination>{48f49ecc-c11c-4fb6-ba61-cb1dc07e2dc3}</destination>
+		</relationship>
+		<relationship name="mixer">
+			<destination>{5e512da0-9882-4299-a712-fd542e02fcf8}</destination>
+		</relationship>
+		<relationship name="platforms">
+			<destination>{e910a720-b6fb-498b-9382-446221e28737}</destination>
+		</relationship>
+	</object>
+</objects>
