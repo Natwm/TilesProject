@@ -173,19 +173,26 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public void DisplayCard(List<Carte> hand)
     {
-        
         for (int i = 0; i < hand.Count; i++)
         {
             DisplayACard(cardHolder.transform.GetChild(i).gameObject, hand[i]);
         }
     }
 
-    public void showAllCard(List<Carte> allCards)
+    public void showMyCard(List<Carte> allCards)
     {
         DestroyCardsDisplay();
         for (int i = 0; i < allCards.Count; i++)
         {
             DisplayACard(null,allCards[i]);
+        }
+    }
+
+    public void showAllCard(List<Carte> allCards)
+    {
+        for (int i = 0; i < allCards.Count; i++)
+        {
+            DisplayCards(null, allCards[i]);
         }
     }
 
@@ -298,7 +305,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         cardHolder.SetActive(!cardHolder.active);
         if(cardHolder.active == true)
         {
-            showAllCard(Hand);
+            showMyCard(Hand);
         }
 
     }

@@ -158,12 +158,16 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         if (view.IsMine)
         {
-            if (Input.GetKeyDown(KeyCode.S))
+            /*if (Input.GetKeyDown(KeyCode.S))
             {
                 WHITEtrigger();
                 StartCoroutine(REDtrigger());
-            }
+            }*/
 
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                Canva.ShowCards(hand);
+            }
 
             if (PlayerID == 0 && gameDeck.GetComponent<GestionCartes>().ready && hand.Count == 0)
             {
