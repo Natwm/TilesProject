@@ -161,23 +161,25 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         if (view.IsMine)
         {
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                BLACKtrigger();
-            }
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                WHITEtrigger();
-            }
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                StartCoroutine(REDtrigger());
-            }
-
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
+
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                Canva.gamePanel.SetActive(!Canva.gamePanel.active);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha0)&& transform.GetChild(3).GetChild(0).gameObject.active)
+            {
+                SendActionDone();
+            }else if(Input.GetKeyDown(KeyCode.Alpha0) && !transform.GetChild(3).GetChild(0).gameObject.active)
+            {
+                SendMouvementDone();
+            }
+
 
             if (Input.GetKeyDown(KeyCode.Space) && m_MyActionPhase == m_Action.End)
             {
@@ -186,6 +188,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 {
                     m_MyActionPhase = m_Action.Mouvement;
                     Canva.UpdatePhaseFeedBack(m_MyActionPhase);
+                    //SendMouvementDone();
                 }
                 else
                 {
@@ -194,6 +197,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 }
                 
             }
+
+
 
             if (Input.GetKeyDown(KeyCode.Space) && m_MyActionPhase == m_Action.Feedback)
             {
@@ -484,12 +489,39 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         {
             foreach (Mine elt in affect)
             {
-                //elt.SetBurst(item);
+                MineFeedBack(elt.BombState);
+                elt.SetBurst(item);
                 SendBombTrigger(elt.BombState, item.gameObject.transform.parent.name, elt.BombOwner);
                 item.ResetTile(elt);
             }
         }
     }
+
+    void MineFeedBack(Mine.m_BombState elt)
+    {
+        switch (elt)
+        {
+            case Mine.m_BombState.RED:
+                GameObject.FindObjectOfType<Feedback>().quiAffiche = Feedback.Receiver.give;
+                GameObject.FindObjectOfType<Feedback>().mineAffiche = Feedback.MineType.spy;
+                break;
+            case Mine.m_BombState.BLACK:
+                GameObject.FindObjectOfType<Feedback>().quiAffiche = Feedback.Receiver.give;
+                GameObject.FindObjectOfType<Feedback>().mineAffiche = Feedback.MineType.draw;
+                break;
+            case Mine.m_BombState.WHITE:
+                GameObject.FindObjectOfType<Feedback>().quiAffiche = Feedback.Receiver.give;
+                GameObject.FindObjectOfType<Feedback>().mineAffiche = Feedback.MineType.reveal;
+                break;
+            case Mine.m_BombState.Nothing:
+                break;
+            default:
+                break;
+        }
+        
+        GameObject.FindObjectOfType<Feedback>().SortUi();
+    }
+    
     void BombTrigger(CellData bomb)
     {
         List<Mine> bombtoReset = new List<Mine>();
@@ -573,7 +605,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void BLACKtrigger()
     {
-        GameObject.FindObjectOfType<Feedback>().quiAffiche = Feedback.Receiver.give;
+        GameObject.FindObjectOfType<Feedback>().quiAffiche = Feedback.Receiver.receive;
         GameObject.FindObjectOfType<Feedback>().mineAffiche = Feedback.MineType.draw;
         GameObject.FindObjectOfType<Feedback>().SortUi();
         DrawCard();
@@ -581,7 +613,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void WHITEtrigger()
     {
-        GameObject.FindObjectOfType<Feedback>().quiAffiche = Feedback.Receiver.give;
+        GameObject.FindObjectOfType<Feedback>().quiAffiche = Feedback.Receiver.receive;
         GameObject.FindObjectOfType<Feedback>().mineAffiche = Feedback.MineType.reveal;
         GameObject.FindObjectOfType<Feedback>().SortUi();
 
@@ -609,6 +641,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void LaunchGame()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         Debug.Log("Start");
         m_Canvas.StartGameUI();
         GestionCartes deck = gameDeck.GetComponent<GestionCartes>();
