@@ -20,6 +20,8 @@ public class Mine
     public Mine(string owner)
     {
         m_MineOwner = owner;
+        MineBurst = Resources.Load<GameObject>("prefabs/mineburst");
+        MineParticle = MineBurst.GetComponent<ParticleSystem>();
     }
 
     public enum m_BombState { RED, BLACK, WHITE, Nothing };
@@ -27,8 +29,10 @@ public class Mine
     #region GRAPHICS
     public void SetBurst(CellData celltoburst)
     {
+        
         GameObject setBurst = GameObject.Instantiate(MineBurst);
         setBurst.transform.SetPositionAndRotation(celltoburst.gameObject.transform.position, setBurst.transform.rotation);
+        Debug.Log("Mine Burst");
         MineParticle.Play();
     }
 
