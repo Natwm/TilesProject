@@ -92,11 +92,7 @@ public class Feedback : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            SortUi();
-            
-        }
+       
     }
 
     public void ResetAnim()
