@@ -113,7 +113,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     private GameObject myLantern;
 
 
-    public enum m_Action { Mouvement, Action, Wait, End }
+    public enum m_Action { Mouvement, Action, Wait, Feedback, End }
     public enum Bomb { RED, BLACK, WHITE, Nothing }
 
     #endregion
@@ -188,49 +188,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
                 if(m_MyActionPhase == m_Action.Action)
                 {
-                    if (Input.GetKeyDown(KeyCode.Alpha1) && amountOfRedMines > 0){
-                        if(m_MyBomb == Bomb.RED)
-                        {
-                            Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
-                            m_MyBomb = Bomb.Nothing;
-                        }
-                        else
-                        {
-                            Canva.SetActionUI(m_MyBomb, Bomb.RED);
-                            m_MyBomb = Bomb.RED;
-                            
-                        }                   
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.Alpha2) && amountOfBlackMines > 0)
-                    {
-                        if (m_MyBomb == Bomb.BLACK)
-                        {
-                            Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
-                            m_MyBomb = Bomb.Nothing;
-                        }
-                        else
-                        {
-                            Canva.SetActionUI(m_MyBomb, Bomb.BLACK);
-                            m_MyBomb = Bomb.BLACK;
-                            
-                        }
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.Alpha3) && amountOfWhiteMines > 0)
-                    {
-                        if (m_MyBomb == Bomb.WHITE)
-                        {
-                            Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
-                            m_MyBomb = Bomb.Nothing;
-                        }
-                        else
-                        {
-                            Canva.SetActionUI(m_MyBomb, Bomb.WHITE);
-                            m_MyBomb = Bomb.WHITE;
-                            
-                        }
-                    }
+                    SetMyMine();
                 }
 
                 if (tile != null && Input.GetButtonDown("Fire2") && m_MyActionPhase == m_Action.Action )
@@ -396,6 +354,54 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
     }
    
+    void SetMyMine()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1) && amountOfRedMines > 0)
+        {
+            if (m_MyBomb == Bomb.RED)
+            {
+                Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
+                m_MyBomb = Bomb.Nothing;
+            }
+            else
+            {
+                Canva.SetActionUI(m_MyBomb, Bomb.RED);
+                m_MyBomb = Bomb.RED;
+
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2) && amountOfBlackMines > 0)
+        {
+            if (m_MyBomb == Bomb.BLACK)
+            {
+                Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
+                m_MyBomb = Bomb.Nothing;
+            }
+            else
+            {
+                Canva.SetActionUI(m_MyBomb, Bomb.BLACK);
+                m_MyBomb = Bomb.BLACK;
+
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3) && amountOfWhiteMines > 0)
+        {
+            if (m_MyBomb == Bomb.WHITE)
+            {
+                Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
+                m_MyBomb = Bomb.Nothing;
+            }
+            else
+            {
+                Canva.SetActionUI(m_MyBomb, Bomb.WHITE);
+                m_MyBomb = Bomb.WHITE;
+
+            }
+        }
+    }
+
     /*void TurnCard(bool canturnCard)
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -661,6 +667,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 break;
 
             case 3:
+                GameObject.Find(playerName).GetComponent<PlayerMouvement>().m_MyActionPhase = m_Action.Feedback;
+                break;
+
+            case 4:
                 GameObject.Find(playerName).GetComponent<PlayerMouvement>().m_MyActionPhase = m_Action.End;
                 break;
         }
