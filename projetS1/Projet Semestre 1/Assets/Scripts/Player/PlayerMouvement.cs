@@ -165,7 +165,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 Cursor.lockState = CursorLockMode.None;
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && m_MyActionPhase == m_Action.Feedback)
             {
                 SendFeedbackDone();
             }
@@ -208,15 +208,14 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void LateUpdate()
     {
-        int index = 0;
+        /*int index = 0;
         foreach (var item in GameObject.FindObjectsOfType<PlayerMouvement>())
         {
             if(item.m_MyActionPhase == m_Action.Wait)
                 index++;
         }
 
-        if (index == GameObject.FindObjectsOfType<PlayerMouvement>().Length)
-            Debug.LogError("ok");
+        if (index == GameObject.FindObjectsOfType<PlayerMouvement>().Length)*/
 
     }
 
