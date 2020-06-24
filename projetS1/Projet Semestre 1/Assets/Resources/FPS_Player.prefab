@@ -247,7 +247,7 @@ MonoBehaviour:
   hand: []
   handGO: {fileID: 1072591110075657310, guid: 721c1c4a33b7b914a9bf9148bb44c992, type: 3}
   gameDeck: {fileID: 0}
-  tempsAffichageMessage: 50
+  tempsAffichageMessage: 125
   TimeCardAvailable: 2
   turnCard: 0
   lantern: {fileID: 6666345989055664891, guid: f33a6fd1612eab245af033398c775b5d, type: 3}
