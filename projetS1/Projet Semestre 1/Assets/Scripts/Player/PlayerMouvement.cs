@@ -109,7 +109,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [SerializeField] private float TimeCardAvailable = 2.0f;
     [SerializeField] private bool turnCard = false;
     [SerializeField] private GameObject lantern;
-    private GameObject terrainLantern;
+    private List<GameObject> terrainLantern = new List<GameObject>();
+    private GameObject myLantern;
 
 
     public enum m_Action { Mouvement, Action, Wait, End }
@@ -377,8 +378,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_Neighbours.Clear();
 
         Vector3 pos = new Vector3(grid.LocalToCell(tile.transform.position).x + offset.x,0, grid.LocalToCell(tile.transform.position).y + offset.y);
-
-        terrainLantern = Instantiate(lantern,new Vector3 (pos.x,pos.y+1.1f,pos.z),Quaternion.identity);
+        myLantern = Instantiate(lantern, new Vector3(pos.x, pos.y + 1.1f, pos.z), Quaternion.identity);
+        terrainLantern.Add(myLantern);
 
         transform.GetChild(3).GetChild(0).gameObject.SetActive(false);
 
@@ -952,7 +953,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_Canvas.UpdateInterface(m_MyActionPhase, hand);
 
         byte evCode = 4; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] { gameObject.name, 2 }; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] { gameObject.name, 2, myLantern.transform.position }; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
@@ -985,7 +986,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void SendActionDone()
     {
         transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
-        Destroy(terrainLantern);
 
         m_MyActionPhase = m_Action.Wait;
         Debug.LogWarning("SendActionDone");
@@ -1358,7 +1358,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 data = (object[])photonEvent.CustomData;
                 playerName = (string)data[0];
                 int phase = (int)data[1];
-                Debug.Log("mouvement " + playerName);
+                Vector3 pos = (Vector3)data[2];
+                GameObject lanterne = Instantiate(lantern, pos, Quaternion.identity);
+                terrainLantern.Add(lanterne);
+                lanterne.SetActive(false);
+
                 ChangePhase(playerName, phase, true);
                 break;
 
@@ -1369,13 +1373,22 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 m_MyActionPhase = m_Action.Action;
                 Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 m_Canvas.UpdateInterface(m_MyActionPhase, hand);
+
+                foreach (var item in terrainLantern)
+                {
+                    item.SetActive(true);
+                }
+                
                 break;
 
             case 6:
                 //ChangeTurn();
                 data = (object[])photonEvent.CustomData;
                 playerName = (string)data[3];
-
+                foreach (var item in terrainLantern)
+                {
+                    Destroy(item);
+                }
                 ChangePhase(playerName, 2, false);
 
                 break;
@@ -1409,7 +1422,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
             case 8:
                 data = (object[])photonEvent.CustomData;
-                Vector3 pos = (Vector3)data[0];
+                pos = (Vector3)data[0];
                 float radius = (float)data[1];
                 string tag = (string)data[2];
                 playerName = (string)data[3];
