@@ -25,6 +25,7 @@ public class Feedback : MonoBehaviour
     string loadBottom;
 
     Animator feedbackAnim;
+    public Image fond;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +33,12 @@ public class Feedback : MonoBehaviour
         allDynamicSprites = Resources.LoadAll<Sprite>("ui/minefeedback/dynamic");
         feedbackAnim = GetComponent<Animator>();
         feedbackAnim.enabled = false;
+
+        fond.enabled = false;
+        icon.enabled = false;
+        topText.enabled = false;
+        bottomText.enabled = false;
+
     }
 
     public void UiBurst()
@@ -41,6 +48,10 @@ public class Feedback : MonoBehaviour
 
     public void SortUi()
     {
+        icon.enabled = true;
+        topText.enabled = true;
+        bottomText.enabled = true;
+        fond.enabled = true;
         loadIcon ="";
         loadTop = "";
         loadBottom = "";
