@@ -106,7 +106,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     [Space]
     [Header("Other")]
-    [SerializeField] private float TimeCardAvailable = 2.0f;
+    [SerializeField] private float TimeCardAvailable = 50.0f;
     [SerializeField] private bool turnCard = false;
     [SerializeField] private GameObject lantern;
     private List<GameObject> terrainLantern = new List<GameObject>();
@@ -162,6 +162,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Cursor.lockState = CursorLockMode.None;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SendFeedbackDone();
             }
 
             if (Input.GetKeyDown(KeyCode.M))
@@ -650,7 +655,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
         return null;
     }
-    void ChangePhase(string playerName, int playerPhase, bool actionPhase)
+    void ChangePhase(string playerName, int playerPhase, m_Action actionPhase)
     {
         switch (playerPhase)
         {
@@ -675,10 +680,29 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 GameObject.Find(playerName).GetComponent<PlayerMouvement>().m_MyActionPhase = m_Action.End;
                 break;
         }
-        if (actionPhase)
+
+        switch (actionPhase)
+        {
+            case m_Action.Mouvement:
+                ChangeTurn();
+                break;
+            case m_Action.Action:
+                ActionPhase();
+                break;
+            case m_Action.Wait:
+                break;
+            case m_Action.Feedback:
+                FeedbackPhase();
+                break;
+            case m_Action.End:
+                break;
+            default:
+                break;
+        }
+        /*if (actionPhase)
             ActionPhase();
         else
-            ChangeTurn();
+            ChangeTurn();*/
     }
 
     void ActionPhase()
@@ -699,6 +723,25 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
         
     }
+
+    void FeedbackPhase()
+    {
+        Debug.Log("FeedBack");
+        PlayerMouvement[] players = GameObject.FindObjectsOfType<PlayerMouvement>();
+        foreach (PlayerMouvement player in players)
+        {
+            if (player.m_MyActionPhase != m_Action.Wait)
+            {
+                return;
+            }
+        }
+        if (view.IsMine)
+        {
+            Debug.Log("action");
+            SendFeedbackPhase();
+        }
+    }
+
     void ChangeTurn()
     {
         Debug.Log("Mouvement");
@@ -1165,6 +1208,36 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
     }
 
+    void SendFeedbackPhase()
+    {
+        Debug.LogWarning("SendFeedbackPhase");
+        byte evCode = 12; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { name }; // Array contains the target position and the IDs of the selected units
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.All;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
+    void SendFeedbackDone()
+    {
+        m_MyActionPhase = m_Action.Wait;
+        Debug.LogWarning("SendFeedbackDone");
+        Canva.UpdatePhaseFeedBack(m_MyActionPhase);
+        m_Canvas.UpdateInterface(m_MyActionPhase, hand);
+        byte evCode = 13; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
+        object[] content = new object[] { transform.GetChild(0).transform.position, FOV, "Je sais pas encore", name, PlayerID }; // Array contains the target position and the IDs of the selected units
+
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
+        //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
+        raiseEventOptions.Receivers = ReceiverGroup.Others;
+        SendOptions sendOptions = new SendOptions();
+        sendOptions.DeliveryMode = DeliveryMode.Reliable;
+        PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
+    }
+
     #endregion
 
     #region Affichage
@@ -1374,7 +1447,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 terrainLantern.Add(lanterne);
                 lanterne.SetActive(false);
 
-                ChangePhase(playerName, phase, true);
+                ChangePhase(playerName, phase, m_Action.Feedback);
                 break;
 
             case 5:
@@ -1384,11 +1457,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 m_MyActionPhase = m_Action.Action;
                 Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 m_Canvas.UpdateInterface(m_MyActionPhase, hand);
-
-                foreach (var item in terrainLantern)
-                {
-                    item.SetActive(true);
-                }
                 
                 break;
 
@@ -1400,7 +1468,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 {
                     Destroy(item);
                 }
-                ChangePhase(playerName, 2, false);
+                ChangePhase(playerName, 2, m_Action.Mouvement);
 
                 break;
 
@@ -1444,8 +1512,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                     UpdateBoard(pos, radius, tag);
                 }
                     
-                if (m_MyActionPhase == m_Action.Wait && interactTile != null)
-                    SendChangeTurn();
+                /*if (m_MyActionPhase == m_Action.Wait && interactTile != null)
+                    SendChangeTurn();*/
 
                 m_MyActionPhase = m_Action.Mouvement;
                 Canva.UpdatePhaseFeedBack(m_MyActionPhase);
@@ -1489,6 +1557,25 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 m_Canvas.UpdateInterface(m_MyActionPhase, hand);
                 m_Canvas.ShowWinner(playerName);
+                break;
+
+            case 12:
+                data = (object[])photonEvent.CustomData;
+                playerName = (string)data[0];
+                Debug.Log("reçu 12 de la part de +" + playerName);
+                m_MyActionPhase = m_Action.Feedback;
+                Canva.UpdatePhaseFeedBack(m_MyActionPhase);
+                m_Canvas.UpdateInterface(m_MyActionPhase, hand);
+                foreach (var item in terrainLantern)
+                {
+                    item.SetActive(true);
+                }
+                break;
+
+            case 13:
+                data = (object[])photonEvent.CustomData;
+                playerName = (string)data[3];
+                ChangePhase(playerName, 2, m_Action.Action);
                 break;
         }
     }
