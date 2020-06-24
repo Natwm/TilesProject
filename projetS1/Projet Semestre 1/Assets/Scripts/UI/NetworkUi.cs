@@ -97,7 +97,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public Color pointeurInValid;
 
     Launcher networkManager;
-
+    public bool isOn = false;
     
     // Start is called before the first frame update
     void Awake()
@@ -208,18 +208,28 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public void showAllCard(List<Carte> allCards)
     {
-        for (int i = 0; i < allCards.Count; i++)
+        if(isOn == false)
         {
-            DisplayCards(null, allCards[i]);
+            for (int i = 0; i < allCards.Count; i++)
+            {
+                DisplayCards(null, allCards[i]);
+            }
+            isOn = true;
         }
+        
     }
 
     public void DestroyAllCardsDisplay()
     {
-        for (int i = 0; i < allCardHolder.transform.childCount; i++)
+        if(isOn == true)
         {
-            Destroy(allCardHolder.transform.GetChild(i).gameObject);
+            for (int i = 0; i < allCardHolder.transform.childCount; i++)
+            {
+                Destroy(allCardHolder.transform.GetChild(i).gameObject);
+            }
+            isOn = false;
         }
+        
     }
 
     public void DestroyCardsDisplay()
