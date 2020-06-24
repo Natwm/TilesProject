@@ -1040,6 +1040,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void SendActionDone()
     {
         transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
+        Debug.LogError(terrainLantern.Count);
+        foreach (var item in terrainLantern)
+        {
+            Debug.LogError(item.name);
+            Destroy(item);
+        }
+
 
         m_MyActionPhase = m_Action.Wait;
         Debug.LogWarning("SendActionDone");
@@ -1443,9 +1450,12 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 playerName = (string)data[0];
                 int phase = (int)data[1];
                 Vector3 pos = (Vector3)data[2];
-                GameObject lanterne = Instantiate(lantern, pos, Quaternion.identity);
-                terrainLantern.Add(lanterne);
-                lanterne.SetActive(false);
+                if (playerName != this.name)
+                {
+                    GameObject lanterne = Instantiate(lantern, pos, Quaternion.identity);
+                    terrainLantern.Add(lanterne);
+                    lanterne.SetActive(false);
+                }
 
                 ChangePhase(playerName, phase, m_Action.Feedback);
                 break;
@@ -1464,10 +1474,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 //ChangeTurn();
                 data = (object[])photonEvent.CustomData;
                 playerName = (string)data[3];
-                foreach (var item in terrainLantern)
-                {
-                    Destroy(item);
-                }
                 ChangePhase(playerName, 2, m_Action.Mouvement);
 
                 break;
