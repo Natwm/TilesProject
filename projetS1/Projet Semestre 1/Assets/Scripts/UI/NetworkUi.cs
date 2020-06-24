@@ -45,6 +45,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public Image Action_Lantern;
     public Image Action_Dig;
 
+    public Image pointeur;
+
     [Space]
 
     public Image Mine_Spy;
@@ -67,7 +69,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public Image Action_Cards;
     public float rescale = 1.25f;
-    public Color color;
+
+
 
     [Space]
 
@@ -84,6 +87,14 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public Sprite actionPhaseImage;
     public Sprite waitPhaseImage;
     public Sprite endPhaseImage;
+    public Sprite feedbackPhaseImage;
+
+
+    [Space]
+    [Header(" Color ")]
+    public Color colorMineSelect;
+    public Color pointeurValid;
+    public Color pointeurInValid;
 
     Launcher networkManager;
 
@@ -138,15 +149,15 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         {
             case PlayerMouvement.Bomb.RED:
                 Mine_Spy.transform.localScale = new Vector3(Mine_Spy.transform.localScale.x * rescale, Mine_Spy.transform.localScale.y * rescale, Mine_Spy.transform.localScale.z);
-                Mine_Spy.color = color;
+                Mine_Spy.color = colorMineSelect;
                 break;
             case PlayerMouvement.Bomb.BLACK:
                 Mine_NewCard.transform.localScale = new Vector3(Mine_NewCard.transform.localScale.x * rescale, Mine_NewCard.transform.localScale.y * rescale, Mine_NewCard.transform.localScale.z);
-                Mine_NewCard.color = color;
+                Mine_NewCard.color = colorMineSelect;
                 break;
             case PlayerMouvement.Bomb.WHITE:
                 Mine_Reveal.transform.localScale = new Vector3(Mine_Reveal.transform.localScale.x * rescale, Mine_Reveal.transform.localScale.y * rescale, Mine_Reveal.transform.localScale.z);
-                Mine_Reveal.color = color;
+                Mine_Reveal.color = colorMineSelect;
                 break;
             case PlayerMouvement.Bomb.Nothing:
                 break;
@@ -333,6 +344,10 @@ public class NetworkUi : MonoBehaviourPunCallbacks
                 phaseDisplay.GetComponent<Image>().sprite = waitPhaseImage;
                 break;
 
+            case PlayerMouvement.m_Action.Feedback:
+                phaseDisplay.GetComponent<Image>().sprite = feedbackPhaseImage;
+                break;
+
             case PlayerMouvement.m_Action.End:
                 phaseDisplay.GetComponent<Image>().sprite = endPhaseImage;
                 break;
@@ -340,6 +355,16 @@ public class NetworkUi : MonoBehaviourPunCallbacks
             default:
                 break;
         }
+    }
+
+    public void CanInteract()
+    {
+        pointeur.color = pointeurValid;
+    }
+
+    public void CantInteract()
+    {
+        pointeur.color = pointeurInValid;
     }
     #endregion
 
@@ -422,7 +447,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     
     public void ShowWinner( string playerName)
     {
-        textInfos.text = playerName + " has find the treasure !";
+        textInfos.text = playerName + " a le trésor";
     }
 
     public IEnumerator ShowInformation(bool isfind, bool isForChest)

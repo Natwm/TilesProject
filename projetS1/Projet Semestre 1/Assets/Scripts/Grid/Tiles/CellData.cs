@@ -212,6 +212,7 @@ public class CellData : MonoBehaviour
 
     public bool HideTile(string player)
     {
+
         if (state == m_State.Show && m_ListMine.Count == 0)
         {
             HideGraphics();
