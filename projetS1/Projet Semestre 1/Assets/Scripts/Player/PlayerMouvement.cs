@@ -206,6 +206,20 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         }
     }
 
+    void LateUpdate()
+    {
+        int index = 0;
+        foreach (var item in GameObject.FindObjectsOfType<PlayerMouvement>())
+        {
+            if(item.m_MyActionPhase == m_Action.Wait)
+                index++;
+        }
+
+        if (index == GameObject.FindObjectsOfType<PlayerMouvement>().Length)
+            Debug.LogError("ok");
+
+    }
+
     #endregion
 
     #region Mouvement
@@ -1114,7 +1128,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// </summary>
     void SendChangeTurn()
     {
-        //Debug.LogWarning("SendChangeTurn" + interactTile.transform.position);
+        Debug.LogWarning("SendChangeTurn");
 
         m_MyActionPhase = m_Action.Wait;
         Canva.UpdatePhaseFeedBack(m_MyActionPhase);
@@ -1543,8 +1557,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 int typeOfMine = (int)data[0];
                 tileName = (string)data[1];
                 ownerName = (string)data[2];
-
-                Debug.LogWarning(tileName + "   " + ownerName + "   " + typeOfMine);
                 GameObject tileGO = GameObject.Find(tileName).transform.GetChild(0).gameObject;
 
                 if (ownerName == this.name)

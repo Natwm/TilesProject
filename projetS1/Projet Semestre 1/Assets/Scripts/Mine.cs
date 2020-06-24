@@ -32,7 +32,6 @@ public class Mine
         
         GameObject setBurst = GameObject.Instantiate(MineBurst);
         setBurst.transform.SetPositionAndRotation(celltoburst.gameObject.transform.position, setBurst.transform.rotation);
-        Debug.Log("Mine Burst");
         MineParticle.Play();
     }
 
