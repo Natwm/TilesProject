@@ -139,12 +139,14 @@ public class CellData : MonoBehaviour
 
     public void ResetTile(Mine toReset)
     {
+        toReset.SetBurst(this);
         Destroy(toReset.MineGO);
         Listbomb.Remove(toReset);
     }
 
     public void ResetTileMine(Mine toReset)
     {
+        toReset.SetBurst(this);
         Destroy(toReset.MineGO);
         Listbomb.Remove(toReset);
         state = m_State.Hide;
@@ -230,7 +232,6 @@ public class CellData : MonoBehaviour
             if (canChange.Count == 0)
             {
                 HideGraphics();
-                
             }
         }
 

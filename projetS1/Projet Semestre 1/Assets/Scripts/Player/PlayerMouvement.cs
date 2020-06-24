@@ -111,7 +111,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [SerializeField] private GameObject lantern;
     private List<GameObject> terrainLantern = new List<GameObject>();
     private GameObject myLantern;
-
+    private List<Vector3> lanterns = new List<Vector3>();
 
     public enum m_Action { Mouvement, Action, Wait, Feedback, End }
     public enum Bomb { RED, BLACK, WHITE, Nothing }
@@ -144,6 +144,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         grid = transform.parent.GetComponent<Grid>();
         m_Canvas.SetGameUI(this, PhotonNetwork.IsMasterClient);
         gameDeck = GameObject.Find("Deck(Clone)");
+
     }
     #endregion
 
@@ -453,7 +454,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         {
             foreach ( Mine elt in affect)
             {
-                elt.SetBurst(item);
+                //elt.SetBurst(item);
                 SendBombTrigger(elt.BombState, item.gameObject.transform.parent.name, elt.BombOwner);
                 item.ResetTile(elt);
             }
@@ -626,6 +627,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             else if(m_Neighbours.Contains(interactTile) && m_MyBomb == Bomb.Nothing && interactTile.GetComponent<CellData>().CanPlantBomb)
             {
                 interactTile.GetComponent<CellData>().Dig();
+                if (interactTile.GetComponent<CellData>().isTreasure && interactTile.GetComponent<CellData>() != null)
+                    SendPlayerGetTreasure(interactTile.transform.parent.gameObject);
                 SendActionDone();
             }
             
@@ -744,7 +747,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void ChangeTurn()
     {
-        Debug.Log("Mouvement");
+
         PlayerMouvement[] players = GameObject.FindObjectsOfType<PlayerMouvement>();
         foreach (PlayerMouvement player in players)
         {
@@ -1040,13 +1043,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void SendActionDone()
     {
         transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
-        Debug.LogError(terrainLantern.Count);
         foreach (var item in terrainLantern)
         {
-            Debug.LogError(item.name);
             Destroy(item);
         }
-
+        terrainLantern.Clear();
 
         m_MyActionPhase = m_Action.Wait;
         Debug.LogWarning("SendActionDone");
@@ -1200,16 +1201,21 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// <summary>
     /// This method sends a message to other players that he found the treasure
     /// </summary>
-    void SendPlayerGetTreasure()
+    void SendPlayerGetTreasure(GameObject tile)
     {
         Debug.LogWarning("SendPlayerGetTreasure");
+        Debug.LogError(tile.name);
+        m_MyActionPhase = m_Action.End;
+        Canva.UpdatePhaseFeedBack(m_MyActionPhase);
+        m_Canvas.UpdateInterface(m_MyActionPhase, hand);
+        m_Canvas.ShowWinner(this.name);
 
         byte evCode = 11; // Custom Event 1: Used as "MoveUnitsToTargetPosition" event
-        object[] content = new object[] { this.gameObject.name }; // Array contains the target position and the IDs of the selected units
+        object[] content = new object[] { this.gameObject.name, tile.name }; // Array contains the target position and the IDs of the selected units
 
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
         //raiseEventOptions.CachingOption = EventCaching.AddToRoomCacheGlobal;
-        raiseEventOptions.Receivers = ReceiverGroup.All;
+        raiseEventOptions.Receivers = ReceiverGroup.Others;
         SendOptions sendOptions = new SendOptions();
         sendOptions.DeliveryMode = DeliveryMode.Reliable;
         PhotonNetwork.RaiseEvent(evCode, content, raiseEventOptions, sendOptions);
@@ -1254,29 +1260,33 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// <param name="position"> this is the position of the opponent who mask some of yours tiles </param>
     /// <param name="radius"> this corresponds to the lenght of his FOV</param>
     /// <param name="tag"> the tag</param>
-    void UpdateBoard(Vector3 position, float radius, string tag)
+    void UpdateBoard()
     {
-        Debug.Log("je modifie le plateau a la position : " + position);
-        foreach (Collider item in Physics.OverlapSphere(position, radius))
+        //Debug.LogError("je modifie le plateau a la position : " + position +" je suis "+ this.name);
+        foreach (Vector3 lanterne in lanterns)
         {
-            if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
+            foreach (Collider item in Physics.OverlapSphere(lanterne, FOV))
             {
-                Debug.Log("il possède un celldata");
-                if (m_Neighbours.Contains(item.gameObject))
+                if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
                 {
-                    Debug.Log("il est partagé par les deux joueurs");
+                    Debug.Log("il possède un celldata");
+                    if (m_Neighbours.Contains(item.gameObject))
+                    {
+                        Debug.Log("il est partagé par les deux joueurs");
+                    }
+                    else
+                    {
+                        Debug.Log("il n'est pas partagé");
+                        item.gameObject.GetComponent<CellData>().HideTile(gameObject.name);
+                    }
                 }
                 else
                 {
-                    Debug.Log("il n'est pas partagé");
-                    item.gameObject.GetComponent<CellData>().HideTile(gameObject.name);
+                    Debug.Log("il n'a pas de celldata");
                 }
             }
-            else
-            {
-                Debug.Log("il n'a pas de celldata");
-            }
         }
+        
     }
 
     #endregion
@@ -1360,8 +1370,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 SendActionDone();
             }
-            else
-                SendPlayerGetTreasure();
+            //else
+                //SendPlayerGetTreasure();
         }
     }
 
@@ -1454,6 +1464,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 {
                     GameObject lanterne = Instantiate(lantern, pos, Quaternion.identity);
                     terrainLantern.Add(lanterne);
+                    lanterns.Add(lanterne.transform.position);
                     lanterne.SetActive(false);
                 }
 
@@ -1513,10 +1524,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 playerName = (string)data[3];
                 int playerId = (int)data[4];
 
-                if (playerId != this.PlayerID)
-                {
-                    UpdateBoard(pos, radius, tag);
-                }
+               // if (playerId != this.PlayerID)
+                
+                   // Debug.LogError("la pos : "+pos + " le radius" + radius);
+                    
+                
                     
                 /*if (m_MyActionPhase == m_Action.Wait && interactTile != null)
                     SendChangeTurn();*/
@@ -1559,6 +1571,9 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             case 11:
                 data = (object[])photonEvent.CustomData;
                 playerName = (string)data[0];
+                string chestName = (string)data[1];
+                if(this.name != playerName)
+                    GameObject.Find(chestName).transform.GetChild(0).GetComponent<CellData>().Dig();
                 m_MyActionPhase = m_Action.End;
                 Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 m_Canvas.UpdateInterface(m_MyActionPhase, hand);
@@ -1576,6 +1591,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 {
                     item.SetActive(true);
                 }
+
+                UpdateBoard();
                 break;
 
             case 13:
@@ -1617,10 +1634,29 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         Color color = hit.collider != null ? Color.green : Color.red;
 
         Debug.DrawRay(cam.transform.position, cam.transform.forward * interactDistance, color);
+        //Debug.LogError("view.Controller " + view.Controller + "|| view.Owner " + view.Owner);
 
-        if(hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show)
+        if (hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show)
         {
             interactTile = hit.collider.gameObject;
+            foreach (var item in GameObject.FindObjectsOfType<PlayerMouvement>())
+            {
+                if(item.interactTile != null)
+                    Canva.CanInteract();
+            }
+            
+        }
+        else
+        {
+            int index = 0;
+            interactTile = null;
+            foreach (var item in GameObject.FindObjectsOfType<PlayerMouvement>())
+            {
+                if (item.interactTile == null)
+                    index++;
+            }
+            if(index == GameObject.FindObjectsOfType<PlayerMouvement>().Length)
+                Canva.CantInteract();
         }
 
         if(m_MyActionPhase == m_Action.Mouvement)

@@ -214,7 +214,7 @@ MonoBehaviour:
   offset: {x: 0.5, y: 0.5, z: 0}
   PlayerID: -1
   FOV: 1.2
-  m_MyActionPhase: 3
+  m_MyActionPhase: 4
   nbCardToDraw: 2
   cam: {fileID: 1605870385619619606}
   groundCheck: {fileID: 5557735471907591528}
