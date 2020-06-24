@@ -111,7 +111,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [SerializeField] private GameObject lantern;
     private List<GameObject> terrainLantern = new List<GameObject>();
     private GameObject myLantern;
-
+    private List<Vector3> lanterns = new List<Vector3>();
 
     public enum m_Action { Mouvement, Action, Wait, Feedback, End }
     public enum Bomb { RED, BLACK, WHITE, Nothing }
@@ -744,7 +744,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void ChangeTurn()
     {
-        Debug.Log("Mouvement");
+
         PlayerMouvement[] players = GameObject.FindObjectsOfType<PlayerMouvement>();
         foreach (PlayerMouvement player in players)
         {
@@ -1040,13 +1040,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     void SendActionDone()
     {
         transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
-        Debug.LogError(terrainLantern.Count);
         foreach (var item in terrainLantern)
         {
-            Debug.LogError(item.name);
             Destroy(item);
         }
-
+        terrainLantern.Clear();
 
         m_MyActionPhase = m_Action.Wait;
         Debug.LogWarning("SendActionDone");
@@ -1254,29 +1252,33 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     /// <param name="position"> this is the position of the opponent who mask some of yours tiles </param>
     /// <param name="radius"> this corresponds to the lenght of his FOV</param>
     /// <param name="tag"> the tag</param>
-    void UpdateBoard(Vector3 position, float radius, string tag)
+    void UpdateBoard(float radius, string tag)
     {
-        Debug.Log("je modifie le plateau a la position : " + position);
-        foreach (Collider item in Physics.OverlapSphere(position, radius))
+        //Debug.LogError("je modifie le plateau a la position : " + position +" je suis "+ this.name);
+        foreach (Vector3 lanterne in lanterns)
         {
-            if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
+            foreach (Collider item in Physics.OverlapSphere(lanterne, radius))
             {
-                Debug.Log("il possède un celldata");
-                if (m_Neighbours.Contains(item.gameObject))
+                if (item.gameObject.GetComponent<CellData>() != null && m_Neighbours.Count > 0)
                 {
-                    Debug.Log("il est partagé par les deux joueurs");
+                    Debug.Log("il possède un celldata");
+                    if (m_Neighbours.Contains(item.gameObject))
+                    {
+                        Debug.Log("il est partagé par les deux joueurs");
+                    }
+                    else
+                    {
+                        Debug.Log("il n'est pas partagé");
+                        item.gameObject.GetComponent<CellData>().HideTile(gameObject.name);
+                    }
                 }
                 else
                 {
-                    Debug.Log("il n'est pas partagé");
-                    item.gameObject.GetComponent<CellData>().HideTile(gameObject.name);
+                    Debug.Log("il n'a pas de celldata");
                 }
             }
-            else
-            {
-                Debug.Log("il n'a pas de celldata");
-            }
         }
+        
     }
 
     #endregion
@@ -1454,6 +1456,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 {
                     GameObject lanterne = Instantiate(lantern, pos, Quaternion.identity);
                     terrainLantern.Add(lanterne);
+                    lanterns.Add(lanterne.transform.position);
                     lanterne.SetActive(false);
                 }
 
@@ -1513,10 +1516,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 playerName = (string)data[3];
                 int playerId = (int)data[4];
 
-                if (playerId != this.PlayerID)
-                {
-                    UpdateBoard(pos, radius, tag);
-                }
+               // if (playerId != this.PlayerID)
+                
+                   // Debug.LogError("la pos : "+pos + " le radius" + radius);
+                    UpdateBoard(radius, tag);
+                
                     
                 /*if (m_MyActionPhase == m_Action.Wait && interactTile != null)
                     SendChangeTurn();*/
