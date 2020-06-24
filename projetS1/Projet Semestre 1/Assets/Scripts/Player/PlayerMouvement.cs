@@ -454,7 +454,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         {
             foreach ( Mine elt in affect)
             {
-                elt.SetBurst(item);
+                //elt.SetBurst(item);
                 SendBombTrigger(elt.BombState, item.gameObject.transform.parent.name, elt.BombOwner);
                 item.ResetTile(elt);
             }
