@@ -20,6 +20,8 @@ public class Mine
     public Mine(string owner)
     {
         m_MineOwner = owner;
+        MineBurst = Resources.Load<GameObject>("prefabs/mineburst");
+        MineParticle = MineBurst.GetComponent<ParticleSystem>();
     }
 
     public enum m_BombState { RED, BLACK, WHITE, Nothing };
