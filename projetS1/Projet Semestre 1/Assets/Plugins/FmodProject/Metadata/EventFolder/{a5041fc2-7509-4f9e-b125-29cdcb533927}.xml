@@ -5,7 +5,7 @@
 			<value>MINES</value>
 		</property>
 		<relationship name="folder">
-			<destination>{3a26e87d-72d2-4ed8-a00d-641cd7a82b20}</destination>
+			<destination>{5b5d509f-24fc-4b73-90b7-2abfcbd456d4}</destination>
 		</relationship>
 	</object>
 </objects>
