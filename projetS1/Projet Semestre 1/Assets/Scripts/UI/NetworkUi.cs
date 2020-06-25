@@ -227,8 +227,14 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         }
     }
 
+    public void Display()
+    {
+        allCardHolder.SetActive(false);
+    }
+
     public void showAllCard(List<Carte> allCards)
     {
+        allCardHolder.SetActive(true);
         if(isOn == false)
         {
             for (int i = 0; i < allCards.Count; i++)
@@ -321,28 +327,28 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         {
             GameObject carte = Instantiate(allCardDisplay);
             carte.transform.parent = allCardHolder.transform;
-            carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.image;
+            carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.image;
             if (toPrint.State == Carte.CardState.UNLOCK)
             {
-                carte.transform.GetChild(2).GetComponent<Image>().sprite = toPrint.back;
+                carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
             }
             else
             {
-                carte.transform.GetChild(2).GetComponent<Image>().sprite = lockImage;
+                carte.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
             }
 
             carte.transform.localScale = Vector3.one;
         }
         else
         {
-            card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.image;
+            card.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.image;
             if (toPrint.State == Carte.CardState.UNLOCK)
             {
-                card.transform.GetChild(2).GetComponent<Image>().sprite = toPrint.back;
+                card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
             }
             else
             {
-                card.transform.GetChild(2).GetComponent<Image>().sprite = lockImage;
+                card.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
             }
 
         }

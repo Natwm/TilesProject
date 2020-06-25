@@ -256,6 +256,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
             if (Input.GetKeyDown(KeyCode.Space) && m_MyActionPhase == m_Action.End)
             {
+                Canva.Display();
                 Canva.DestroyAllCardsDisplay();
                 if (myLantern == null)
                 {
