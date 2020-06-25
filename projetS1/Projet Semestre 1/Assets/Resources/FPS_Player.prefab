@@ -147,7 +147,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 5557735471907591529}
-  - {fileID: 1140569757762251257}
+  - {fileID: 6005409905291043875}
   - {fileID: 8956646012545072563}
   - {fileID: 9088252096285472692}
   m_Father: {fileID: 0}
@@ -257,15 +257,15 @@ MonoBehaviour:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
   myColor: {r: 0, g: 0, b: 0, a: 0}
-  footsteps: event:/Test
-  Shovel_empty: event:/Test
-  Shovel_treasure: event:/Test
-  lantern_sound: event:/Test
-  Music_drop_mine: event:/FEEDBACK/MINES/Jingle_mine
-  Music_mine_spy: event:/FEEDBACK/MINES/Jingle_mine
-  Music_mine_catch: event:/FEEDBACK/MINES/Jingle_mine
-  Music_mine_lock: event:/EVENTS/DeclenchementMine
-  reveal: event:/Test
+  footsteps: event:/FEEDBACK/PERSONNAGE/MultiFoot
+  Shovel_empty: event:/EVENTS/GRILLE/Dig
+  Shovel_treasure: event:/EVENTS/GRILLE/Treasure
+  lantern_sound: event:/EVENTS/GRILLE/lantern
+  Music_drop_mine: event:/EVENTS/MINES/poser_une_mine
+  Music_mine_spy: event:/EVENTS/MINES/DeclenchementMine
+  Music_mine_catch: event:/EVENTS/MINES/DeclenchementMine
+  Music_mine_lock: event:/EVENTS/MINES/DeclenchementMine
+  reveal: event:/EVENTS/GRILLE/Reveal
 --- !u!114 &114861506362273838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,7 +538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f33a6fd1612eab245af033398c775b5d, type: 3}
---- !u!4 &1140569757762251257 stripped
+--- !u!4 &6005409905291043875 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6666345989055762139, guid: f33a6fd1612eab245af033398c775b5d,
     type: 3}

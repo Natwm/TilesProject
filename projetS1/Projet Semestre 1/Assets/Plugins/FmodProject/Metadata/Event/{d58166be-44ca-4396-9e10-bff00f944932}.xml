@@ -91,7 +91,10 @@
 	<object class="MixerBusPanner" id="{526406ec-2f5c-4e02-9f7a-1c9822340272}" />
 	<object class="SingleSound" id="{1cd3fcda-b494-436b-afe9-9cd557f504b3}">
 		<property name="length">
-			<value>4.5</value>
+			<value>4.1500000000000012</value>
+		</property>
+		<property name="timelockedOffset">
+			<value>0.35000000000000009</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{69eea46c-7543-4e8c-b322-7db264906c6d}</destination>
@@ -122,10 +125,19 @@
 	<object class="MixerBusEffectChain" id="{7139b6e0-f8d4-4b8e-820e-34a9530100ab}">
 		<relationship name="effects">
 			<destination>{892f6146-a651-4a2b-9642-a43a8b22d017}</destination>
+			<destination>{94eb4efc-bbf3-489b-8f59-e51de842044f}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{0b0c1712-4215-4903-83ee-c24ef1004347}" />
 	<object class="MixerBusFader" id="{d816204c-692a-4627-8f60-abfdc9bad9cc}" />
 	<object class="SpatialiserEffect" id="{0c5e7fdd-7efe-4618-bcfb-e62df040e5eb}" />
 	<object class="MixerBusFader" id="{892f6146-a651-4a2b-9642-a43a8b22d017}" />
+	<object class="SFXReverbEffect" id="{94eb4efc-bbf3-489b-8f59-e51de842044f}">
+		<property name="decayTime">
+			<value>3800</value>
+		</property>
+		<property name="HFDecayRatio">
+			<value>90.5</value>
+		</property>
+	</object>
 </objects>

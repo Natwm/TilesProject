@@ -2119,6 +2119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d4dabb72ea5f104e841a8cc33e638fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myEmit: {fileID: 0}
   iWantToPlayCustomEvent: event:/Test
 --- !u!1 &663565262
 GameObject:
@@ -4675,6 +4676,34 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_HideSoftKeyboard
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1082240550}
+    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Sound
+      objectReference: {fileID: 0}
+    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 408372646174771876, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -4744,6 +4773,30 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 51.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1082240550}
+    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Sound
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 408372646131513821, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f,
         type: 3}
@@ -5203,58 +5256,6 @@ PrefabInstance:
     - target: {fileID: 1592739138, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
       propertyPath: m_RootOrder
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_HideSoftKeyboard
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1082240550}
-    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Sound
-      objectReference: {fileID: 0}
-    - target: {fileID: 1101794340, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1082240550}
-    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Sound
-      objectReference: {fileID: 0}
-    - target: {fileID: 1463662022, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
-      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 408372646577510045, guid: f9275f9ab9c8c7e40b01f2a78fd1da4f, type: 3}
@@ -6327,6 +6328,7 @@ GameObject:
   - component: {fileID: 1961170640}
   - component: {fileID: 1961170643}
   - component: {fileID: 1961170642}
+  - component: {fileID: 1961170644}
   m_Layer: 0
   m_Name: AnimHOlder
   m_TagString: Untagged
@@ -6450,7 +6452,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d4dabb72ea5f104e841a8cc33e638fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myEmit: {fileID: 1961170642}
   iWantToPlayCustomEvent: event:/Test
+--- !u!114 &1961170644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961170638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: event:/AMBIANCE/SOUNDSCAPE/ambiance_foret_vent
+  PlayEvent: 1
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 1
+  OverrideMinDistance: 1.36
+  OverrideMaxDistance: 99.57
 --- !u!1 &1970402622
 GameObject:
   m_ObjectHideFlags: 0

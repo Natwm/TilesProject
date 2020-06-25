@@ -16,8 +16,7 @@ MonoBehaviour:
   HasSourceProject: 0
   HasPlatforms: 0
   sourceProjectPath: 
-  sourceBankPath: N:\GameEngine\Unity Games\0__Cours\projetSafe\projetS1\Projet Semestre
-    1\Assets\Plugins\Desktop
+  sourceBankPath: Assets/Plugins/Desktop
   SourceBankPathUnformatted: 
   AutomaticEventLoading: 1
   BankLoadType: 0
