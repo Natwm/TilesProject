@@ -36,6 +36,7 @@ public class GridGen : MonoBehaviour
     private void Awake()
     {
         Random.seed = GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed;
+        gridSize = GameObject.Find("Launcher").GetComponent<Launcher>().GameSize;
     }
 
     void Start()
@@ -45,14 +46,14 @@ public class GridGen : MonoBehaviour
         AllBorders = new GameObject();
         AllBorders.name = "Bordures";
         AllLandmarks = Resources.LoadAll<GameObject>("prefabs/landmarks");
-        allCell = new CellData[gridSize.x*gridSize.y];
+        allCell = new CellData[gridSize.x * gridSize.y];
         gridObjectCollider = gridObject.transform.GetChild(0).gameObject.GetComponent<BoxCollider>();
         GameObject TopLeavesInst = Resources.Load<GameObject>("prefabs/TopLeaves");
         TopLeaves = Instantiate(TopLeavesInst);
         TopLeavesPs = TopLeaves.GetComponent<ParticleSystem>();
         GameObject Insttrees = Resources.Load<GameObject>("prefabs/PoissonDiscSampling");
         GameObject actualPs = Instantiate(Insttrees);
-        actualPs.transform.SetPositionAndRotation(new Vector3(-0.5f,-0.5f,0),actualPs.transform.rotation);
+        actualPs.transform.SetPositionAndRotation(new Vector3(-0.5f, -0.5f, 0), actualPs.transform.rotation);
         trees = actualPs.GetComponent<PoissonInterface>();
         trees.LoadResources();
         CreateGrid();
@@ -62,25 +63,25 @@ public class GridGen : MonoBehaviour
         Forest.transform.SetPositionAndRotation(gridObject.transform.position, Quaternion.identity/*gridObject.transform.rotation*/);
         Forest.transform.parent = transform;
         TopLeaves.transform.parent = transform;
-        transform.SetPositionAndRotation(transform.position,Quaternion.Euler(90,0,0));
+        transform.SetPositionAndRotation(transform.position, Quaternion.Euler(90, 0, 0));
 
-        
+
     }
 
-    
+
     // X correspond à l'horizontal Y correspond au vertical
     public void CreateGrid()
     {
         cardScript = GameObject.FindObjectOfType<GestionCartes>();
-        Vector2Int gridPos = new Vector2Int(1,1);
+        Vector2Int gridPos = new Vector2Int(1, 1);
         GameObject objToSpawn;
         Vector3 RealGridPos;
         int ParticleSpawnRate;
         float shiftSize = gridObjectCollider.size.x;
         int incrémentIndex = 0;
         //incrément Y
-        
-        
+
+
         for (int i = 0; i < gridSize.y; i++)
         {
             //incrément X
@@ -92,14 +93,14 @@ public class GridGen : MonoBehaviour
                     originCorner.x -= shiftSize;
                     originCorner.y -= shiftSize;
                 }
-                if (i == gridSize.y -1 && n == gridSize.x -1)
+                if (i == gridSize.y - 1 && n == gridSize.x - 1)
                 {
                     farCorner = realPos;
                 }
-                objToSpawn = GameObject.Instantiate(gridObject,realPos,new Quaternion (0f,0f,180f,0f));
+                objToSpawn = GameObject.Instantiate(gridObject, realPos, new Quaternion(0f, 0f, 180f, 0f));
                 objToSpawn.transform.parent = Tiles.transform;
                 objToSpawn.name = gridPos.ToString();
-                Vector3Int tempPos = new Vector3Int(gridPos.x, gridPos.y,0);
+                Vector3Int tempPos = new Vector3Int(gridPos.x, gridPos.y, 0);
                 CellData tempCellData = objToSpawn.transform.GetChild(0).gameObject.GetComponent<CellData>();
                 tempCellData.gridPos = tempPos;
                 allCell[incrémentIndex] = tempCellData;
@@ -116,14 +117,14 @@ public class GridGen : MonoBehaviour
             gridPos.x = 1;
         }
         ParticleSpawnRate = (gridSize.x * gridSize.y) / 10;
-        RealGridPos = new Vector3(gridSize.x * gridObject.transform.localScale.x, gridSize.y * gridObject.transform.localScale.y,0);
+        RealGridPos = new Vector3(gridSize.x * gridObject.transform.localScale.x, gridSize.y * gridObject.transform.localScale.y, 0);
         var psRate = TopLeavesPs.emission;
         psRate.rateOverTime = ParticleSpawnRate;
         var psShape = TopLeavesPs.shape;
-        psShape.scale = new Vector3(RealGridPos.x, RealGridPos.y,0);
-        TopLeaves.transform.SetPositionAndRotation(new Vector3((RealGridPos.x/2)-1,(RealGridPos.y/2)-1,-5),TopLeaves.transform.rotation);
+        psShape.scale = new Vector3(RealGridPos.x, RealGridPos.y, 0);
+        TopLeaves.transform.SetPositionAndRotation(new Vector3((RealGridPos.x / 2) - 1, (RealGridPos.y / 2) - 1, -5), TopLeaves.transform.rotation);
         GenerateForest(RealGridPos);
-       // GenerateLandmark();
+        // GenerateLandmark();
         SpawnChest(chestNumber);
 
     }
@@ -131,9 +132,9 @@ public class GridGen : MonoBehaviour
     public void GenerateLandmark()
     {
         int randomLandmark = Random.Range(0, AllLandmarks.Length);
-        Vector3 randomGridPos = new Vector3(gridSize.x*gridObject.transform.localScale.x/2, 1,gridSize.y * gridObject.transform.localScale.y/2);
+        Vector3 randomGridPos = new Vector3(gridSize.x * gridObject.transform.localScale.x / 2, 1, gridSize.y * gridObject.transform.localScale.y / 2);
         GameObject landmark = Instantiate(AllLandmarks[randomLandmark]);
-        landmark.transform.SetPositionAndRotation(randomGridPos,landmark.transform.rotation);
+        landmark.transform.SetPositionAndRotation(randomGridPos, landmark.transform.rotation);
 
     }
 
@@ -151,16 +152,16 @@ public class GridGen : MonoBehaviour
             //Bas
             if (i == 0)
             {
-                TextureTiling = new Vector2(gridSize.x,10);
+                TextureTiling = new Vector2(gridSize.x, 10);
                 borderTiles[i] = instanciateObj;
                 borderTiles[i].name = "Down Border";
-                borderTiles[i].transform.localScale = new Vector3(RealGridSize.x*0.1f ,1, 1);
+                borderTiles[i].transform.localScale = new Vector3(RealGridSize.x * 0.1f, 1, 1);
                 halfBorderSize = borderTiles[i].GetComponent<BoxCollider>().bounds.size;
                 borderBox = borderTiles[i].GetComponent<BoxCollider>();
-                borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex",TextureTiling);
-                borderTiles[i].transform.SetPositionAndRotation(new Vector3(RealGridSize.x/2-1,Mathf.Round(-1-halfBorderSize.y*0.75f),0),borderTiles[i].transform.rotation);
-                treePos = new Vector3(borderTiles[i].transform.position.x - borderBox.size.x* borderTiles[i].transform.localScale.x/2, Mathf.Round(borderTiles[i].transform.position.y+halfBorderSize.y/2)-1.5f);
-                trees.SpawnTrees(new Vector2(RealGridSize.x,3),borderTiles[i],treePos,1);
+                borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", TextureTiling);
+                borderTiles[i].transform.SetPositionAndRotation(new Vector3(RealGridSize.x / 2 - 1, Mathf.Round(-1 - halfBorderSize.y * 0.75f), 0), borderTiles[i].transform.rotation);
+                treePos = new Vector3(borderTiles[i].transform.position.x - borderBox.size.x * borderTiles[i].transform.localScale.x / 2, Mathf.Round(borderTiles[i].transform.position.y + halfBorderSize.y / 2) - 1.5f);
+                trees.SpawnTrees(new Vector2(RealGridSize.x, 3), borderTiles[i], treePos, 1);
             }
             //Haut
             else if (i == 1)
@@ -172,9 +173,9 @@ public class GridGen : MonoBehaviour
                 halfBorderSize = borderTiles[i].GetComponent<BoxCollider>().bounds.size;
                 borderBox = borderTiles[i].GetComponent<BoxCollider>();
                 borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", TextureTiling);
-                borderTiles[i].transform.SetPositionAndRotation(new Vector3(RealGridSize.x / 2-1, Mathf.Round(RealGridSize.y-1 + halfBorderSize.y * 0.75f), 0), borderTiles[i].transform.rotation);
-                treePos = new Vector3(borderTiles[i].transform.position.x - borderBox.size.x * borderTiles[i].transform.localScale.x / 2, Mathf.Round(borderTiles[i].transform.position.y - halfBorderSize.y / 2)-1.5f );
-                trees.SpawnTrees(new Vector2(RealGridSize.x, 3), borderTiles[i], treePos,1);
+                borderTiles[i].transform.SetPositionAndRotation(new Vector3(RealGridSize.x / 2 - 1, Mathf.Round(RealGridSize.y - 1 + halfBorderSize.y * 0.75f), 0), borderTiles[i].transform.rotation);
+                treePos = new Vector3(borderTiles[i].transform.position.x - borderBox.size.x * borderTiles[i].transform.localScale.x / 2, Mathf.Round(borderTiles[i].transform.position.y - halfBorderSize.y / 2) - 1.5f);
+                trees.SpawnTrees(new Vector2(RealGridSize.x, 3), borderTiles[i], treePos, 1);
             }
             //Gauche
             else if (i == 2)
@@ -186,9 +187,9 @@ public class GridGen : MonoBehaviour
                 halfBorderSize = borderTiles[i].GetComponent<BoxCollider>().bounds.size;
                 borderBox = borderTiles[i].GetComponent<BoxCollider>();
                 borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", TextureTiling);
-                borderTiles[i].transform.SetPositionAndRotation(new Vector3(Mathf.Round(-1 - halfBorderSize.y * 0.75f), RealGridSize.y / 2 - 1 , 0), borderTiles[i].transform.rotation);
-                treePos = new Vector3(Mathf.Round(borderTiles[i].transform.position.x - halfBorderSize.x / 2) + 3.5f,borderTiles[i].transform.position.y - (borderBox.size.z/2 * borderTiles[i].transform.localScale.z ),0);
-                trees.SpawnTrees(new Vector2(3,RealGridSize.y), borderTiles[i], treePos,1);
+                borderTiles[i].transform.SetPositionAndRotation(new Vector3(Mathf.Round(-1 - halfBorderSize.y * 0.75f), RealGridSize.y / 2 - 1, 0), borderTiles[i].transform.rotation);
+                treePos = new Vector3(Mathf.Round(borderTiles[i].transform.position.x - halfBorderSize.x / 2) + 3.5f, borderTiles[i].transform.position.y - (borderBox.size.z / 2 * borderTiles[i].transform.localScale.z), 0);
+                trees.SpawnTrees(new Vector2(3, RealGridSize.y), borderTiles[i], treePos, 1);
             }
             //Droite
             else if (i == 3)
@@ -200,11 +201,11 @@ public class GridGen : MonoBehaviour
                 halfBorderSize = borderTiles[i].GetComponent<BoxCollider>().bounds.size;
                 borderBox = borderTiles[i].GetComponent<BoxCollider>();
                 borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", TextureTiling);
-                borderTiles[i].transform.SetPositionAndRotation(new Vector3(Mathf.Round(RealGridSize.y-1 + halfBorderSize.y *0.75f), RealGridSize.y / 2-1, 0), borderTiles[i].transform.rotation);
+                borderTiles[i].transform.SetPositionAndRotation(new Vector3(Mathf.Round(RealGridSize.y - 1 + halfBorderSize.y * 0.75f), RealGridSize.y / 2 - 1, 0), borderTiles[i].transform.rotation);
                 treePos = new Vector3(Mathf.Round(borderTiles[i].transform.position.x - halfBorderSize.x / 2) - 2.5f, borderTiles[i].transform.position.y - (borderBox.size.z / 2 * borderTiles[i].transform.localScale.z), 0);
-                trees.SpawnTrees(new Vector2(3, RealGridSize.y), borderTiles[i], treePos,1);
+                trees.SpawnTrees(new Vector2(3, RealGridSize.y), borderTiles[i], treePos, 1);
             }
-            borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureOffset("_MainTex", new Vector2(Random.Range(0f,100f), Random.Range(0f, 100f)));
+            borderTiles[i].GetComponent<MeshRenderer>().material.SetTextureOffset("_MainTex", new Vector2(Random.Range(0f, 100f), Random.Range(0f, 100f)));
             borderTiles[i].transform.parent = AllBorders.transform;
         }
     }
@@ -216,8 +217,8 @@ public class GridGen : MonoBehaviour
         for (int i = 0; i < numberOfChest; i++)
         {
 
-            Vector3Int chestPos = new Vector3Int(Random.Range(2,gridSize.x), Random.Range(2, gridSize.x),0);
-            
+            Vector3Int chestPos = new Vector3Int(Random.Range(2, gridSize.x), Random.Range(2, gridSize.x), 0);
+
             foreach (CellData item in allCell)
             {
                 if (chestPos == item.gridPos)
@@ -258,7 +259,7 @@ public class GridGen : MonoBehaviour
     //Permet de repasser les cases dans leur couleur initiale
     void ResetTiles()
     {
-        
+
         if (temporaryListOfCells != null)
         {
             foreach (CellData item in temporaryListOfCells)
@@ -267,5 +268,25 @@ public class GridGen : MonoBehaviour
             }
         }
     }
-    
+
+    public CellData GetChest()
+    {
+        foreach (CellData item in allCell)
+        {
+            if (item.isTreasure)
+            {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public void ShowAllCell()
+    {
+        foreach (var item in allCell)
+        {
+            item.ShowTile("");
+        }
+    }
+
 }

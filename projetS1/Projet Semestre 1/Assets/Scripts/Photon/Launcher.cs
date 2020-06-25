@@ -10,7 +10,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public string nickname = "SOMEONE";
     [SerializeField] bool isAutoConnect;
     [SerializeField] private int gameSeed = 1;
-
+    [SerializeField] private Vector2Int gameSize;
 
     [Space]
     [Header("Room's settings")]
@@ -18,6 +18,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] private byte maxPlayersPerRoom = 4;
 
     public int GameSeed { get => gameSeed; set => gameSeed = value; }
+    public Vector2Int GameSize { get => gameSize; set => gameSize = value; }
 
     // Start is called before the first frame update
     void Awake()
