@@ -241,6 +241,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 Vector3 chestPos = terrain.GetChest().gameObject.transform.position;
                 GameObject chest = Instantiate(lanternGO, chestPos, Quaternion.identity);
                 chest.GetComponent<changeColor>().ChangeColor(Color.yellow);
+                chest.SetActive(true);
             }
 
             if (Input.GetKeyDown(KeyCode.F10))
@@ -726,7 +727,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 }
                 else
                 {
-                    FMODUnity.RuntimeManager.PlayOneShot(Shovel_empty, transform.position);
+                    //FMODUnity.RuntimeManager.PlayOneShot(Shovel_empty, transform.position);
                     SendActionDone();
                 }
             }

@@ -28,7 +28,7 @@ Transform:
   m_LocalScale: {x: 80.00026, y: 80.00002, z: 80.00015}
   m_Children:
   - {fileID: 2579465445287520558}
-  - {fileID: 2579465445154154311}
+  - {fileID: 962870456477769460}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -9.557, y: 0, z: 0}
@@ -38,12 +38,14 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2579465445153799015}
+  m_GameObject: {fileID: 962870456477769206}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 48090ed78e1334a4ebfd6a5898afebd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Shovel_empty: event:/EVENTS/GRILLE/Dig
+  Shovel_treasure: event:/EVENTS/GRILLE/Treasure
 --- !u!1 &2579465445287520553
 GameObject:
   m_ObjectHideFlags: 0
@@ -4884,13 +4886,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10061106fa60a3940a9a349ec461bfde, type: 3}
---- !u!1 &2579465445153799015 stripped
+--- !u!1 &962870456477769206 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3355418889475991414, guid: 10061106fa60a3940a9a349ec461bfde,
     type: 3}
   m_PrefabInstance: {fileID: 962870456477768721}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &2579465445154154311 stripped
+--- !u!4 &962870456477769460 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3355418889476225878, guid: 10061106fa60a3940a9a349ec461bfde,
     type: 3}

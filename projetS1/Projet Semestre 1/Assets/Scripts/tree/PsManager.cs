@@ -7,6 +7,10 @@ public class PsManager : MonoBehaviour
     ParticleSystem burst;
     CellData currentCell;
     bool hasCalled;
+    int index = 0;
+
+    [FMODUnity.EventRef] public string Shovel_empty = "";
+    [FMODUnity.EventRef] public string Shovel_treasure = "";
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +23,14 @@ public class PsManager : MonoBehaviour
         {
             burst.Play();
         }
+    }
+
+    public void PlayDigSound()
+    {
+        if(currentCell.isTreasure && index == 0)
+            FMODUnity.RuntimeManager.PlayOneShot(Shovel_treasure, transform.position);
+        FMODUnity.RuntimeManager.PlayOneShot(Shovel_empty, transform.position);
+        index++;
     }
 
     public void StepAnim()
