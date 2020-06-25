@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 114861506362273838}
   - component: {fileID: 114535041165955836}
   - component: {fileID: 143390329134230808}
+  - component: {fileID: 114759088169930770}
   m_Layer: 0
   m_Name: FPS_Player
   m_TagString: Untagged
@@ -256,14 +257,15 @@ MonoBehaviour:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
   myColor: {r: 0, g: 0, b: 0, a: 0}
-  footsteps: 
-  Shovel_empty: 
-  Shovel_treasure: 
-  lantern_sound: 
-  Music_mine_spy: 
-  Music_mine_catch: 
-  Music_mine_lock: 
-  reveal: 
+  footsteps: event:/Test
+  Shovel_empty: event:/Test
+  Shovel_treasure: event:/Test
+  lantern_sound: event:/Test
+  Music_drop_mine: event:/Test
+  Music_mine_spy: event:/Test
+  Music_mine_catch: event:/Test
+  Music_mine_lock: event:/Test
+  reveal: event:/Test
 --- !u!114 &114861506362273838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,6 +321,29 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114759088169930770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5557735472172946939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
 --- !u!1 &6552807019881820076
 GameObject:
   m_ObjectHideFlags: 0

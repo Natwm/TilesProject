@@ -126,20 +126,33 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Space]
     [Header ("Player Sound")]
     [FMODUnity.EventRef] public string footsteps = "";
-
+    FMOD.Studio.EventInstance footstepsInstance;
     [FMODUnity.EventRef] public string Shovel_empty = "";
+    FMOD.Studio.EventInstance Shovel_emptyInstance;
     [FMODUnity.EventRef] public string Shovel_treasure = "";
+    FMOD.Studio.EventInstance Shovel_treasureInstance;
     [FMODUnity.EventRef] public string lantern_sound = "";
+    FMOD.Studio.EventInstance lantern_soundInstance;
 
     [Space]
     [Header("Mine Sound")]
+    [FMODUnity.EventRef] public string Music_drop_mine = "";
+    FMOD.Studio.EventInstance Music_drop_mineInstance;
     [FMODUnity.EventRef] public string Music_mine_spy = "";
+    FMOD.Studio.EventInstance Music_mine_spyInstance;
     [FMODUnity.EventRef] public string Music_mine_catch = "";
+    FMOD.Studio.EventInstance Music_mine_catchInstance;
     [FMODUnity.EventRef] public string Music_mine_lock = "";
+    FMOD.Studio.EventInstance Music_mine_lockInstance;
 
     [Space]
     [Header("Sound")]
     [FMODUnity.EventRef] public string reveal = "";
+    FMOD.Studio.EventInstance revealInstance;
+    
+    //public FMODUnity.StudioEventEmitter myEmit;//recupère
+
+
 
     public enum m_Action { Mouvement, Action, Wait, Feedback, End }
     public enum Bomb { RED, BLACK, WHITE, Nothing }
@@ -151,6 +164,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     // Start is called before the first frame update
     void Start()
     {
+        
+
         characterController = GetComponent<CharacterController>();
         view = GetComponent<PhotonView>();
         m_Canvas = GameObject.Find("Launcher").GetComponent<NetworkUi>();
@@ -273,6 +288,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 FpsMove();
                 if (tile != null && (Input.GetKeyDown(KeyCode.E) || Input.GetButtonDown("Fire1")) && m_MyActionPhase == m_Action.Mouvement)
                 {
+
                     UseFov();
                     highlightTiles();
                     SendMouvementDone();
@@ -428,6 +444,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         myLantern = Instantiate(lantern, new Vector3(pos.x, pos.y + 1.1f, pos.z), Quaternion.identity);
         myLantern.GetComponent<changeColor>().ChangeColor(myColor);
         terrainLantern.Add(myLantern);
+        FMODUnity.RuntimeManager.PlayOneShot(lantern_sound, transform.position); 
 
         transform.GetChild(3).GetChild(0).gameObject.SetActive(false);
 
@@ -442,6 +459,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                     bombImact(item.gameObject.GetComponent<CellData>());
             }
         }
+        FMODUnity.RuntimeManager.PlayOneShot(reveal, transform.position);
+
     }
 
     void SetMyMine()
@@ -505,6 +524,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         {
             foreach (Mine elt in affect)
             {
+                FMODUnity.RuntimeManager.PlayOneShot(Music_mine_spy, transform.position);
+
                 MineFeedBack(elt.BombState);
                 elt.SetBurst(item);
                 SendBombTrigger(elt.BombState, item.gameObject.transform.parent.name, elt.BombOwner);
@@ -540,6 +561,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
     void BombTrigger(CellData bomb)
     {
+        FMODUnity.RuntimeManager.PlayOneShot(Music_mine_spy, transform.position);
+
         List<Mine> bombtoReset = new List<Mine>();
         foreach (var item in bomb.Listbomb)
         {
@@ -657,6 +680,8 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 GameObject mine = SpawnBomB(interactTile.transform.position);
                 interactTile.GetComponent<CellData>().PlantBomb(m_MyBomb, gameObject.name, mine);
 
+                FMODUnity.RuntimeManager.PlayOneShot(Music_drop_mine, transform.position);
+
                 SendDropMine(m_MyBomb, interactTile.gameObject.transform.parent.name);
 
                 Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
@@ -692,11 +717,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 Debug.Log("il n'y a pas d'erreru");
                 if (interactTile.GetComponent<CellData>().isTreasure && interactTile.GetComponent<CellData>() != null)
                 {
+                    FMODUnity.RuntimeManager.PlayOneShot(Shovel_treasure, transform.position);
                     SendPlayerGetTreasure(interactTile.transform.parent.gameObject);
                     m_MyActionPhase = m_Action.End;
                 }
                 else
                 {
+                    FMODUnity.RuntimeManager.PlayOneShot(Shovel_empty, transform.position);
                     SendActionDone();
                 }
             }
