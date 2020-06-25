@@ -132,6 +132,7 @@ public class Carte
     public CellData cardCell;
     public CellData chestCell;
     public cellTypeInitialisation.cellType cardType;
+    public Sprite image;
     public enum directionFromChest { up, down, left, right, upleft, upright, downleft, downright }
     public directionFromChest cardDirection;
     public enum visibleFace { front, back };
@@ -147,6 +148,8 @@ public class Carte
         cardName = cardType.ToString() + " " + cardCell.gameObject.transform.parent.name;
         cardId = _id;
         front = cardCell.assignedSprite;
+        
+        image = Resources.Load<Sprite>("Sprites/new/" + front.name);
         cardDirection = (directionFromChest)cardId;
         back = Resources.Load<Sprite>("sprite/directions/" + cardDirection.ToString());
         cardRenderer = Resources.Load<GameObject>("sprite/carte");
