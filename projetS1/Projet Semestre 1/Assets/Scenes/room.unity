@@ -627,6 +627,8 @@ MonoBehaviour:
     type: 3}
   handPrefabs: {fileID: 0}
   cardIsCreate: 0
+  playerColor: {r: 1, g: 0, b: 0, a: 1}
+  altPlayerColor: {r: 0, g: 0, b: 1, a: 1}
 --- !u!4 &1953003073
 Transform:
   m_ObjectHideFlags: 0

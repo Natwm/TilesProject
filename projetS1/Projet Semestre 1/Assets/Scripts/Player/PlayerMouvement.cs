@@ -99,6 +99,14 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [SerializeField] private GameObject gameDeck;
 
     [Space]
+    [Header("Lantern")]
+    [SerializeField] private GameObject lantern;
+    [SerializeField] private GameObject lanternGO;
+    private List<GameObject> terrainLantern = new List<GameObject>();
+    private GameObject myLantern;
+    private List<Vector3> lanterns = new List<Vector3>();
+
+    [Space]
     [Header("Canvas")]
     public float tempsAffichageMessage = 2f;
     private TMP_Text infoText;
@@ -108,10 +116,11 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     [Header("Other")]
     [SerializeField] private float TimeCardAvailable = 50.0f;
     [SerializeField] private bool turnCard = false;
-    [SerializeField] private GameObject lantern;
-    private List<GameObject> terrainLantern = new List<GameObject>();
-    private GameObject myLantern;
-    private List<Vector3> lanterns = new List<Vector3>();
+
+    [Space]
+    [Header("Color")]
+    [SerializeField] private List<Color> playerColor;
+    [SerializeField] private Color myColor;
 
     public enum m_Action { Mouvement, Action, Wait, Feedback, End }
     public enum Bomb { RED, BLACK, WHITE, Nothing }
@@ -127,9 +136,15 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         view = GetComponent<PhotonView>();
         m_Canvas = GameObject.Find("Launcher").GetComponent<NetworkUi>();
 
+        for (int i = 0; i < GameObject.FindObjectsOfType<changeColor>().Length; i++)
+        {
+            GameObject.FindObjectsOfType<changeColor>()[i].ChangeColor(playerColor[i]);
+        }
+
         if (view.IsMine)
         {
             NetworkPlayer.LocalPlayerInstance = this.gameObject;
+            myColor = playerColor[1];//transform.GetChild(3).GetChild(0).gameObject.GetComponent<changeColor>().myColor;
         }
 
 
@@ -145,6 +160,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_Canvas.SetGameUI(this, PhotonNetwork.IsMasterClient);
         gameDeck = GameObject.Find("Deck(Clone)");
 
+        
     }
     #endregion
 
@@ -378,6 +394,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         Vector3 pos = new Vector3(grid.LocalToCell(tile.transform.position).x + offset.x, 0, grid.LocalToCell(tile.transform.position).y + offset.y);
         myLantern = Instantiate(lantern, new Vector3(pos.x, pos.y + 1.1f, pos.z), Quaternion.identity);
+        myLantern.GetComponent<changeColor>().ChangeColor(myColor);
         terrainLantern.Add(myLantern);
 
         transform.GetChild(3).GetChild(0).gameObject.SetActive(false);
@@ -1368,7 +1385,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 }
             }
         }
-
+        lanterns.Clear();
     }
 
     #endregion
@@ -1545,6 +1562,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 if (playerName != this.name)
                 {
                     GameObject lanterne = Instantiate(lantern, pos, Quaternion.identity);
+                    lanterne.GetComponent<changeColor>().ChangeColor(playerColor[0]);
                     terrainLantern.Add(lanterne);
                     lanterns.Add(lanterne.transform.position);
                     lanterne.SetActive(false);
@@ -1800,6 +1818,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     public PhotonView View { get => view; set => view = value; }
     public Grid Grid { get => grid; set => grid = value; }
     public GridGen Terrain { get => terrain; set => terrain = value; }
+    public GameObject LanternGO { get => lanternGO; set => lanternGO = value; }
 
     void SetId(string PlayerName, int playerID)
     {
