@@ -91,7 +91,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-
+*.log
 # Crashlytics generated file
 crashlytics-build.properties
 
@@ -116,3 +116,4 @@ crashlytics-build.properties
     Blog
     About
 
+projetS1/Projet Semestre 1/fmod_editor.log
