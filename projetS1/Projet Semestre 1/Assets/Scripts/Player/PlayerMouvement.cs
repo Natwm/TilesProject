@@ -249,6 +249,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                 terrain.ShowAllCell();
             }
 
+            if (Input.GetKeyDown(KeyCode.F8))
+            {
+                Canva.showPos();
+            }
 
             if (Input.GetKeyDown(KeyCode.Space) && m_MyActionPhase == m_Action.End)
             {
@@ -1710,11 +1714,13 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         if (hit.collider != null && hit.collider.gameObject.GetComponent<CellData>().State == CellData.m_State.Show)
         {
             interactTile = hit.collider.gameObject;
+            Canva.DiplayPos(interactTile.transform.parent.gameObject.name);
             Canva.CanInteract();
         }
         else
         {
             interactTile = null;
+            Canva.DiplayPos("");
             Canva.CantInteract();
         }
 

@@ -106,6 +106,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     FMOD.Studio.EventInstance UI_selectionInstance;
 
 
+    public TMP_Text tilepos;
+
     Launcher networkManager;
     public bool isOn = false;
     
@@ -263,7 +265,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     {
         GameObject carte = Instantiate(allCardDisplay);
         carte.transform.parent = allCardHolder.transform;
-        carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+        carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.image;
 
         Debug.LogError(toPrint.State);
 
@@ -285,28 +287,28 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         {
             GameObject carte = Instantiate(cardDisplay);
             carte.transform.parent = cardHolder.transform;
-            carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+            carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.image;
             if (toPrint.State == Carte.CardState.UNLOCK)
             {
-                carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+                carte.transform.GetChild(2).GetComponent<Image>().sprite = toPrint.back;
             }
             else
             {
-                carte.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+                carte.transform.GetChild(2).GetComponent<Image>().sprite = lockImage;
             }
 
             carte.transform.localScale = Vector3.one;
         }
         else
         {
-            card.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+            card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.image;
             if (toPrint.State == Carte.CardState.UNLOCK)
             {
-                card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+                card.transform.GetChild(2).GetComponent<Image>().sprite = toPrint.back;
             }
             else
             {
-                card.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+                card.transform.GetChild(2).GetComponent<Image>().sprite = lockImage;
             }
   
         }
@@ -319,36 +321,42 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         {
             GameObject carte = Instantiate(allCardDisplay);
             carte.transform.parent = allCardHolder.transform;
-            carte.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+            carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.image;
             if (toPrint.State == Carte.CardState.UNLOCK)
             {
-                carte.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+                carte.transform.GetChild(2).GetComponent<Image>().sprite = toPrint.back;
             }
             else
             {
-                carte.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+                carte.transform.GetChild(2).GetComponent<Image>().sprite = lockImage;
             }
 
             carte.transform.localScale = Vector3.one;
         }
         else
         {
-            card.transform.GetChild(0).GetComponent<Image>().sprite = toPrint.front;
+            card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.image;
             if (toPrint.State == Carte.CardState.UNLOCK)
             {
-                card.transform.GetChild(1).GetComponent<Image>().sprite = toPrint.back;
+                card.transform.GetChild(2).GetComponent<Image>().sprite = toPrint.back;
             }
             else
             {
-                card.transform.GetChild(1).GetComponent<Image>().sprite = lockImage;
+                card.transform.GetChild(2).GetComponent<Image>().sprite = lockImage;
             }
 
         }
 
     }
 
+    public void showPos()
+    {
+        tilepos.gameObject.SetActive(!tilepos.gameObject.active);
+    }
+
     public void ShowCards(List<Carte>Hand)
     {
+        
         cardHolder.SetActive(!cardHolder.active);
         if(cardHolder.active == true)
         {
@@ -550,5 +558,10 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public void Sound()
     {
         FMODUnity.RuntimeManager.PlayOneShot(UI_selection, transform.position);
+    }
+
+    public void DiplayPos(string pos)
+    {
+        tilepos.text = pos;
     }
 }
