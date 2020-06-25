@@ -5,7 +5,7 @@
 			<value>CARTES</value>
 		</property>
 		<relationship name="folder">
-			<destination>{3a26e87d-72d2-4ed8-a00d-641cd7a82b20}</destination>
+			<destination>{eef0760a-db88-43ab-ac02-55eb0893369b}</destination>
 		</relationship>
 	</object>
 </objects>
