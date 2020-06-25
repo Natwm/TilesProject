@@ -126,6 +126,15 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     {
         roomInfos.text = "";
         UpdateRoomUI();
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            startPanel.SetActive(!startPanel.active);
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            OnConnectButton();
+        }
     }
 
     #region UI Simon
