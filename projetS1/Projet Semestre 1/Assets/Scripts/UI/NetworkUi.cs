@@ -129,7 +129,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         roomInfos.text = "";
         UpdateRoomUI();
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.O))
         {
             startPanel.SetActive(!startPanel.active);
         }
