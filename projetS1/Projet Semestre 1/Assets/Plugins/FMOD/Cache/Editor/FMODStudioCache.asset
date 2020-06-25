@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EditorBanks:
   - {fileID: 114937955292506126}
-  - {fileID: 114754585820283626}
-  - {fileID: 114332673716554208}
+  - {fileID: 114031342038880918}
+  - {fileID: 114182284528909842}
   EditorEvents:
   - {fileID: 114152815386508382}
   - {fileID: 114039606593951368}
@@ -31,10 +31,10 @@ MonoBehaviour:
   - {fileID: 114694853726811590}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   StringsBanks:
   - {fileID: 114937955292506126}
-  stringsBankWriteTime: 637287183231744448
+  stringsBankWriteTime: 637287187117302043
   cacheVersion: 3
 --- !u!114 &114006032085832564
 MonoBehaviour:
@@ -51,7 +51,7 @@ MonoBehaviour:
   Path: event:/EVENTS/GRILLE/Treasure
   guid: 52a702ceec61a04585dce265478f5e12
   Banks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -59,6 +59,24 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 860
+--- !u!114 &114031342038880918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Master.bank
+  SubDir: 
+  lastModified: 637287187117292331
+  LoadResult: 0
+  FileSizes: []
+  Exists: 1
 --- !u!114 &114038957919397294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +92,7 @@ MonoBehaviour:
   Path: event:/EVENTS/MINES/poser_une_mine
   guid: 931a1ff26148284e9a2ca9a286892f7b
   Banks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -97,8 +115,8 @@ MonoBehaviour:
   Path: event:/EVENTS/MINES/DeclenchementMine
   guid: 136db104da868345bc8c652532051f6e
   Banks:
-  - {fileID: 114754585820283626}
-  - {fileID: 114332673716554208}
+  - {fileID: 114031342038880918}
+  - {fileID: 114182284528909842}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -201,8 +219,8 @@ MonoBehaviour:
   Path: event:/FEEDBACK/UI/UI_selection
   guid: 0e03cb4752365b4cae3da0bfa2af6712
   Banks:
-  - {fileID: 114754585820283626}
-  - {fileID: 114332673716554208}
+  - {fileID: 114031342038880918}
+  - {fileID: 114182284528909842}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -228,6 +246,24 @@ MonoBehaviour:
   LoadResult: 0
   FileSizes: []
   Exists: 0
+--- !u!114 &114182284528909842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Test1.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Test1.bank
+  SubDir: 
+  lastModified: 637287187117312224
+  LoadResult: 0
+  FileSizes: []
+  Exists: 1
 --- !u!114 &114196795990160596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,8 +345,8 @@ MonoBehaviour:
   Path: event:/RAW/Jingle_mine
   guid: be6681d5ca4496439e10bff00f944932
   Banks:
-  - {fileID: 114754585820283626}
-  - {fileID: 114332673716554208}
+  - {fileID: 114031342038880918}
+  - {fileID: 114182284528909842}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -357,7 +393,7 @@ MonoBehaviour:
   Path: event:/EVENTS/GRILLE/lantern
   guid: 54ed70bbcf216a47b8d02879e863e538
   Banks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -420,7 +456,7 @@ MonoBehaviour:
   Path: event:/AMBIANCE/SOUNDSCAPE/ambiance_foret_vent
   guid: c5f9500b4cd25849890a858282a51f7f
   Banks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   IsStream: 1
   Is3D: 1
   IsOneShot: 0
@@ -443,7 +479,7 @@ MonoBehaviour:
   Path: event:/FEEDBACK/PERSONNAGE/MultiFoot
   guid: a3a4f4f9985153439bd7ad610755accf
   Banks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   IsStream: 0
   Is3D: 1
   IsOneShot: 0
@@ -656,7 +692,7 @@ MonoBehaviour:
   Path: event:/EVENTS/GRILLE/Reveal
   guid: e93ef8799b0c45489c5006b2abb6adc7
   Banks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -679,7 +715,7 @@ MonoBehaviour:
   Path: event:/FEEDBACK/UI/CARTES/UI_card
   guid: 8f3ff573f374604fbc1d42a3e4748fb9
   Banks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -816,7 +852,7 @@ MonoBehaviour:
   Path: event:/EVENTS/GRILLE/Dig
   guid: a77fe5d0eade1642bcc1242d009d9b59
   Banks:
-  - {fileID: 114754585820283626}
+  - {fileID: 114031342038880918}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -990,7 +1026,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: Assets/Plugins/Desktop/Master.strings.bank
   SubDir: 
-  lastModified: 637287183231744448
+  lastModified: 637287187117302043
   LoadResult: 0
   FileSizes:
   - Name: 
@@ -1049,8 +1085,8 @@ MonoBehaviour:
   Path: event:/AMBIANCE/MUSIC/Music_mine
   guid: 83c4d6bb0a01ab49a6aa3ddcb2da8082
   Banks:
-  - {fileID: 114754585820283626}
-  - {fileID: 114332673716554208}
+  - {fileID: 114031342038880918}
+  - {fileID: 114182284528909842}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1

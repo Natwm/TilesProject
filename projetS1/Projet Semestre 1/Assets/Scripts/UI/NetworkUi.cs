@@ -350,6 +350,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public void UpdatePhaseFeedBack(PlayerMouvement.m_Action phase)
     {
+        Debug.Log("UpdatePhaseFeedBack");
         switch (phase)
         {
             case PlayerMouvement.m_Action.Mouvement:
