@@ -160,7 +160,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         m_Canvas.SetGameUI(this, PhotonNetwork.IsMasterClient);
         gameDeck = GameObject.Find("Deck(Clone)");
 
-        
+
     }
     #endregion
 
@@ -179,28 +179,46 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
+                Application.Quit();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
 
-            if (Input.GetKeyDown(KeyCode.H))
+            if (Input.GetKeyDown(KeyCode.F11))
             {
                 Canva.gamePanel.SetActive(!Canva.gamePanel.active);
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha0)&& transform.GetChild(3).GetChild(0).gameObject.active)
+            if (Input.GetKeyDown(KeyCode.F12) && transform.GetChild(3).GetChild(0).gameObject.active)
             {
                 SendActionDone();
-            }else if(Input.GetKeyDown(KeyCode.Alpha0) && !transform.GetChild(3).GetChild(0).gameObject.active)
+            }
+            else if (Input.GetKeyDown(KeyCode.F12) && !transform.GetChild(3).GetChild(0).gameObject.active)
             {
                 SendMouvementDone();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+                Vector3 chestPos = terrain.GetChest().gameObject.transform.position;
+                GameObject chest = Instantiate(lanternGO, chestPos, Quaternion.identity);
+                chest.GetComponent<changeColor>().ChangeColor(Color.yellow);
+            }
+
+            if (Input.GetKeyDown(KeyCode.F10))
+            {
+                terrain.ShowAllCell();
             }
 
 
             if (Input.GetKeyDown(KeyCode.Space) && m_MyActionPhase == m_Action.End)
             {
                 Canva.DestroyAllCardsDisplay();
-                if(myLantern == null)
+                if (myLantern == null)
                 {
                     m_MyActionPhase = m_Action.Mouvement;
                     Canva.UpdatePhaseFeedBack(m_MyActionPhase);
@@ -211,7 +229,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
                     m_MyActionPhase = m_Action.Wait;
                     Canva.UpdatePhaseFeedBack(m_MyActionPhase);
                 }
-                
+
             }
 
 
@@ -459,38 +477,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             }
         }
     }
-
-    /*void TurnCard(bool canturnCard)
-    {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = -1;
-        RaycastHit hit;
-        if (Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity, cardLayer))
-        {
-            if (hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.CanTurnCard)
-            {
-                hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.TurnCard();
-                Destroy(hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.ingameDisplay);
-                hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.Create();
-            }
-            else if (canturnCard)
-            {
-                hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.CanTurn();
-                hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.TurnCard();
-                Destroy(hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.ingameDisplay);
-                hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.Create();
-
-                SendUnlockCard(hit.collider.gameObject.transform.GetChild(0).GetComponent<CardReader>().cardToRead.cardName);
-            }
-            else
-                Debug.Log("nothing append");
-
-            turnCard = false;
-            Debug.Log("nothing append" + canturnCard);
-        }
-
-    }*/
-
     void bombImact(CellData item)
     {
         List<Mine> affect = new List<Mine>();
@@ -535,10 +521,10 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
             default:
                 break;
         }
-        
+
         GameObject.FindObjectOfType<Feedback>().SortUi();
     }
-    
+
     void BombTrigger(CellData bomb)
     {
         List<Mine> bombtoReset = new List<Mine>();
@@ -593,31 +579,6 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
         yield return new WaitForSeconds(TimeCardAvailable);
         Canva.showAllCard(gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand);
         Canva.UpdatePhaseFeedBack(m_MyActionPhase);
-
-
-        //TimeCardAvailable
-        //yield return new WaitForSeconds(TimeCardAvailable);
-       // 
-        /*foreach (Carte item in hand)
-        {
-            Destroy(item.ingameDisplay);
-        }
-        Debug.LogWarning("C'est une ROUGE !");
-        foreach (Carte item in gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand)
-        {
-            item.Create();
-            Debug.Log(item.cardName);
-        }
-        yield return new WaitForSeconds(TimeCardAvailable);
-
-        foreach (Carte item in gameDeck.GetComponent<GestionCartes>().allCardsInPlayerHand)
-        {
-            Destroy(item.ingameDisplay);
-        }
-        foreach (Carte item in hand)
-        {
-            item.Create();
-        }*/
     }
 
     void BLACKtrigger()
