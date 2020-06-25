@@ -27,8 +27,6 @@ public class PsManager : MonoBehaviour
 
     public void PlayDigSound()
     {
-        if(currentCell.isTreasure && index == 0)
-            FMODUnity.RuntimeManager.PlayOneShot(Shovel_treasure, transform.position);
         FMODUnity.RuntimeManager.PlayOneShot(Shovel_empty, transform.position);
         index++;
     }
