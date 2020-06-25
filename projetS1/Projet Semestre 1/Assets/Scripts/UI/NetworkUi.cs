@@ -19,6 +19,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public TMP_InputField nicknameField;
     public TMP_InputField seedField;
     public Button connectButton;
+    public TMP_InputField sizeX;
+    public TMP_InputField sizeY;
 
     [Space]
     [Header("Waiting Canvas")]
@@ -38,6 +40,8 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public Button bombButton1;
     public Button bombButton2;
     public Button bombButton3;
+
+
 
 
     [Space]
@@ -95,6 +99,10 @@ public class NetworkUi : MonoBehaviourPunCallbacks
     public Color colorMineSelect;
     public Color pointeurValid;
     public Color pointeurInValid;
+
+    [Space]
+    [Header("UI Sound")]
+    [FMODUnity.EventRef] public string UI_selection = "";
 
     Launcher networkManager;
     public bool isOn = false;
@@ -503,10 +511,17 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         networkManager.GameSeed = Int32.Parse(newSeed);
     }
 
+    public void OnSizeUpdate(int sizeX, int sizeY)
+    {
+        Debug.LogFormat("size updated to {0} | {1}", sizeX, sizeY);
+        networkManager.GameSize = new Vector2Int(sizeX, sizeY);
+    }
+
     public void OnConnectButton()
     {
         OnNicknameUpdated(nicknameField.text);
         OnSeedUpdate(seedField.text);
+        OnSizeUpdate(Int32.Parse(sizeX.text), Int32.Parse(sizeY.text));
         networkManager.Connect();
     }
 

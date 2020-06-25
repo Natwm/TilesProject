@@ -142,6 +142,7 @@ public class CellData : MonoBehaviour
         toReset.SetBurst(this);
         Destroy(toReset.MineGO);
         Listbomb.Remove(toReset);
+        HideGraphics();
     }
 
     public void ResetTileMine(Mine toReset)
@@ -278,8 +279,6 @@ public class CellData : MonoBehaviour
     }
     public void Dig()
     {
-        
-        Debug.Log("dig");
         if (isTreasure && TreasureInstance == null)
         {
             Vector3 treasurePos = new Vector3(transform.position.x, transform.position.y-0.5f, transform.position.z);

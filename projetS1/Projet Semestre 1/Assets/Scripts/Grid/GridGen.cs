@@ -36,6 +36,7 @@ public class GridGen : MonoBehaviour
     private void Awake()
     {
         Random.seed = GameObject.Find("Launcher").GetComponent<Launcher>().GameSeed;
+        gridSize = GameObject.Find("Launcher").GetComponent<Launcher>().GameSize;
     }
 
     void Start()

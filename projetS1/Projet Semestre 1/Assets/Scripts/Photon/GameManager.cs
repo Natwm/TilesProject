@@ -25,6 +25,10 @@ public class GameManager : MonoBehaviour
 
     int nbplayer = 0;
 
+    [Space]
+    [Header("Ambient Sound")]
+    [FMODUnity.EventRef] public string ambiante = "";
+
     void Start()
     {
         GameObject board = Instantiate(gridPrefab, new Vector2(1, 1), Quaternion.identity);
