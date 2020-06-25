@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{8b9efe97-415a-44b0-a45f-e3229711e6a5}">
+		<property name="assetPath">
+			<value>ambiance_foret_vent.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>16</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>60.5</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{48f49ecc-c11c-4fb6-ba61-cb1dc07e2dc3}</destination>
+		</relationship>
+	</object>
+</objects>
