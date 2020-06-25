@@ -13,16 +13,20 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
   EditorBanks:
-  - {fileID: 114041760613633768}
-  - {fileID: 114889700881750502}
+  - {fileID: 114518711408531912}
+  - {fileID: 114981373422955198}
+  - {fileID: 114734585292553150}
   EditorEvents:
-  - {fileID: 114909382355055634}
+  - {fileID: 114080502219948318}
+  - {fileID: 114254351313137710}
+  - {fileID: 114196795990160596}
+  - {fileID: 114200577499726922}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 114889700881750502}
+  - {fileID: 114981373422955198}
   StringsBanks:
-  - {fileID: 114041760613633768}
-  stringsBankWriteTime: 637285109022563100
+  - {fileID: 114518711408531912}
+  stringsBankWriteTime: 637287116943783492
   cacheVersion: 3
 --- !u!114 &114041760613633768
 MonoBehaviour:
@@ -38,12 +42,244 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: Assets/Plugins/Desktop/Master.strings.bank
   SubDir: 
-  lastModified: 637285109022563100
+  lastModified: 637287105437685582
   LoadResult: 0
   FileSizes:
   - Name: 
-    Value: 730
+    Value: 980
   Exists: 1
+--- !u!114 &114080502219948318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/FEEDBACK/UI/UI_selection
+  m_EditorClassIdentifier: 
+  Path: event:/FEEDBACK/UI/UI_selection
+  guid: 0e03cb4752365b4cae3da0bfa2af6712
+  Banks:
+  - {fileID: 114981373422955198}
+  - {fileID: 114734585292553150}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 760
+--- !u!114 &114182268899054286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Test1.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Test1.bank
+  SubDir: 
+  lastModified: 637286825800252983
+  LoadResult: 0
+  FileSizes: []
+  Exists: 0
+--- !u!114 &114196795990160596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/FEEDBACK/MINES/Jingle_mine
+  m_EditorClassIdentifier: 
+  Path: event:/FEEDBACK/MINES/Jingle_mine
+  guid: be6681d5ca4496439e10bff00f944932
+  Banks:
+  - {fileID: 114981373422955198}
+  - {fileID: 114734585292553150}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 4500
+--- !u!114 &114200577499726922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/EVENTS/DeclenchementMine
+  m_EditorClassIdentifier: 
+  Path: event:/EVENTS/DeclenchementMine
+  guid: 136db104da868345bc8c652532051f6e
+  Banks:
+  - {fileID: 114981373422955198}
+  - {fileID: 114734585292553150}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2000
+--- !u!114 &114205508084091588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Test1.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Test1.bank
+  SubDir: 
+  lastModified: 637286825233007743
+  LoadResult: 0
+  FileSizes: []
+  Exists: 0
+--- !u!114 &114254351313137710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/AMBIANCE/MUSIC/Music_mine
+  m_EditorClassIdentifier: 
+  Path: event:/AMBIANCE/MUSIC/Music_mine
+  guid: 83c4d6bb0a01ab49a6aa3ddcb2da8082
+  Banks:
+  - {fileID: 114981373422955198}
+  - {fileID: 114734585292553150}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 5100
+--- !u!114 &114426731677499994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Spike_Compressed1
+  m_EditorClassIdentifier: 
+  Path: event:/Spike_Compressed1
+  guid: 83c4d6bb0a01ab49a6aa3ddcb2da8082
+  Banks: []
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 5100
+--- !u!114 &114518711408531912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: N:/GameEngine/Unity Games/0__Cours/projetSafe/projetS1/Projet Semestre 1/Assets/Plugins/Desktop/Master.strings.bank
+  SubDir: 
+  lastModified: 637287116943783492
+  LoadResult: 0
+  FileSizes:
+  - Name: 
+    Value: 980
+  Exists: 1
+--- !u!114 &114527087349566172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Declenchement_Mine
+  m_EditorClassIdentifier: 
+  Path: event:/Declenchement_Mine
+  guid: 83c4d6bb0a01ab49a6aa3ddcb2da8082
+  Banks: []
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 5100
+--- !u!114 &114540187590550312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Master.bank
+  SubDir: 
+  lastModified: 637287105437595823
+  LoadResult: 0
+  FileSizes: []
+  Exists: 1
+--- !u!114 &114584413524910962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Test1.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Test1.bank
+  SubDir: 
+  lastModified: 637286888634003344
+  LoadResult: 0
+  FileSizes: []
+  Exists: 0
 --- !u!114 &114654233223332364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,6 +297,26 @@ MonoBehaviour:
   lastModified: 637285024649980360
   LoadResult: 0
   FileSizes: []
+  Exists: 1
+--- !u!114 &114734585292553150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Test1.bank
+  m_EditorClassIdentifier: 
+  Path: N:/GameEngine/Unity Games/0__Cours/projetSafe/projetS1/Projet Semestre 1/Assets/Plugins/Desktop/Test1.bank
+  SubDir: 
+  lastModified: 637287116943803450
+  LoadResult: 0
+  FileSizes:
+  - Name: 
+    Value: 127712
   Exists: 1
 --- !u!114 &114761134604098680
 MonoBehaviour:
@@ -98,6 +354,46 @@ MonoBehaviour:
   LoadResult: 0
   FileSizes: []
   Exists: 1
+--- !u!114 &114834716317639824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/EVENTS/Mine
+  m_EditorClassIdentifier: 
+  Path: event:/EVENTS/Mine
+  guid: 136db104da868345bc8c652532051f6e
+  Banks: []
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2000
+--- !u!114 &114843092956025808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Master.bank
+  SubDir: 
+  lastModified: 637286825799714425
+  LoadResult: 0
+  FileSizes: []
+  Exists: 0
 --- !u!114 &114876883962312106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,6 +412,28 @@ MonoBehaviour:
   LoadResult: 0
   FileSizes: []
   Exists: 0
+--- !u!114 &114876959707994584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/jingle_mine
+  m_EditorClassIdentifier: 
+  Path: event:/jingle_mine
+  guid: be6681d5ca4496439e10bff00f944932
+  Banks: []
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 4500
 --- !u!114 &114889700881750502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,7 +451,7 @@ MonoBehaviour:
   lastModified: 637285109022553134
   LoadResult: 0
   FileSizes: []
-  Exists: 1
+  Exists: 0
 --- !u!114 &114909382355055634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,8 +466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/Test
   guid: 5ad29110131f0942b6e40d04df753e00
-  Banks:
-  - {fileID: 114889700881750502}
+  Banks: []
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
@@ -157,3 +474,77 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 3500
+--- !u!114 &114915667620526694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Master.bank
+  SubDir: 
+  lastModified: 637286888633514321
+  LoadResult: 0
+  FileSizes: []
+  Exists: 0
+--- !u!114 &114919439599420248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Test1.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Test1.bank
+  SubDir: 
+  lastModified: 637287105438015037
+  LoadResult: 0
+  FileSizes: []
+  Exists: 1
+--- !u!114 &114981373422955198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: N:/GameEngine/Unity Games/0__Cours/projetSafe/projetS1/Projet Semestre 1/Assets/Plugins/Desktop/Master.bank
+  SubDir: 
+  lastModified: 637287116943783492
+  LoadResult: 0
+  FileSizes:
+  - Name: 
+    Value: 128224
+  Exists: 1
+--- !u!114 &114986304450111344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/Plugins/Desktop/Master.bank
+  SubDir: 
+  lastModified: 637286825230364807
+  LoadResult: 0
+  FileSizes: []
+  Exists: 0

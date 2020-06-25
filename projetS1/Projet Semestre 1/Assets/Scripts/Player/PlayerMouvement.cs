@@ -467,6 +467,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
     {
         if (Input.GetKeyDown(KeyCode.Alpha1) && amountOfRedMines > 0)
         {
+            Canva.Sound();
             if (m_MyBomb == Bomb.RED)
             {
                 Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
@@ -482,6 +483,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         if (Input.GetKeyDown(KeyCode.Alpha2) && amountOfBlackMines > 0)
         {
+            Canva.Sound();
             if (m_MyBomb == Bomb.BLACK)
             {
                 Canva.SetActionUI(m_MyBomb, Bomb.Nothing);
@@ -497,6 +499,7 @@ public class PlayerMouvement : MonoBehaviour, IPunObservable, IOnEventCallback
 
         if (Input.GetKeyDown(KeyCode.Alpha3) && amountOfWhiteMines > 0)
         {
+            Canva.Sound();
             if (m_MyBomb == Bomb.WHITE)
             {
                 Canva.SetActionUI(m_MyBomb, Bomb.Nothing);

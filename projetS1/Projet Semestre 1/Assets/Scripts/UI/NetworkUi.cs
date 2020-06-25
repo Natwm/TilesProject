@@ -102,7 +102,9 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     [Space]
     [Header("UI Sound")]
-    [FMODUnity.EventRef] public string UI_selection = "";
+    [FMODUnity.EventRef] public string UI_selection = ""; 
+    FMOD.Studio.EventInstance UI_selectionInstance;
+
 
     Launcher networkManager;
     public bool isOn = false;
@@ -519,6 +521,7 @@ public class NetworkUi : MonoBehaviourPunCallbacks
 
     public void OnConnectButton()
     {
+        FMODUnity.RuntimeManager.PlayOneShot(UI_selection, transform.position);
         OnNicknameUpdated(nicknameField.text);
         OnSeedUpdate(seedField.text);
         OnSizeUpdate(Int32.Parse(sizeX.text), Int32.Parse(sizeY.text));
@@ -532,5 +535,10 @@ public class NetworkUi : MonoBehaviourPunCallbacks
         nicknameField.transform.parent.gameObject.SetActive(false);
         seedField.transform.parent.gameObject.SetActive(false);*/
         startPanel.SetActive(false);
+    }
+
+    public void Sound()
+    {
+        FMODUnity.RuntimeManager.PlayOneShot(UI_selection, transform.position);
     }
 }

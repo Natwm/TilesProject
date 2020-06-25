@@ -15,6 +15,8 @@ public class PoissonInterface : MonoBehaviour
     List<Vector2> points;
     Vector2 regionSize;
     bool Landmark;
+    public Sprite[] shrubs;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +28,7 @@ public class PoissonInterface : MonoBehaviour
         spawnOnpoint = Resources.LoadAll<GameObject>("mesh/trees");
         treeTexture = Resources.LoadAll<Texture2D>("textures/trees");
         grid = FindObjectOfType<GridGen>();
+        shrubs = Resources.LoadAll<Sprite>("sprite/shrubs");
     }
     // Update is called once per frame
     void Update()
@@ -68,6 +71,13 @@ public class PoissonInterface : MonoBehaviour
             test.transform.SetPositionAndRotation(translatedPos, test.transform.rotation);
             test.transform.localScale = new Vector3(size, size, 50);
             test.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", treeTexture[randomTexture]);
+            if (test.transform.childCount > 0)
+            {
+                for (int i = 0; i < test.transform.childCount; i++)
+                {
+                    test.transform.GetChild(i).GetComponent<shrubRender>().setShrub();
+                }
+            }
             
             
             
